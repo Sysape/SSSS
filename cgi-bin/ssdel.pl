@@ -9,7 +9,13 @@ my $tt = Template->new({
     INTERPOLATE  => 1,
 }) || die "$Template::ERROR\n";
 
-my  $dbh = DBI->connect('dbi:mysql:solsys', 'solsys', 'w0kk4', 
+#Load the mysql login info from a YAML file in the conf directory
+
+my $sqlconfig  = do{local(@ARGV,$/)='../conf/sql.yaml';<>};
+my $sqldetails Load $config;
+
+my  $dbh = DBI->connect('dbi:mysql:$sqldetails=>db', '$sqldetails=>user',
+             '$sqldetails=>pass',
 			{ RaiseError => 1, AutoCommit => 0 }) 
 			or die "Database connection not made: $DBI::errstr";
 

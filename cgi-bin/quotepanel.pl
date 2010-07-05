@@ -3,14 +3,23 @@ use strict;
 use CGI;  # don't reinvent the wheel
 use Template;
 use DBI;
+use YAML::XS;
 
 #set up a few things
+
+# Template path
 my $tt = Template->new({
    INCLUDE_PATH => '../templates',
    INTERPOLATE  => 1,
 }) || die "$Template::ERROR\n";
 
-my  $dbh = DBI->connect('dbi:mysql:solsys', 'solsys', 'w0kk4',
+#Load the mysql login info from a YAML file in the conf directory
+
+my $sqlconfig  = do{local(@ARGV,$/)='../conf/sql.yaml';<>};
+my $sqldetails Load $config;
+
+my  $dbh = DBI->connect('dbi:mysql:$sqldetails=>db', '$sqldetails=>user',
+			 '$sqldetails=>pass',
            { RaiseError => 1, AutoCommit => 0 })
           or die "Database connection not made: $DBI::errstr";
 

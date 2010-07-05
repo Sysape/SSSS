@@ -6,6 +6,7 @@ use Template;
 use DBI;
 use List::Compare;
 use Date::Calc qw( Today Month_to_Text English_Ordinal );
+use YAML::XS;
 
 # date first why not.
 my ($year,$month,$day) = Today();
@@ -16,12 +17,18 @@ my $today = sprintf("%s %s, %d",
                 $year);
 
 #set up a few things
+
+#Template path
 my $tt = Template->new({
    INCLUDE_PATH => '../templates',
    INTERPOLATE  => 1,
 }) || die "$Template::ERROR\n";
 
-my  $dbh = DBI->connect('dbi:mysql:solsys', 'solsys', 'w0kk4',
+my $sqlconfig  = do{local(@ARGV,$/)='../conf/sql.yaml';<>};
+my $sqldetails Load $config;
+
+my  $dbh = DBI->connect('dbi:mysql:$sqldetails=>db', '$sqldetails=>user',
+             '$sqldetails=>pass',
            { RaiseError => 1, AutoCommit => 0 })
           or die "Database connection not made: $DBI::errstr";
 
