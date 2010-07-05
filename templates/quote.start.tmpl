@@ -1,0 +1,12 @@
+[% INCLUDE header.tmpl %]
+
+<form action="/quotepanel.pl" method="post" target="_self">
+	Customer No: <input type="text" size="5" name="custno"><br>
+	Supplier:  Yes No <br>
+	Solar Century: 	<input type="radio" name="SC" value="yes" checked="checked">
+					<input type="radio" name="SC" value="no"><br>
+	Sundog:	 	<input type="radio" name="Sundog" value="yes"checked="checked">
+				<input type="radio" name="Sundog" value="no"><br>
+	<input type="submit" value="Do IT!">
+</form>
+[% INCLUDE footer.tmpl %]

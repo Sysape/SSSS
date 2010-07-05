@@ -1,0 +1,54 @@
+[% INCLUDE header.tmpl %]
+
+
+<img src="../pics/SolsticeLogoSmall.jpeg" alt="Soltice Logo"/>
+14 Gladwyn Road<br>
+Putney, London<br>
+SW15 1DH <br>
+Telephone: 020 8789 4717<br>
+info@solsticeenergy.co.uk<br>
+
+[% name %]
+[% address %]
+<br>
+Ref: [% reff %] / [% id %] /  <br>
+Quote - [% size %] kWp [% type %] installation	
+
+<table>
+	<tr><td>[% numpanel %] x [% panman %] [% panwatt %] Wp modules</td>
+		<td>&pound; [% pancost %] </td>
+	</tr>
+	<tr><td>[% numinv %] x [% invman %] [% invtype %] inverter</td>
+		<td>&pound; [% invcost %] </td>
+	</tr>
+	[% IF numinv1 %]
+	<tr><td>[% numinv1 %] x [% invman1 %] [% invtype1 %] inverter</td>
+		<td>&pound; [% invcost1 %] </td>
+	</tr>
+	[% END %]
+	[% IF numinv2 %]
+	<tr><td>[% numinv2 %] x [% invman2 %] [% invtype2 %] inverter</td>
+		<td>&pound; [% invcost2 %] </td>
+	</tr>
+	[% END %]
+	<tr><td>Mounting System</td>
+		<td>&pound; [% mountcost %] </td>
+	</tr>
+	<tr><td>Balance of System</td>
+		<td>&pound; [% balcost %] </td>
+	</tr>
+	<tr></tr>
+	<tr><td>Installation, commissioning &amp; admin </td> 
+		<td>&pound; [% icacost %] </td>
+	</tr>
+	<tr></tr>
+	<tr><td><b>Sub-total</b></td><td>&pound; [% subtotal %]</td>
+	<tr><td>Vat at [% vat %]&#37;
+	</td><td>&pound; [% vatamount %] </td>
+	<tr><td><b>Total</b></td><td>&pound; [% total %]</td>
+	<tr><td> Expected annual power generation<br>
+			([% facing %] Facing and unshaded)
+		<td> [% output %] kWh
+	</tr>
+</table>
+[% INCLUDE footer.tmpl %]

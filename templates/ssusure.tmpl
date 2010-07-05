@@ -1,0 +1,31 @@
+[% INCLUDE header.tmpl %]
+	[% USE DBI( database = 'dbi:mysql:solsys',
+       	username = 'solsys',
+		password = 'w0kk4' )
+	%]
+	<h1> Are you sure you want to delete this record? </h1>
+		[% main = DBI.prepare("SELECT * FROM customer WHERE id = ?") %] 
+		[% FOREACH record = main.execute(id) %]
+			ID: [% record.id %] <br>
+			Action Date: [% record.acdate %] <br>
+			Name: [% record.name %] <br>
+			Address: [% record.address %] <br>
+			Phone: [% record.phone %] <br>
+			Email: [% record.email %] <br>
+			Reference: [% record.reff %] <br>
+			Grant Type: [% record.grantype %] <br>
+			Lead: [% record.lead %] <br>
+			First Contact: [% record.first %] <br>
+			Stage: [% record.stage %] <br>
+			Assigned To: [% record.assign %] <br>
+		[% END %]		
+	<a href="/ssdel.pl?id=$id">Yes</a>
+    <input type="button" value="Nien!" onClick="window.opener.location.reload(true); window.close();">
+
+	<div id="footer">
+  	<div id="copyright">
+    		&copy; [% copyright %]
+  	</div>
+	</div>
+</body>
+</html>

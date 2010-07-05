@@ -1,0 +1,101 @@
+[% INCLUDE header.tmpl %]
+
+<form action="/quote.final.pl" method="post" target="_self">
+
+<img src="../pics/SolsticeLogoSmall.jpeg" alt="Soltice Logo"/>
+14 Gladwyn Road<br>
+Putney, London<br>
+SW15 1DH <br>
+Telephone: 020 8789 4717<br>
+info@solsticeenergy.co.uk<br>
+
+<textarea name="nameadd" rows="4" cols="30">
+[% name %]
+[% address %]
+</textarea><br>
+Ref: [% reff %] / [% id %] /  <br>
+<input type="hidden" name="reff" value="[% reff %]">
+<input type="hidden" name="id" value="[% id %]">
+<input type="text" name="date" value="[% date %]"><br>
+
+Quote - [% size %] kWp [% type %] installation	
+<input type="hidden" name="size" value="[% size %]">
+<input type="hidden" name="type" value="[% type %]">
+
+<table>
+	<tr><td>[% numpanel %] x [% panman %] [% panwatt %] Wp modules</td>
+<input type="hidden" name="numpanel" value="[% numpanel %]">
+<input type="hidden" name="panman" value="[% panman %]">
+<input type="hidden" name="panwatt" value="[% panwatt %]">
+		<td>&pound;
+			<input type="text" size ="9" name="pancost" value="[% pancost %]">
+		</td>
+	</tr>
+	<tr><td>[% numinv %] x [% invman %] [% invtype %] inverter</td>
+<input type="hidden" name="numinv" value="[% numinv %]">
+<input type="hidden" name="invman" value="[% invman %]">
+<input type="hidden" name="invtype" value="[% invtype %]">
+		<td>&pound;
+			<input type="text" size ="9" name="invcost" value="[% invcost %]">
+		</td>
+	</tr>
+	[% IF numinv1 %]
+	<tr><td>[% numinv1 %] x [% invman1 %] [% invtype1 %] inverter</td>
+<input type="hidden" name="numinv1" value="[% numinv1 %]">
+<input type="hidden" name="invman1" value="[% invman1 %]">
+<input type="hidden" name="invtype1" value="[% invtype1 %]">
+		<td>&pound;
+			<input type="text" size ="9" name="invcost1" value="[% invcost1 %]">
+		</td>
+	</tr>
+	[% END %]
+	[% IF numinv2 %]
+	<tr><td>[% numinv2 %] x [% invman2 %] [% invtype2 %] inverter</td>
+<input type="hidden" name="numinv2" value="[% numinv2 %]">
+<input type="hidden" name="invman2" value="[% invman2 %]">
+<input type="hidden" name="invtype2" value="[% invtype2 %]">
+		<td>&pound;
+			<input type="text" size ="9" name="invcost2" value="[% invcost2 %]">
+		</td>
+	</tr>
+	[% END %]
+	<tr><td>Mounting System</td>
+		<td>&pound;
+		  <input type="text" size ="9" name="mountcost" value="[% mountcost %]">
+		</td>
+	</tr>
+	<tr><td>Balance of System</td>
+		<td>&pound;
+		  <input type="text" size ="9" name="balcost" value="[% balcost %]">
+		</td>
+	</tr>
+	<tr></tr>
+	<tr><td>Installation, commissioning &amp; admin </td> 
+		<td>&pound;
+		  <input type="text" size ="9" name="icacost" value="[% icacost %]">
+		</td>
+	</tr>
+	<tr></tr>
+	<tr><td><b>Sub-total</b></td><td>&pound; [% subtotal %]</td>
+	<tr><td>Vat at
+			<select name="VAT">
+				<option value="0">0 &#37;</value> 
+				<option value="5" [% IF vat == '5' %] selected="selected"
+					[% END %]>5 &#37;</value> 
+				<option value="15"[% IF vat == '15' %] selected="selected"
+					[% END %]>15 &#37;</value> 
+				   </select>
+	</td><td>&pound; [% vatamount %] </td>
+	<tr><td><b>Total</b></td><td>&pound; [% total %]</td>
+	<tr><td> Expected annual power generation<br>
+			([% facing %] Facing and unshaded)
+			<input type="hidden" name="facing" value="[% facing %]"> </td>
+		<td> [% output %] kWh
+		<input type="hidden" name="output" value="[% output %]"> </td>
+	</tr>
+</table>
+	<input type="checkbox" name="final" value="final"> Produce final output.
+	</br>
+	<input type="submit" value="recalculate">
+</form>
+[% INCLUDE footer.tmpl %]
