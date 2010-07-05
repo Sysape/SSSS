@@ -1,9 +1,6 @@
 [% INCLUDE header.tmpl %]
 	<a href="/ssnewform.pl" target="_blank"> New </a>
-	[% USE DBI( database = 'dbi:mysql:solsys',
-       	username = 'solsys',
-		password = 'w0kk4' )
-	%]
+[% INCLUDE sql.tmpl %]
 	<form action="/ssss.pl" method="get">
 	<table border=1 width="100%">
 		<tr>

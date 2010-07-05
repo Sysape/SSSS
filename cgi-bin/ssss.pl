@@ -3,11 +3,18 @@ use strict;
 use CGI;  # don't reinvent the wheel
 use Template;
 use DBI;
+use YAML::XS;
+
+#setup a template directory
 
 my $tt = Template->new({
     INCLUDE_PATH => '../templates',
     INTERPOLATE  => 1,
 }) || die "$Template::ERROR\n";
+
+
+qlconfig  = do{local(@ARGV,$/)='../conf/sql.yaml';<>};
+my $sqldetails Load $config;
 
 #The next 3 mys should probably go in some kind of inheretied conf file.
 my @column =
@@ -67,7 +74,10 @@ my $vars = {
 	parms => $parms,
 	active => \@active,
 	like => \@like,
-	is => \@is
+	is => \@is,
+	dbname => '$sqldetails=>db',
+	dbuser => '$sqldetails=>user',
+	dbpass => '$sqldetails=>pass'
 };
 
 $tt->process('ssss.tmpl', $vars)
