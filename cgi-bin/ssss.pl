@@ -13,8 +13,8 @@ my $tt = Template->new({
 }) || die "$Template::ERROR\n";
 
 
-qlconfig  = do{local(@ARGV,$/)='../conf/sql.yaml';<>};
-my $sqldetails Load $config;
+my $sqlconfig  = do{local(@ARGV,$/)='../conf/sql.yaml';<>};
+my $sqldetails = Load $sqlconfig;
 
 #The next 3 mys should probably go in some kind of inheretied conf file.
 my @column =

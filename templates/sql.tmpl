@@ -1,5 +1,5 @@
-    [% USE DBI( database = 'dbi:mysql:parms.dbname',
-        username = 'parms.dbuser',
-        password = 'parms.dbpass' )
+    [% USE DBI( database = 'dbi:mysql:[% dbname %]',
+        username = '[% dbuser %]',
+        password = '[% dbpass %]' )
     %]
 
