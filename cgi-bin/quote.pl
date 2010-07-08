@@ -25,7 +25,7 @@ my $tt = Template->new({
 }) || die "$Template::ERROR\n";
 
 my $sqlconfig  = do{local(@ARGV,$/)='../conf/sql.yaml';<>};
-my $sqldetails = Load $config;
+my $sqldetails = Load $sqlconfig;
 
 my  $dbh = DBI->connect('dbi:mysql:$sqldetails=>db', '$sqldetails=>user',
              '$sqldetails=>pass',
