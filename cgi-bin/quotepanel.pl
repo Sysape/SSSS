@@ -16,7 +16,7 @@ my $tt = Template->new({
 #Load the mysql login info from a YAML file in the conf directory
 
 my $sqlconfig  = do{local(@ARGV,$/)='../conf/sql.yaml';<>};
-my $sqldetails Load $config;
+my $sqldetails = Load $config;
 
 my  $dbh = DBI->connect('dbi:mysql:$sqldetails=>db', '$sqldetails=>user',
 			 '$sqldetails=>pass',
