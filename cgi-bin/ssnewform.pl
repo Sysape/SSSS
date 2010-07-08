@@ -3,6 +3,7 @@ use strict;
 use CGI;  # don't reinvent the wheel
 use Template;
 use DBI;
+use YAML::XS;
 
 # set up a few things
 my $tt = Template->new({
