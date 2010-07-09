@@ -1,0 +1,54 @@
+content-type: text/html
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Strict//EN">
+<html>
+  <head>
+    <title>Solstice Panel Area Calculator</title>
+  </head>
+  <body> 
+    <div id="header">
+    	<a href="/index.html" class="logo" alt="Home Page"><img src="../pics/ss.jpg" alt="ss" /></a>
+		<h1 class="headline">Solstice Panel Area Calculator (SPAC)</h1>
+    </div>
+
+NB: There is NO error checking on this thing at the moment, if you stick in bollocks it won't work.
+<br>
+ At the moment Flat means 20 degree unistand.
+<br><br>
+	<form action="/spac.pl" method="GET">
+		Length (mm): <input type="text" name="len">  <br>
+		Width (mm): <input type="text" name="wid">
+		<br> Roof Type:
+		<input type="radio" name="flat" value="0" checked>  Pitched
+		<input type="radio" name="flat" value="1"> Flat 
+		<br> Sorted by:
+		<input type="radio" name="sort" value="3" checked>  Power
+		<input type="radio" name="sort" value="6"> Money 
+        	<br><input type="submit" value="Calculate">
+	</form>
+	<table>
+	[% FOREACH row IN result %]
+	     <tr>
+	        <td>[% row.0 %]</td>
+		<td>[% row.1 %]</td>
+		<td>[% row.2 %]</td>
+		<td>[% row.3 %]</td>
+		<td>[% row.4 %]</td>
+		<td>[% row.5 %]</td>
+		<td>[% row.6 %]</td>
+		<td>[% row.7 %]</td>
+		<td>[% row.8 %]</td>
+		<td>[% row.9 %]</td>
+		<td>[% row.10 %]</td>
+		<td>[% row.11 %]</td>
+	     </tr>
+	[% END %]
+	</table>
+
+    <div id="footer">
+      <div id="copyright">
+        &copy; [% copyright %]
+      </div>
+    </div>
+  </body>
+</html>
