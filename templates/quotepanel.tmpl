@@ -1,0 +1,66 @@
+[% INCLUDE header.tmpl %]	
+<input type="hidden" name="custno" value="[% custno %]">
+<form action="/quote.pl" method="post" target="_self">
+	<input type="hidden" name="custno" value="[% custno %]">
+	Customer Ref: [% reff %] <br>
+	Customer Name: [% name %]<br>
+	Customer address: [% address %]<br>
+	[% custwarn %]<br>
+	<br>
+	Panels: <input type="text" size="5" name="numpanel">
+		 <select name="panels">
+			[% FOREACH panel = paneltype %] 
+				<option>[% panel %]</option>
+			[% END %]
+		</select>
+	<br>
+	Inverters: <input type="text" size="5" name="numinv">
+		 <select name="invs">
+			[% FOREACH inv = invtype %] 
+				<option>[% inv %]</option>
+			[% END %]
+		</select><br>
+	Inverters: <input type="text" size="5" name="numinv1">
+		 <select name="invs1">
+			[% FOREACH inv = invtype %] 
+				<option>[% inv %]</option>
+			[% END %]
+		</select><br>
+	Inverters: <input type="text" size="5" name="numinv2">
+		 <select name="invs2">
+			[% FOREACH inv = invtype %] 
+				<option>[% inv %]</option>
+			[% END %]
+		</select><br>
+		<!-- If you need more inverter types please enter how many inverter types you would like here <input type="text" size="2" name="moreinv"> and then click <input type="button" value="more">	<br> --!>
+	Mounting System: 
+		<select name="mount">
+			<option value="RF">Retro Fit</option>
+			<option value="Semi">Semi-integrated</option>
+			<option value="25U">25deg Unistand</option>
+			<option value="30U">30deg Unistand</option>
+			<option value="Sunmount">Sunmount</option>
+			<option value="Bespoke">Bespoke</option>
+		</select><br>
+	Orientation:
+		<select name="facing">
+			<option value="S" selected="selected">South</option>	
+			<option value="SE">SouthEast</option>	
+			<option value="SW">SouthWest</option>	
+			<option value="E">East</option>	
+			<option value="W">West</option>	
+			<option value="NE">NorthEast</option>	
+			<option value="NW">NorthWest</option>	
+			<option value="N">North</option>	
+		</select>
+		<select name ="pitch">
+			<option value="0">0 Horizontal</option>
+			<option value="30" selected="selected">30</option>
+			<option value="45">45</option>
+			<option value="60">60</option>
+			<option value="90">90 Vertical</option>
+		</select> <br>
+	Markup: <input type="text" size="2" value="20" name="markup">&#37;
+	<input type="submit" value="Do IT!">
+</form>
+[% INCLUDE footer.tmpl %]
