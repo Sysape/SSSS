@@ -67,6 +67,8 @@ foreach(@like){
 }
 $sql = $sql." ORDER BY $order";
 
+#die "$active[0], $active[1], $active[2], $active[3], $active[4], $active[5]";
+
 my $vars = {
 	copyright => 'released under the GPL 2008',
 	sql => "$sql",

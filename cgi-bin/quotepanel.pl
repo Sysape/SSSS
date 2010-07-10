@@ -18,8 +18,8 @@ my $tt = Template->new({
 my $sqlconfig  = do{local(@ARGV,$/)='../conf/sql.yaml';<>};
 my $sqldetails = Load $sqlconfig;
 
-my  $dbh = DBI->connect('dbi:mysql:$sqldetails=>db', '$sqldetails=>user',
-			 '$sqldetails=>pass',
+my  $dbh = DBI->connect($$sqldetails{db}, $$sqldetails{user},
+             $$sqldetails{pass},
            { RaiseError => 1, AutoCommit => 0 })
           or die "Database connection not made: $DBI::errstr";
 
