@@ -1,6 +1,10 @@
 [% INCLUDE header.tmpl %]
+[% DEBUG on %]
 	<a href="/ssnewform.pl" target="_blank"> New </a>
-[% INCLUDE sql.tmpl %]
+    [% USE DBI( database = 'dbi:mysql:solsystest',
+        username = 'solsys',
+        password = 'w0kk4' )
+    %]
 	<form action="/ssss.pl" method="get">
 	<table border=1 width="100%">
 		<tr>
@@ -68,6 +72,7 @@
         [% END %]
 		<td></td>
 		</tr>
+		[% sql %]
 		[% main = DBI.prepare(sql) %] 
 		[% bind = [] %]
 		[% FOREACH actives = active %]
@@ -84,6 +89,7 @@
 				[% END %]
 			[% END %]
 		[% END %]
+		Bind: [% bind.join(',') %] [% bind.max %]
 		[% FOREACH customer = main.execute(bind) %]
 		<tr>
 			<td><a href=/ssnewform.pl?id=[%customer.id%] target="_blank"> edit </a></td>
