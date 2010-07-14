@@ -95,24 +95,23 @@ my $ref = $sth->fetchall_hashref('id');
 # get the comments for the customer ids we have.
 my $commentsql = "SELECT * FROM comment" ;
 my @commentbind;
-foreach my $key sort (keys \$ref) {
+foreach my $key (sort (keys %{$ref})) {
 	push (@commentbind, $key);
 	if ($commentsql =~ /WHERE/){
-		$commentsql .= "AND 'custid' = ?";
+		$commentsql .= " OR ?";
 	}else{
-		$commentsql .= "WHERE 'custid' = ?";
+		$commentsql .= " WHERE custid = ?";
 	}		
 }
 my $custsth = $dbh->prepare($commentsql);
-$custth->execute(@commentbind) or die $custth->errstr;
-my $commentref = $sth->fetchall_hashref('id')
+$custsth->execute(@commentbind) or die $custsth->errstr;
+my $commentref = $custsth->fetchall_hashref('id');
 
 
 my $vars = {
 	copyright => 'released under the GPL 2008',
 	column => \@column,
 	parms => $parms,
-	active => \@active,
 	like => \@like,
 	is => \@is,
 	customer => $ref,
