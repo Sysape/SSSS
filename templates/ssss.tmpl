@@ -68,23 +68,7 @@
         [% END %]
 		<td></td>
 		</tr>
-		[% main = DBI.prepare(sql) %] 
-		[% bind = [] %]
-		[% FOREACH actives = active %]
-			[% IF like.grep(actives).0 %]
-				[% likact = parms.$actives %]
-				[% bind.push("\%$likact\%") %]
-			[% ELSE %]
-				[% IF parms.$actives == 'ACTIVE' %] 
-					[% bind.push('quote') %]
-					[% bind.push('first') %]
-					[% bind.push('happen') %]
-				[% ELSE %]	
-					[% bind.push(parms.$actives) %]
-				[% END %]
-			[% END %]
-		[% END %]
-		[% FOREACH customer = main.execute(bind) %]
+		[% FOREACH customer =  %]
 		<tr>
 			<td><a href=/ssnewform.pl?id=[%customer.id%] target="_blank"> edit </a></td>
 			[% FOREACH item = column %]
@@ -95,20 +79,6 @@
   					<td>[% customer.$item %]</td>
 				[% END %]
 			[% END %]
-			[% comments = DBI.prepare
-				("SELECT * FROM comment WHERE custid = $customer.id") %] 
-				[% com = [ some, shit ] %]
-				[% FOREACH comment = comments.execute %]
-					[% com.push("$comment.date : $comment.comment <br>") %]
-				[% END %]
-				[% output = com.join(' ') %]
-				[% num = output.length - 50 %]
-				<td>
-				[%IF num > 0 %]
-					[% output.substr(num) %]
-				[% ELSE %]
-					$output
-				[% END %]
 				</td>
 			</tr>
 		[% END %]
