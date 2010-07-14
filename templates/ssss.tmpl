@@ -1,6 +1,22 @@
 [% INCLUDE header.tmpl %]
 	<a href="/ssnewform.pl" target="_blank"> New </a>
 [% INCLUDE sql.tmpl %]
+<script type="text/javascript">
+function removeElement()
+{
+document.getElementById("imgbox1").style.display="none";
+}
+function changeVisibility()
+{
+document.getElementById("imgbox2").style.visibility="hidden";
+}
+function resetElement()
+{
+document.getElementById("imgbox1").style.display="block";
+document.getElementById("imgbox2").style.visibility="visible";
+}
+</script>
+
 	<form action="/ssss.pl" method="get">
 	<table border=1 width="100%">
 		<tr>
@@ -63,7 +79,7 @@
         [% END %]
 		</tr>
 		[% FOREACH key = customer.keys.sort %]
-		<tr>
+		<tr class="norm">
 			[% FOREACH item = column %]
 				[% IF item == 'email' ;
 					text = customer.$key.$item.substr(0, 13) %]
@@ -83,9 +99,114 @@
 					</td>
 				[% END %]
 			[% END %]
-				</td>
-				</a>
-			</tr>
+		</tr>
+		<tr class="clicked">
+			<td colspan="4">
+			ID: <INPUT type="radio" name="id" value="[% customer.$key.id %]"
+			 checked="checked"> <BR>
+			Action Date (YYYY-MM-DD): <input type="text" size=10 name="actdate"
+			 value='[% customer.$key.actdate %]'><BR>
+			Name (50): <input type="text" size=50 name="name"
+			 value="[% customer.$key.name %]" />	<BR>
+			Address (250): <textarea name="address" rows=5 cols=50>
+			 [% customer.$key.address %] </textarea> <BR>
+			Phone (50): <input type="text" size=50 name="phone"
+			 value="[% customer.$key.phone %]" /> <BR>
+			Email (50): <input type="text" size=50 name="email"
+			 value="[% customer.$key.email %]" /> <BR>	
+			</td><td colspan="0">
+			Reference (5): <input type="text" size=5 name="reff"
+			 value="[% customer.$key.reff %]"/> <BR>
+			Grant Type : <select name="grantype">
+							<option></option>
+							<option [% IF customer.$key.grantype == 'st1' %]
+									selected="selected"
+									[% END %]
+							>st1</option>
+							<option [% IF customer.$key.grantype == 'st2' %]
+									selected="selected"
+									[% END %]
+							>st2</option>
+							<option [% IF customer.$key.grantype == 'ph2' %]
+									selected="selected"
+									[% END %]
+							>ph2</option>	
+						</select> <BR>
+			Lead: (5): <input type="text" size=5 name="lead"
+			 value="[% customer.$key.lead %]"> <BR>
+			First Contact (YYYY-MM-DD): <input type="text" size=10 name="first"
+			 value="[% customer.$key.first %]"><BR>
+			Stage: <select name="stage">
+							<option [% IF  customer.$key.stage == 'first' %]
+									selected="selected"
+									[% END %]
+							>first</option>
+							<option [% IF  customer.$key.stage == 'quote' %]
+									selected="selected"
+									[% END %]
+							>quote</option>
+							<option [% IF  customer.$key.stage == 'happen' %]
+									selected="selected"
+									[% END %]
+							>happen</option>	
+							<option [% IF  customer.$key.stage == 'lost' %]
+									selected="selected"
+									[% END %]
+							>lost</option>	
+							<option [% IF  customer.$key.stage == 'completed' %]
+									selected="selected"
+									[% END %]
+							>completed</option>	
+						</select> <BR>
+			Assigned to : <select name="assign">
+							<option></option>
+							<option [% IF  customer.$key.assign == 'rich' %]
+									selected="selected"
+									[% END %]
+							>rich</option>
+							<option [% IF  customer.$key.assign == 'mik' %]
+									selected="selected"
+									[% END %]
+							>mik</option>
+							<option [% IF  customer.$key.assign == 'rob' %]
+									selected="selected"
+									[% END %]
+							>rob</option>	
+							<option [% IF  customer.$key.assign == 'raj' %]
+									selected="selected"
+									[% END %]
+							>raj</option>	
+						</select> <BR>
+			 <!--<br>
+				<table width=100%>
+					<tr> <td> Comment (500): </td> 
+						<td> Date (YYYY-MM-DD): </td>
+						<td></td></tr>
+						[% IF id != '' %]
+							[% comments = DBI.prepare
+							("SELECT * FROM comment WHERE custid = $id") %] 
+							[% FOREACH comment = comments.execute %]
+								<tr><td>
+								<textarea name="[% comment.id %]comment" cols=125 rows=3>[% comment.comment %]</textarea> </td>
+			 					<td><input type="text" size=10 name="[% comment.id %]date" value="[% comment.date %]"></td>
+								<td><a href="/sscomsure.pl?id=[% comment.id %]">Delete me!</a></td>
+								</tr>
+							[% END %]
+						<tr><td><textarea name="comment" cols=125 rows=3></textarea></td>
+			 			<td>
+						<input type="text" size=10 name="date" value="$today">
+						</td>
+						<td></td></tr>
+						[% END %]
+				</table>
+			--!>
+			<BR>
+            <INPUT type="submit" value="Do IT!">
+			<input type="button" value="Nah mate!" onClick="window.opener.location.reload(true); window.close();">
+		<br>
+		<a href="/ssusure.pl?id=$id">Delete me!</a>
+		</td>
+		</tr>
 		[% END %]
 	</table>
 	</form>
