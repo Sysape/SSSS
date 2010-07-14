@@ -56,7 +56,7 @@ foreach(@is){
 				push(@bind, "happen");
 			}else{
 				$sql .= " AND $_ = ?";
-				push(@active, $_);
+				push(@bind, $_);
 			}
 		} else {
 			if ($_ eq 'stage' && $parms->{$_} eq 'ACTIVE'){
@@ -95,7 +95,7 @@ my $ref = $sth->fetchall_hashref('id');
 # get the comments for the customer ids we have.
 my $commentsql = "SELECT * FROM comment" ;
 my @commentbind;
-foreach $key sort (keys \$ref) {
+foreach my $key sort (keys \$ref) {
 	push (@commentbind, $key);
 	if ($commentsql =~ /WHERE/){
 		$commentsql .= "AND 'custid' = ?";
