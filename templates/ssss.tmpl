@@ -1,18 +1,14 @@
-[% INCLUDE header.start.tmpl %]
+[% INSERT header.start.tmpl %]
 <!-- This is the main table page of the ssss, we start by including the
 files that go to make up the header for this doc we need header.start
 jquery.ssss sql and header.end  this comment needs to be below the 
 header.start include so it's not the start of the template--!> 
 <!-- the jquery stuff we need to make the page behave nicely --!>
-[% INCLUDE jquery.ssss.tmpl %]
+[% INSERT jquery.ssss.tmpl %]
 <!-- make connection to the database so we can read/write to it --!>
-
-    [% USE DBI( database = 'dbi:mysql:solsystest',
-        username = 'solsys' ,
-        password = 'w0kk4' )
-    %]
+[% INSERT sql.tmpl %]
 <!-- and the bottom of the header --!>
-[% INCLUDE header.end.tmpl %]
+[% INSERT header.end.tmpl %]
 <!-- this is wrong, dunno quite how to do new tings yet
 	<a href="/ssnewform.pl" target="_blank"> New </a>
 --!>
