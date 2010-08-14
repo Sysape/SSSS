@@ -1,21 +1,22 @@
 [% INSERT header.start.tmpl %]
-<!-- This is the main table page of the ssss, we start by including the
+[%# This is the main table page of the ssss, we start by including the
 files that go to make up the header for this doc we need header.start
-jquery.ssss sql and header.end  this comment needs to be below the 
-header.start include so it's not the start of the template--!> 
+jquery.ssss sql and header.end
+%]
 <!-- the jquery stuff we need to make the page behave nicely --!>
 [% INSERT jquery.ssss.tmpl %]
 <!-- make connection to the database so we can read/write to it --!>
-[% INSERT sql.tmpl %]
+    [% USE DBI( database = 'dbi:mysql:solsystest',
+        username = 'solsys' ,
+        password = 'w0kk4' )
+    %]
 <!-- and the bottom of the header --!>
 [% INSERT header.end.tmpl %]
 <!-- this is wrong, dunno quite how to do new tings yet
 	<a href="/ssnewform.pl" target="_blank"> New </a>
 --!>
 	<!-- the start of the form that limits the selection of clients from 
-		the db. This should probably be inside the table not outside it --!>
-SQL:	[% sql %] <br>
-BIND: [% FOREACH bindv = bindvars %] [% bindv %] [% END %]
+		the db. --!>
 	<table border=1 width="100%">
 	<form action="/cgi-bin/ssss.pl" method="get">
 		<tr>
@@ -101,22 +102,31 @@ BIND: [% FOREACH bindv = bindvars %] [% bindv %] [% END %]
 		<tr class="edit">
 		<form action="/cgi-bin/ssss.pl" method="put">
 			<td colspan="4">
-			ID: [% customer.$key.id %]  <INPUT type="radio" name="id"
-				value="[% customer.$key.id %]" checked="checked"> <BR>
-			Action Date (YYYY-MM-DD): <input type="text" size=10 name="actdate"
-			 value='[% customer.$key.actdate %]'><BR>
-			Name (50): <input type="text" size=50 name="name"
-			 value="[% customer.$key.name %]" />	<BR>
-			Address (250): <textarea name="address" rows=5 cols=50>
-			 [% customer.$key.address %] </textarea> <BR>
-			Phone (50): <input type="text" size=50 name="phone"
-			 value="[% customer.$key.phone %]" /> <BR>
-			Email (50): <input type="text" size=50 name="email"
-			 value="[% customer.$key.email %]" /> <BR>	
+			# Show the ID so people can read it, we don't need to pass this to
+			# the cgi as it's uesed as part of the name for the relevant
+			# fields. To mkae life easier no field names can start with a 
+			# number so that ^[0-9]+ matches the key on the front on the 
+			# field name.
+			ID: [% customer.$key.id %]  
+			Action Date (YYYY-MM-DD): <input type="text" size=10
+				name="[% customer.$key.id %]actdate"
+				value='[% customer.$key.actdate %]'><BR>
+			Name (50): <input type="text" size=50
+				name="[% customer.$key.id %]name"
+			 	value="[% customer.$key.name %]" />	<BR>
+			Address (250): <textarea name="[% customer.$key.id %]address"
+				rows=5 cols=50>[% customer.$key.address %]</textarea> <BR>
+			Phone (50): <input type="text" size=50
+				name="[% customer.$key.id %]phone"
+			 	value="[% customer.$key.phone %]"/> <BR>
+			Email (50): <input type="text" size=50
+				name="[% customer.$key.id %]email"
+			 	value="[% customer.$key.email %]"/> <BR>	
 			</td><td colspan="0">
-			Reference (5): <input type="text" size=5 name="reff"
-			 value="[% customer.$key.reff %]"/> <BR>
-			Grant Type : <select name="grantype">
+			Reference (5): <input type="text" size=5
+				name="[% customer.$key.id %]reff"
+			 	value="[% customer.$key.reff %]"/> <BR>
+			Grant Type : <select name="[% customer.$key.id %]grantype">
 							<option></option>
 							<option [% IF customer.$key.grantype == 'st1' %]
 									selected="selected"
@@ -131,11 +141,13 @@ BIND: [% FOREACH bindv = bindvars %] [% bindv %] [% END %]
 									[% END %]
 							>ph2</option>	
 						</select> <BR>
-			Lead: (5): <input type="text" size=5 name="lead"
-			 value="[% customer.$key.lead %]"> <BR>
-			First Contact (YYYY-MM-DD): <input type="text" size=10 name="first"
-			 value="[% customer.$key.first %]"><BR>
-			Stage: <select name="stage">
+			Lead: (5): <input type="text" size=5
+				name="[% customer.$key.id %]lead"
+			 	value="[% customer.$key.lead %]"> <BR>
+			First Contact (YYYY-MM-DD): <input type="text" size=10
+				name="[% customer.$key.id %]first"
+			 	value="[% customer.$key.first %]"><BR>
+			Stage: <select name="[% customer.$key.id %]stage">
 							<option [% IF  customer.$key.stage == 'first' %]
 									selected="selected"
 									[% END %]
@@ -157,7 +169,7 @@ BIND: [% FOREACH bindv = bindvars %] [% bindv %] [% END %]
 									[% END %]
 							>completed</option>	
 						</select> <BR>
-			Assigned to : <select name="assign">
+			Assigned to : <select name="[% customer.$key.id %]assign">
 							<option></option>
 							<option [% IF  customer.$key.assign == 'rich' %]
 									selected="selected"
@@ -203,7 +215,7 @@ BIND: [% FOREACH bindv = bindvars %] [% bindv %] [% END %]
             <INPUT type="submit" value="Do IT!">
 			<input type="button" value="Nah mate!" onClick="window.opener.location.reload(true); window.close();">
 		<br>
-		<a href="/ssusure.pl?id=$id">Delete me!</a>
+		<a href="">Delete me!</a>
 		</td>
 		</form>
 		</tr>
