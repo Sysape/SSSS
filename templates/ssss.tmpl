@@ -79,6 +79,8 @@ jquery.ssss sql and header.end
         [% END %]
 		</form>
 		</tr>
+		<!-- We want the form outsie the loop so start it here --!>
+		<form action="/cgi-bin/ssss.pl" method="post">
 		[% FOREACH key = customer.keys %]
 		<tr class="norm">
 			[% FOREACH item = column %]
@@ -100,13 +102,12 @@ jquery.ssss sql and header.end
 			[% END %]
 		</tr>
 		<tr class="edit">
-		<form action="/cgi-bin/ssss.pl" method="put">
 			<td colspan="4">
-			# Show the ID so people can read it, we don't need to pass this to
-			# the cgi as it's uesed as part of the name for the relevant
-			# fields. To mkae life easier no field names can start with a 
-			# number so that ^[0-9]+ matches the key on the front on the 
-			# field name.
+			<!-- Show the ID so people can read it, we don't need to pass
+			this to the cgi as it's uesed as part of the name for the relevant
+			fields. To mkae life easier no field names can start with a 
+			number so that ^[0-9]+ matches the key on the front on the 
+			field name. --!>
 			ID: [% customer.$key.id %]  
 			Action Date (YYYY-MM-DD): <input type="text" size=10
 				name="[% customer.$key.id %]actdate"
@@ -217,12 +218,52 @@ jquery.ssss sql and header.end
 		<br>
 		<a href="">Delete me!</a>
 		</td>
-		</form>
 		</tr>
 		[% END %]
+		<tr>	
+			<td colspan='4'>
+			NEW <Br>
+			Action Date (YYYY-MM-DD): <input type="text" size=10
+				name="newactdate"><BR>
+			Name (50): <input type="text" size=50 name="newname"/>	<BR>
+			Address (250):
+				 <textarea name="newaddress" rows=5 cols=50></textarea> <BR>
+			Phone (50): <input type="text" size=50 name="newphone"/> <BR>
+			Email (50): <input type="text" size=50 name="newemail"/> <BR>	
+			</td><td colspan="0">
+			Reference (5): <input type="text" size=5 name="newreff"/> <BR>
+			Grant Type : <select name="newgrantype">
+							<option></option>
+							<option>st1</option>
+							<option>st2</option>
+							<option >ph2</option>	
+						</select> <BR>
+			Lead: (5): <input type="text" size=5 name="newlead"/> <BR>
+			First Contact (YYYY-MM-DD): <input type="text" size=10
+				name="newfirst"/><BR>
+			Stage: <select name="newstage">
+							<option selected="selected">first</option>
+							<option>quote</option>
+							<option>happen</option>	
+							<option>lost</option>	
+							<option>completed</option>	
+						</select> <BR>
+			Assigned to : <select name="newassign">
+							<option></option>
+							<option>rich</option>
+							<option>mik</option>
+							<option>rob</option>
+							<option>raj</option>
+						</select>
+			</td>
+			<td> <INPUT type="submit" value="Do IT!"> </td>
+		<tr>
+
+		</form>
+		
 	</table>
 	<div id="footer">
-  	<div id="copyright">
+  	<div id="copyright"	>
     		&copy; [% copyright %]
   	</div>
 	</div>

@@ -32,111 +32,104 @@ my $today = "$year-$mon-$mday";
 
 # Read in text and convert to all caps.
 $ENV{'REQUEST_METHOD'} =~ tr/a-z/A-Z/;
-#See how we were called
+
 if ($ENV{'REQUEST_METHOD'} eq "POST"){
-	# decalre a couple of arrays to hold lists of what needs altering.	
-	my (@comact, @active);
-	# if we're updating an old record we should have an id number
-	if ($prams->{'id'}){
-		# declare some vars as db handles and bind var arrays.
-		my (@submit, $insert, $update);
-		# prepare and execute a SQL statement getting the current values
-		# from the customer table for that id.
-		my $custth = $dbh->prepare( "SELECT * from customer WHERE id = ?");
-		$custth->execute($prams->{'id'}) or die $custth->errstr;
-			# As we are selecting by id there is only one row.
-		my $customer = $custth->fetch; 
-		# Check the input from tne cgi against the db and see which columns
-		# are 'active'
-		push(@active,'name') unless ($$customer[1] eq $prams->{'name'});	
-		push(@active,'address') unless ($$customer[2] eq $prams->{'address'});	
-		push(@active,'phone') unless ($$customer[3] eq $prams->{'phone'});	
-		push(@active,'email') unless ($$customer[4] eq $prams->{'email'});	
-		push(@active,'reff') unless ($$customer[5] eq $prams->{'reff'});	
-		push(@active,'grantype') unless ($$customer[6] eq
-													$prams->{'grantype'});	
-		push(@active,'lead') unless ($$customer[7] eq $prams->{'lead'});	
-		push(@active,'first') unless ($$customer[8] eq $prams->{'first'});	
-		push(@active,'stage') unless ($$customer[9] eq $prams->{'stage'});	
-		push(@active,'actdate') unless ($$customer[10] eq $prams->{'actdate'});	
-		push(@active,'assign') unless ($$customer[11] eq $prams->{'assign'});	
-		# if anything is active, step through the list of active things 
-		# and add them to $update as a SQL snippet.
-		if ($active[0]){
-			for my $i (0..$#active){
-				 if ($i == 0){ $update .= " $active[$i] = ?";}
-				 else {$update .= ", $active[$i] = ? ";}
-			} 
-			# prepare the SQL thus created
-			my $upcussth =
-				$dbh->prepare("UPDATE customer SET $update WHERE id=?");
-			# step through the active array again ans push the variable
-			# passed through by the cgi onto an array called submit which
-			# will be used as the SQL bind vars.
-			foreach (@active){
-				push(@submit, $prams->{"$_"});
-			}
-			# push the id on as the last bind var.
-			push(@submit, $prams->{'id'});
-			# execute the sql with the @submit bind vars array.
-			$upcussth->execute(@submit) or
-								die "$upcussth->errstr : $update";
-		}
-		# prepare and execute a SQL call to get all the comments from the
-		# comment table for that custid.
-		my $commth = $dbh->prepare( "SELECT * from comment WHERE custid = ?");
-		$commth->execute($prams->{'id'}) or die $commth->errstr;
-		# declare an array for the comments pulled from the db and another for
-		# the updated comment from the cgi.
-		my $comment = [];
-		my @comup;
-		# Step through the comments fetched from the db and push the comment
-		# id onto the comact array unless the value from the db and the value
-		# from the cgi are equal.
-		while($comment = $commth->fetch){
-			push(@comact,$$comment[0]) unless 
-							($$comment[2] eq $prams->{"$$comment[0]date"} &&
-							$$comment[3] eq $prams->{"$$comment[0]comment"});
-		}
-		# if we have anything in the comact array we need to update some
-		# comments
-		if ($comact[0]){
-			# prepare the SQL to update the comment
-			my $upcomsth = $dbh->prepare
-					("UPDATE comment SET date = ?, comment = ? WHERE id = ?");
-			# step through the comments in @comact and 
-			foreach (@comact){
-				push(@comup, $prams->{$_.'date'});
-				push(@comup, $prams->{$_.'comment'});
-				push(@comup, $_);
-				$upcomsth->execute(@comup); 
-				#die "!!! $comup[0] !!! $comup[1] !!! $comup[2] !!!";
-				@comup = [];	
-			}
-		}
-		if($prams->{'comment'}){
-			my $newcomsth = $dbh->prepare
-	        	( "INSERT comment (custid, date, comment) VALUES (?,?,?)" );
-			$newcomsth->execute( $prams->{'id'}, $prams->{'date'},
-						 $prams->{'comment'}) or die $newcomsth->errstr;
-		}
+	# we need to know what slice of the customer table the page we're on
+	# is dealing with. Firstly declare a variable to take the sql statement
+	# and one for the results.
+	my ($postsql, $postresult);
+	#So we check if there is one and if it's not the 
+	# default url NB this is bad as we've just hardcoded the url in here
+	# maybe want to only match the last bit (ssss.pl) but it'll do for now.
+	if ($ENV{'HTTP_REFERER'} && $ENV{'HTTP_REFERER'} ne 
+			'http://testinternal.solsticeenergy.co.uk/cgi-bin/ssss.pl'){
+		# debugging message so we can see in the logs what HTTP_REFERER
+		# looks like
+		die "Boom! $ENV{'HTTP_REFERER'}";
+	}else{
+		# no referrer, or default url so we are deailing with the whole customer
+		# table.
+		$postsql = 'SELECT * from customer';
+		# prepare the sql statement.
+		$postresult = $dbh->prepare($postsql);
+		# and execute it.
+		$postresult->execute or die $postresult->errstr;
 	}
-	else{ 
+	# prepare the updating sql statement outside the loop so we only do it once.
+	my $upsql  = $dbh->prepare('UPDATE customer SET actdate = ?, name = ?, address = ?, phone = ?,email = ?, reff = ?, grantype = ?, lead = ?, first = ?, stage = ?, assign  = ? WHERE id = ?');
+	#Step through the customers we're deailing with
+	while (my $customer = $postresult->fetchrow_arrayref() ){
+		# set the id field to the current one from the db row.
+		my $id = $$customer[0];
+		die $id;
+		# if the row from the db ($customer) and the same info from the cgi
+		# are the same, we don't need to update this row. the sorts are
+		# there because the order doesn't really matter and this will still
+		# w**k if we get the order wrong.
+		next if (join ('', sort @$customer) eq join('', sort(
+							 $id,
+							  $parms->{"$id.actdate"},
+							  $parms->{"$id.name"},
+							  $parms->{"$id.address"},
+							  $parms->{"$id.phone"},
+							  $parms->{"$id.email"},
+							  $parms->{"$id.reff"},
+							  $parms->{"$id.grantype"},
+							  $parms->{"$id.lead"},
+							  $parms->{"$id.first"},
+							  $parms->{"$id.stage"},
+							  $parms->{"$id.assign"})));
+		# else we need to update so execute the sql with the cgi parameters.
+		die $parms->{"$id.name"};
+		$upsql->execute($parms->{"$id.actdate"},
+	                    $parms->{"$id.name"},
+	                    $parms->{"$id.address"},
+	                    $parms->{"$id.phone"},
+	                    $parms->{"$id.email"},
+	                    $parms->{"$id.reff"},
+	                    $parms->{"$id.grantype"},
+	                    $parms->{"$id.lead"},
+	                    $parms->{"$id.first"},
+	                    $parms->{"$id.stage"},
+	                    $parms->{"$id.assign"},
+						$id) or die "$upsql->errstr : $id";
+	}
+	# now we need to do something with the comments section and so forth
+	# I've left his coment in as placeholder for all the old code I deleted
+	
+	# if we have any new cgi parameters then we need a new customer record.
+	if ( $parms->{'newactdate'} ||
+		$parms->{'newname'} ||
+		$parms->{'newaddress'} ||
+		$parms->{'newphone'} ||
+		$parms->{'newemail'} ||
+		$parms->{'newreff'} ||
+		$parms->{'newgrantype'} ||
+		$parms->{'newlead'} ||
+		$parms->{'newfirst'} ||
+		$parms->{'newstage'} ||
+		$parms->{'newassign'}) {
+		# prepare a sql statement for the INSET
 		my $newcussth = $dbh->prepare( "INSERT customer (actdate, name, address, phone, email, reff, grantype, lead, first, stage, assign) VALUES (?,?,?,?,?,?,?,?,?,?,?)" );
-		$newcussth->execute( $prams->{'actdate'}, $prams->{'name'}, $prams->{'address'}, $prams->{'phone'}, $prams->{'email'}, $prams->{'reff'}, $prams->{'grantype'}, $prams->{'lead'}, $prams->{'first'}, $prams->{'stage'}, $prams->{'assign'}) or die $newcussth->errstr;	
+		# execute is using the new parameters from the cgi
+		$newcussth->execute( $parms->{'newactdate'},
+						$parms->{'newname'},
+						$parms->{'newaddress'},
+						$parms->{'newphone'},
+						$parms->{'newemail'},
+						$parms->{'newreff'},
+						$parms->{'newgrantype'},
+						$parms->{'newlead'},
+						$parms->{'newfirst'},
+						$parms->{'newstage'},
+						$parms->{'newassign'}) or die $newcussth->errstr;	
 	}
-	my $vars = {
-	    copyright => 'released under the GPL 2008',
-		active => \@active,
-		comact => \@comact,
-	};
-	
-	$tt->process('sssubmit.tmpl', $vars) || die $tt->error(), "\n";
-	
+	# disconnect from the db
 	$dbh->commit();
-	
 	$dbh->disconnect();
-$dbh->disconnect();
+	# isssue a redirect to the browser so the user knows something happened.
+	# eventually this needs to be the referer url or if there isn't the ssss
+	print $query->redirect('/cgi-bin//ssss.pl');
 }else{
 	# now we do the normal thing to display rows of 
 	#The next 3 mys should probably go in some kind of inheretied conf file.
