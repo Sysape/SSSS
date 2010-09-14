@@ -4,7 +4,7 @@ files that go to make up the header for this doc we need header.start
 jquery.ssss sql and header.end
 %]
 <!-- the jquery stuff we need to make the page behave nicely --!>
-[% INSERT jquery.ssss.tmpl %]
+[% INCLUDE jquery.ssss.tmpl %]
 <!-- make connection to the database so we can read/write to it --!>
     [% USE DBI( database = 'dbi:mysql:solsystest',
         username = 'solsys' ,
@@ -102,16 +102,16 @@ jquery.ssss sql and header.end
 			[% END %]
 		</tr>
 		<tr class="edit">
-			<div id ='tabs'>
+			<td colspan="12">
+			<div id ='[%customer.$key.id%]tabs'>
 				<ul>
-					<li><a href="#tabs-1">Main</a></li>
-					<li><a href="#tabs-2">Comments</a></li>
-					<li><a href="#tabs-3">Project Manglement</a></li>
-					<li><a href="#tabs-4">Attachments</a></li>
+					<li><a href="#[%customer.$key.id%]tabs-1">Main</a></li>
+					<li><a href="#[%customer.$key.id%]tabs-2">Comments</a></li>
+					<li><a href="#[%customer.$key.id%]tabs-3">Project Manglement</a></li>
+					<li><a href="#[%customer.$key.id%]tabs-4">Attachments</a></li>
 				</ul>
 
-				<div id='tabs-1'>
-				<td colspan="4">
+				<div id='[%customer.$key.id%]tabs-1'>
 				<!-- Show the ID so people can read it, we don't need to pass
 				this to the cgi as it's used as part of the name for the
 				relevant fields. To mkae life easier no field names can start
@@ -120,22 +120,21 @@ jquery.ssss sql and header.end
 				ID: [% customer.$key.id %]  
 				Action Date (YYYY-MM-DD): <input type="text" size=10
 					name="[% customer.$key.id %]actdate"
-					value='[% customer.$key.actdate %]'><BR>
+					value='[% customer.$key.actdate %]'>
 				Name (50): <input type="text" size=50
 					name="[% customer.$key.id %]name"
-				 	value="[% customer.$key.name %]" />	<BR>
+				 	value="[% customer.$key.name %]" />	
 				Address (250): <textarea name="[% customer.$key.id %]address"
-					rows=5 cols=50>[% customer.$key.address %]</textarea> <BR>
+					rows=5 cols=50>[% customer.$key.address %]</textarea>
 				Phone (50): <input type="text" size=50
 					name="[% customer.$key.id %]phone"
-				 	value="[% customer.$key.phone %]"/> <BR>
+				 	value="[% customer.$key.phone %]"/>
 				Email (50): <input type="text" size=50
 					name="[% customer.$key.id %]email"
-				 	value="[% customer.$key.email %]"/> <BR>	
-				</td><td colspan="0">
+				 	value="[% customer.$key.email %]"/>
 				Reference (5): <input type="text" size=5
 					name="[% customer.$key.id %]reff"
-				 	value="[% customer.$key.reff %]"/> <BR>
+				 	value="[% customer.$key.reff %]"/>
 				Grant Type : <select name="[% customer.$key.id %]grantype">
 								<option></option>
 								<option [% IF customer.$key.grantype == 'st1' %]
@@ -150,13 +149,13 @@ jquery.ssss sql and header.end
 										selected="selected"
 										[% END %]
 								>ph2</option>	
-							</select> <BR>
+							</select> 
 				Lead: (5): <input type="text" size=5
 					name="[% customer.$key.id %]lead"
-				 	value="[% customer.$key.lead %]"> <BR>
+				 	value="[% customer.$key.lead %]">
 				First Contact (YYYY-MM-DD): <input type="text" size=10
 					name="[% customer.$key.id %]first"
-				 	value="[% customer.$key.first %]"><BR>
+				 	value="[% customer.$key.first %]">
 				Stage: <select name="[% customer.$key.id %]stage">
 								<option [% IF  customer.$key.stage == 'first' %]
 										selected="selected"
@@ -178,7 +177,7 @@ jquery.ssss sql and header.end
 										selected="selected"
 										[% END %]
 								>completed</option>	
-							</select> <BR>
+							</select>
 				Assigned to : <select name="[% customer.$key.id %]assign">
 								<option></option>
 								<option [% IF  customer.$key.assign == 'rich' %]
@@ -197,43 +196,36 @@ jquery.ssss sql and header.end
 										selected="selected"
 										[% END %]
 								>raj</option>	
-							</select> <BR>
+							</select>
 				<BR>
             	<INPUT type="submit" value="Do IT!">
 				<input type="button" value="Nah mate!" onClick="window.opener.location.reload(true); window.close();">
 				<br>
 				<a href="">Delete me!</a>
-				</td>
 				</div>
-				<div id='tabs-2'>
-				<table width=100%>
-					<tr> <td> Comment (500): </td> 
-						<td> Date (YYYY-MM-DD): </td>
-						<td></td></tr>
+				<div id='[%customer.$key.id%]tabs-2'>
+					 Comment (500):  
+						 Date (YYYY-MM-DD): 
 						[% IF id != '' %]
 							[% comments = DBI.prepare
 							("SELECT * FROM comment WHERE custid = $id") %] 
 							[% FOREACH comment = comments.execute %]
-								<tr><td>
-								<textarea name="[% comment.id %]comment" cols=125 rows=3>[% comment.comment %]</textarea> </td>
-			 					<td><input type="text" size=10 name="[% comment.id %]date" value="[% comment.date %]"></td>
-								<td><a href="/sscomsure.pl?id=[% comment.id %]">Delete me!</a></td>
-								</tr>
+								<textarea name="[% comment.id %]comment" cols=125 rows=3>[% comment.comment %]</textarea>
+			 					<input type="text" size=10 name="[% comment.id %]date" value="[% comment.date %]">
+								<a href="/sscomsure.pl?id=[% comment.id %]">Delete me!</a>
 							[% END %]
-						<tr><td><textarea name="comment" cols=125 rows=3></textarea></td>
-			 			<td>
+						<textarea name="comment" cols=125 rows=3></textarea>
 						<input type="text" size=10 name="date" value="$today">
-						</td>
-						<td></td></tr>
 						[% END %]
-				</table>
 				</div>
-				<div id='tabs-3'>
+				<div id='[%customer.$key.id%]tabs-3'>
 					Some guff!
 				</div>
-				<div id='tabs-4'>
+				<div id='[%customer.$key.id%]tabs-4'>
 					Filez
 				</div>
+			</div>
+			</td>
 		</tr>
 		[% END %]
 		<tr>	
