@@ -1,0 +1,75 @@
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Strict//EN">
+<html>
+	<head>
+ 		<title>Solstice Spreadsheet Simulation System</title>
+		<!-- include a stylesheet, this needs to be tweaked so we can have
+			multiple styles selected and stored in a coookie --!>
+		<link rel="stylesheet" type="text/css" href="/css.css" />
+		<!-- load the jquery library from the js dir --!>
+		<script type="text/javascript" src="/js/jquery.js"></script>
+			<!-- when the document is ready hide the edit rows of the table
+			and set up click events to toggle the normal and editable rows
+			when the row is clicked --!>
+		<script type="text/javascript">
+			$(document).ready(function(){
+				alert("AAAArgh!")
+				$(".edit").hide();
+				$("tr.norm").click(function(event){
+					$(this).next(".edit").toggle();
+					$(this).toggle();
+			     });
+				$("tr.edit").click(function(event){
+					$(this).prev(".norm").toggle();
+					$(this).toggle();
+			     });
+			});
+		</script>
+	<!-- This is the head closing tag and some html that needs to be at the
+		top of the body of every page of the ssss --!>
+  	</head>
+	<body> 
+		<div id="header">
+			<a href="/index.html" class="logo" alt="Home Page doesn't work">Home</a>
+			<h1 class="headline">Solstice SpreadSheet Simulation System</h1>
+		</div>
+	<table width="100%">
+		<tr class='norm'>
+			<td>Some Text!</td>
+			<td>Some Text!</td>
+			<td>Some Text!</td>
+			<td>Some Text!</td>
+			<td>Some Text!</td>
+			<td>Some Text!</td>
+			<td>Some Text!</td>
+		</tr>
+		<tr class='edit'>
+			<td>Other Text!</td>
+			<td>Other Text!</td>
+			<td>Other Text!</td>
+			<td>Other Text!</td>
+			<td>Other Text!</td>
+			<td>Other Text!</td>
+			<td>Other Text!</td>
+		</tr>
+		<tr class='norm'>
+			<td>Some Text!</td>
+			<td>Some Text!</td>
+			<td>Some Text!</td>
+			<td>Some Text!</td>
+			<td>Some Text!</td>
+			<td>Some Text!</td>
+			<td>Some Text!</td>
+		</tr>
+		<tr class='edit'>
+			<td>You Cunt!</td>
+			<td>You Cunt!</td>
+			<td>You Cunt!</td>
+			<td>You Cunt!</td>
+			<td>You Cunt!</td>
+			<td>You Cunt!</td>
+			<td>You Cunt!</td>
+		</tr>
+	</table>
+</body>
+</html>
