@@ -28,15 +28,15 @@ jquery.ssss sql and header.end
 		[% FOREACH item = column %]	
 			<td> 
 				<INPUT type="radio" name="order" value="[% item %] ASC"
-				[% IF parms.order == "$item ASC" %]
+				[%- IF parms.order == "$item ASC" -%]
 					checked
-				[% END %]
+				[%- END -%]
 				> u
 				<br>
 			 	<INPUT type="radio" name="order" value="[% item %] DESC"
-				[% IF parms.order == "$item DESC" %]
+				[%- IF parms.order == "$item DESC" -%]
 					checked
-				[% END %]
+				[%- END -%]
 				> d
 				<input type="submit" value="do it!">
 			</td> 
@@ -48,7 +48,7 @@ jquery.ssss sql and header.end
             <td> 
 			[% IF like.grep(thingy).0 %]
 			<input type="text" size=[% thingy.length * 2 %] name="$thingy"
-				[% IF parms.$thingy %]
+				[%- IF parms.$thingy -%]
 					value="[% parms.$thingy %]"
 				[% END %]
 			>
@@ -57,9 +57,9 @@ jquery.ssss sql and header.end
 				<option>ALL</option>
 				[% IF thingy == "stage" %]
 					<option
-						[% IF parms.$thingy == 'ACTIVE' %]
+						[%- IF parms.$thingy == 'ACTIVE' -%]
 							selected
-						[% END %]
+						[%- END -%]
 					>ACTIVE</option>
 				[% END %]	
             	[% FOREACH cell = 
@@ -67,9 +67,9 @@ jquery.ssss sql and header.end
                     [% values = cell.list('values') %]
 					[% FOREACH value = values %]
                 		<option
-							[% IF parms.$thingy == value %]
+							[%- IF parms.$thingy == value -%]
 								selected
-							[% END %]
+							[%- END -%]
 						>$value</option>
 					[% END %]
 				[% END %]
@@ -79,7 +79,7 @@ jquery.ssss sql and header.end
         [% END %]
 		</form>
 		</tr>
-		<!-- We want the form outsie the loop so start it here --!>
+		<!-- start the form out side the loop --!>	
 		<form action="/cgi-bin/ssss.pl" method="post">
 		[% FOREACH key = customer.keys %]
 		<tr class="norm">
@@ -103,6 +103,9 @@ jquery.ssss sql and header.end
 		</tr>
 		<tr class="edit">
 			<td colspan="12">
+			<!-- add a close div with and X in it, so clicking the X
+			closes the open pane with js --!>
+			<div class='close'>X</div>
 			<div id ='[%customer.$key.id%]tabs'>
 				<ul>
 					<li><a href="#[%customer.$key.id%]tabs-1">Main</a></li>
@@ -136,18 +139,18 @@ jquery.ssss sql and header.end
 					name="[% customer.$key.id %]reff"
 				 	value="[% customer.$key.reff %]"/>
 				Grant Type : <select name="[% customer.$key.id %]grantype">
-								<option></option>
-								<option [% IF customer.$key.grantype == 'st1' %]
+							<option></option>
+								<option [% IF customer.$key.grantype == 'st1' -%]
 										selected="selected"
-										[% END %]
+										[%- END -%]
 								>st1</option>
-								<option [% IF customer.$key.grantype == 'st2' %]
+								<option [% IF customer.$key.grantype == 'st2' -%]
 										selected="selected"
-										[% END %]
+										[%- END -%]
 								>st2</option>
-								<option [% IF customer.$key.grantype == 'ph2' %]
+								<option [% IF customer.$key.grantype == 'ph2' -%]
 										selected="selected"
-										[% END %]
+										[%- END -%]
 								>ph2</option>	
 							</select> 
 				Lead: (5): <input type="text" size=5
@@ -157,66 +160,69 @@ jquery.ssss sql and header.end
 					name="[% customer.$key.id %]first"
 				 	value="[% customer.$key.first %]">
 				Stage: <select name="[% customer.$key.id %]stage">
-								<option [% IF  customer.$key.stage == 'first' %]
+								<option [% IF  customer.$key.stage == 'first' -%]
 										selected="selected"
-										[% END %]
+										[%- END -%]
 								>first</option>
-								<option [% IF  customer.$key.stage == 'quote' %]
+								<option [% IF  customer.$key.stage == 'quote' -%]
 										selected="selected"
-										[% END %]
+										[%- END -%]
 								>quote</option>
-								<option [% IF  customer.$key.stage == 'happen' %]
+								<option [% IF  customer.$key.stage == 'happen' -%]
 										selected="selected"
-										[% END %]
+										[%- END -%]
 								>happen</option>	
-								<option [% IF  customer.$key.stage == 'lost' %]
+								<option [% IF  customer.$key.stage == 'lost' -%]
 										selected="selected"
-										[% END %]
+										[%- END -%]
 								>lost</option>	
-								<option [% IF  customer.$key.stage == 'completed' %]
+								<option [% IF  customer.$key.stage == 'completed' -%]
 										selected="selected"
-										[% END %]
+										[%- END -%]
 								>completed</option>	
 							</select>
 				Assigned to : <select name="[% customer.$key.id %]assign">
 								<option></option>
-								<option [% IF  customer.$key.assign == 'rich' %]
+								<option [% IF  customer.$key.assign == 'rich' -%]
 										selected="selected"
-										[% END %]
+										[%- END -%]
 								>rich</option>
-								<option [% IF  customer.$key.assign == 'mik' %]
+								<option [% IF  customer.$key.assign == 'mik' -%]
 										selected="selected"
-										[% END %]
+										[%- END -%]
 								>mik</option>
-								<option [% IF  customer.$key.assign == 'rob' %]
+								<option [% IF  customer.$key.assign == 'rob' -%]
 										selected="selected"
-										[% END %]
+										[%- END -%]
 								>rob</option>	
-								<option [% IF  customer.$key.assign == 'raj' %]
+								<option [% IF  customer.$key.assign == 'raj' -%]
 										selected="selected"
-										[% END %]
+										[%- END -%]
 								>raj</option>	
 							</select>
 				<BR>
             	<INPUT type="submit" value="Do IT!">
 				<input type="button" value="Nah mate!" onClick="window.opener.location.reload(true); window.close();">
+				<input type="text" size="50" name="[%customer.$key.id%]changes">
+				</input>
 				<br>
 				<a href="">Delete me!</a>
 				</div>
 				<div id='[%customer.$key.id%]tabs-2'>
 					 Comment (500):  
-						 Date (YYYY-MM-DD): 
-						[% IF id != '' %]
-							[% comments = DBI.prepare
-							("SELECT * FROM comment WHERE custid = $id") %] 
-							[% FOREACH comment = comments.execute %]
-								<textarea name="[% comment.id %]comment" cols=125 rows=3>[% comment.comment %]</textarea>
-			 					<input type="text" size=10 name="[% comment.id %]date" value="[% comment.date %]">
-								<a href="/sscomsure.pl?id=[% comment.id %]">Delete me!</a>
-							[% END %]
-						<textarea name="comment" cols=125 rows=3></textarea>
-						<input type="text" size=10 name="date" value="$today">
+					 Date (YYYY-MM-DD): 
+					[% FOREACH comment = comments %]
+						[% IF comment.id == customer.$key.id %]
+						<textarea name="[% comment.id %]comment" cols=125
+						rows=3>[% comment.comment %]</textarea>
+			 			<input type="text" size=10 name="[% comment.id %]date"
+						value="[% comment.date %]">
+						<a href="/sscomsure.pl?id=[% comment.id %]">
+							Delete me!</a>
 						[% END %]
+					[% END %]
+					<textarea name="comment" cols=125 rows=3></textarea>
+					<input type="text" size=10 name="date" value="$today">
 				</div>
 				<div id='[%customer.$key.id%]tabs-3'>
 					Some guff!
@@ -233,7 +239,7 @@ jquery.ssss sql and header.end
 			NEW <Br>
 			Action Date (YYYY-MM-DD): <input type="text" size=10
 				name="newactdate"><BR>
-			Name (50): <input type="text" size=50 name="newname"/>	<BR>
+			Name (50): <input class="foo" type="text" size=50 name="newname"/>	<BR>
 			Address (250):
 				 <textarea name="newaddress" rows=5 cols=50></textarea> <BR>
 			Phone (50): <input type="text" size=50 name="newphone"/> <BR>
@@ -266,9 +272,7 @@ jquery.ssss sql and header.end
 			</td>
 			<td> <INPUT type="submit" value="Do IT!"> </td>
 		<tr>
-
 		</form>
-		
 	</table>
 	<div id="footer">
   	<div id="copyright"	>

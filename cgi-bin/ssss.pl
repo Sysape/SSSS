@@ -42,7 +42,8 @@ if ($ENV{'REQUEST_METHOD'} eq "POST"){
 	# default url NB this is bad as we've just hardcoded the url in here
 	# maybe want to only match the last bit (ssss.pl) but it'll do for now.
 	if ($ENV{'HTTP_REFERER'} && $ENV{'HTTP_REFERER'} ne 
-			'http://testinternal.solsticeenergy.co.uk/cgi-bin/ssss.pl'){
+			'http://testinternal.solsticeenergy.co.uk/cgi-bin/ssss.pl') &&
+		$ENV{'HTTP_REFERER'} ne 'http://testinternal.solsticeenergy.co.uk/cgi-bin/ssss.pl?id=&actdate=&name=&address=&phone=&email=&reff=&grantype=&lead=&first=&stage=&assign='{
 		# debugging message so we can see in the logs what HTTP_REFERER
 		# looks like
 		die "Boom! $ENV{'HTTP_REFERER'}";
