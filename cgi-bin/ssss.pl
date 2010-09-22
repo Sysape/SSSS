@@ -4,6 +4,7 @@ use CGI;  # don't reinvent the wheel
 use Template;
 use DBI;
 use YAML::XS;
+use Data::Dumper;
 
 #setup a template directory
 
@@ -34,66 +35,32 @@ my $today = "$year-$mon-$mday";
 $ENV{'REQUEST_METHOD'} =~ tr/a-z/A-Z/;
 
 if ($ENV{'REQUEST_METHOD'} eq "POST"){
-	# we need to know what slice of the customer table the page we're on
-	# is dealing with. Firstly declare a variable to take the sql statement
-	# and one for the results.
-	my ($postsql, $postresult);
-	#So we check if there is one and if it's not the 
-	# default url NB this is bad as we've just hardcoded the url in here
-	# maybe want to only match the last bit (ssss.pl) but it'll do for now.
-	if ($ENV{'HTTP_REFERER'} && $ENV{'HTTP_REFERER'} ne 
-			'http://testinternal.solsticeenergy.co.uk/cgi-bin/ssss.pl') &&
-		$ENV{'HTTP_REFERER'} ne 'http://testinternal.solsticeenergy.co.uk/cgi-bin/ssss.pl?id=&actdate=&name=&address=&phone=&email=&reff=&grantype=&lead=&first=&stage=&assign='{
-		# debugging message so we can see in the logs what HTTP_REFERER
-		# looks like
-		die "Boom! $ENV{'HTTP_REFERER'}";
-	}else{
-		# no referrer, or default url so we are deailing with the whole customer
-		# table.
-		$postsql = 'SELECT * from customer';
-		# prepare the sql statement.
-		$postresult = $dbh->prepare($postsql);
-		# and execute it.
-		$postresult->execute or die $postresult->errstr;
-	}
+	# so we're writing a quick and dirty update routine which will just update
+	# every customer in the db, hopefully the db will be clever enough to not
+	# bother actually updating tose records which haven't changed.
 	# prepare the updating sql statement outside the loop so we only do it once.
 	my $upsql  = $dbh->prepare('UPDATE customer SET actdate = ?, name = ?, address = ?, phone = ?,email = ?, reff = ?, grantype = ?, lead = ?, first = ?, stage = ?, assign  = ? WHERE id = ?');
-	#Step through the customers we're deailing with
-	while (my $customer = $postresult->fetchrow_arrayref() ){
-		# set the id field to the current one from the db row.
-		my $id = $$customer[0];
-		die $id;
-		# if the row from the db ($customer) and the same info from the cgi
-		# are the same, we don't need to update this row. the sorts are
-		# there because the order doesn't really matter and this will still
-		# w**k if we get the order wrong.
-		next if (join ('', sort @$customer) eq join('', sort(
-							 $id,
-							  $parms->{"$id.actdate"},
-							  $parms->{"$id.name"},
-							  $parms->{"$id.address"},
-							  $parms->{"$id.phone"},
-							  $parms->{"$id.email"},
-							  $parms->{"$id.reff"},
-							  $parms->{"$id.grantype"},
-							  $parms->{"$id.lead"},
-							  $parms->{"$id.first"},
-							  $parms->{"$id.stage"},
-							  $parms->{"$id.assign"})));
-		# else we need to update so execute the sql with the cgi parameters.
-		die $parms->{"$id.name"};
-		$upsql->execute($parms->{"$id.actdate"},
-	                    $parms->{"$id.name"},
-	                    $parms->{"$id.address"},
-	                    $parms->{"$id.phone"},
-	                    $parms->{"$id.email"},
-	                    $parms->{"$id.reff"},
-	                    $parms->{"$id.grantype"},
-	                    $parms->{"$id.lead"},
-	                    $parms->{"$id.first"},
-	                    $parms->{"$id.stage"},
-	                    $parms->{"$id.assign"},
-						$id) or die "$upsql->errstr : $id";
+	# so the fields are all named in the format id.name, we'd probably like
+	# it to be wadged into a hash where the first key is the id and the next
+	# key is the field name.
+	my $update;
+	foreach(keys %{$parms}){
+		next unless (/(\d+)(\D+)/);
+		$update->{$1}->{$2} = $parms->{$_};
+	}
+	foreach(keys %{$update}){
+		$upsql->execute($update->{$_}->{'actdate'},
+	                    $update->{$_}->{'name'},
+	                    $update->{$_}->{'address'},
+	                    $update->{$_}->{'phone'},
+	                    $update->{$_}->{'email'},
+	                    $update->{$_}->{'reff'},
+	                    $update->{$_}->{'grantype'},
+	                    $update->{$_}->{'lead'},
+	                    $update->{$_}->{'first'},
+	                    $update->{$_}->{'stage'},
+	                    $update->{$_}->{'assign'},
+						$_) or die "$upsql->errstr : $_";
 	}
 	# now we need to do something with the comments section and so forth
 	# I've left his coment in as placeholder for all the old code I deleted
@@ -181,7 +148,7 @@ if ($ENV{'REQUEST_METHOD'} eq "POST"){
 		}
 	}
 	
-	# Do a similar think with the list of like parameters passed through from
+	# Do a similar thing with the list of like parameters passed through from
 	# the cgi.
 	foreach(@like){
 		if ($parms->{$_} && $parms->{$_} ne 'ALL'){
@@ -214,19 +181,15 @@ if ($ENV{'REQUEST_METHOD'} eq "POST"){
 	}
 	my $custsth = $dbh->prepare($commentsql);
 	$custsth->execute(@commentbind) or die $custsth->errstr;
-	my $commentref = $custsth->fetchall_hashref('id');
+	my $commentref = $custsth->fetchall_hashref('custid');
 	
 	
 	my $vars = {
 		copyright => 'released under the GPL 2008',
-		column => \@column,
+		columns => \@column,
 		parms => $parms,
-		like => \@like,
-		is => \@is,
 		customer => $ref,
 		comments => $commentref,
-		sql => $sql,
-		bindvars => @bind
 	};
 	
 	$tt->process('ssss.tmpl', $vars)
