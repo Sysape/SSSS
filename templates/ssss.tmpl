@@ -20,21 +20,21 @@ jquery.ssss sql and header.end
 	<table border=1 width="100%">
 	<form action="/cgi-bin/ssss.pl" method="get">
 		<tr>
-		[% FOREACH item = column %]	
-			<th> [% item %] </th> 
+		[% FOREACH column = columns %]	
+			<th> [% column %] </th> 
     	[% END %]
 		</tr>
 		<tr>
-		[% FOREACH item = column %]	
+		[% FOREACH column = columns %]	
 			<td> 
-				<INPUT type="radio" name="order" value="[% item %] ASC"
-				[%- IF parms.order == "$item ASC" -%]
+				<INPUT type="radio" name="order" value="[% column %] ASC"
+				[%- IF parms.order == "$column ASC" -%]
 					checked
 				[%- END -%]
 				> u
 				<br>
-			 	<INPUT type="radio" name="order" value="[% item %] DESC"
-				[%- IF parms.order == "$item DESC" -%]
+			 	<INPUT type="radio" name="order" value="[% column %] DESC"
+				[%- IF parms.order == "$column DESC" -%]
 					checked
 				[%- END -%]
 				> d
@@ -44,30 +44,30 @@ jquery.ssss sql and header.end
 		</tr>
 
         <tr>
-        [% FOREACH thingy = column %]
+        [% FOREACH column = columns %]
             <td> 
-			[% IF like.grep(thingy).0 %]
-			<input type="text" size=[% thingy.length * 2 %] name="$thingy"
-				[%- IF parms.$thingy -%]
-					value="[% parms.$thingy %]"
+			[% IF like.grep(column).0 %]
+			<input type="text" size=[% column.length * 2 %] name="$column"
+				[%- IF parms.$column -%]
+					value="[% parms.$column %]"
 				[% END %]
 			>
 			[% ELSE %]	
-			<select name="$thingy">
+			<select name="$column">
 				<option>ALL</option>
-				[% IF thingy == "stage" %]
+				[% IF column == "stage" %]
 					<option
-						[%- IF parms.$thingy == 'ACTIVE' -%]
+						[%- IF parms.$column == 'ACTIVE' -%]
 							selected
 						[%- END -%]
 					>ACTIVE</option>
 				[% END %]	
             	[% FOREACH cell = 
-					DBI.query("SELECT DISTINCT $thingy FROM customer") %]
+					DBI.query("SELECT DISTINCT $column FROM customer") %]
                     [% values = cell.list('values') %]
 					[% FOREACH value = values %]
                 		<option
-							[%- IF parms.$thingy == value -%]
+							[%- IF parms.$column == value -%]
 								selected
 							[%- END -%]
 						>$value</option>
@@ -83,10 +83,10 @@ jquery.ssss sql and header.end
 		<form action="/cgi-bin/ssss.pl" method="post">
 		[% FOREACH key = customer.keys %]
 		<tr class="norm">
-			[% FOREACH item = column %]
-				[% IF item == 'email' ;
-					text = customer.$key.$item.substr(0, 13) %]
-					<td><a href=mailto:[%customer.$key.$item%]> $text </a></td>
+			[% FOREACH column = columns %]
+				[% IF column == 'email' ;
+					text = customer.$key.$column.substr(0, 13) %]
+					<td><a href=mailto:[%customer.$key.$column%]> $text </a></td>
 				[% ELSE %]
   					<td>
 					[% customer.$key.$item %] 
@@ -121,23 +121,38 @@ jquery.ssss sql and header.end
 				with a number so that ^[0-9]+ matches the key on the front on
 				the field name. --!>
 				ID: [% customer.$key.id %]  
+				<--! we need to have the label and the <input> on the same line
+				so we use some <span>s --!>
+				<span style="white-space: nowraps;">
 				Action Date (YYYY-MM-DD): <input type="text" size=10
 					name="[% customer.$key.id %]actdate"
 					value='[% customer.$key.actdate %]'>
+				</span>
+				<span style="white-space: nowraps;">
 				Name (50): <input type="text" size=50
 					name="[% customer.$key.id %]name"
 				 	value="[% customer.$key.name %]" />	
+				</span>
+				<span style="white-space: nowraps;">
 				Address (250): <textarea name="[% customer.$key.id %]address"
 					rows=5 cols=50>[% customer.$key.address %]</textarea>
+				</span>
+				<span style="white-space: nowraps;">
 				Phone (50): <input type="text" size=50
 					name="[% customer.$key.id %]phone"
 				 	value="[% customer.$key.phone %]"/>
+				</span>
+				<span style="white-space: nowraps;">
 				Email (50): <input type="text" size=50
 					name="[% customer.$key.id %]email"
 				 	value="[% customer.$key.email %]"/>
+				</span>
+				<span style="white-space: nowraps;">
 				Reference (5): <input type="text" size=5
 					name="[% customer.$key.id %]reff"
 				 	value="[% customer.$key.reff %]"/>
+				</span>
+				<span style="white-space: nowraps;">
 				Grant Type : <select name="[% customer.$key.id %]grantype">
 							<option></option>
 								<option [% IF customer.$key.grantype == 'st1' -%]
@@ -153,12 +168,18 @@ jquery.ssss sql and header.end
 										[%- END -%]
 								>ph2</option>	
 							</select> 
+				</span>
+				<span style="white-space: nowraps;">
 				Lead: (5): <input type="text" size=5
 					name="[% customer.$key.id %]lead"
 				 	value="[% customer.$key.lead %]">
+				</span>
+				<span style="white-space: nowraps;">
 				First Contact (YYYY-MM-DD): <input type="text" size=10
 					name="[% customer.$key.id %]first"
 				 	value="[% customer.$key.first %]">
+				</span>
+				<span style="white-space: nowraps;">
 				Stage: <select name="[% customer.$key.id %]stage">
 								<option [% IF  customer.$key.stage == 'first' -%]
 										selected="selected"
@@ -181,6 +202,8 @@ jquery.ssss sql and header.end
 										[%- END -%]
 								>completed</option>	
 							</select>
+				</span>
+				<span style="white-space: nowraps;">
 				Assigned to : <select name="[% customer.$key.id %]assign">
 								<option></option>
 								<option [% IF  customer.$key.assign == 'rich' -%]
@@ -200,26 +223,21 @@ jquery.ssss sql and header.end
 										[%- END -%]
 								>raj</option>	
 							</select>
+				</span>
 				<BR>
             	<INPUT type="submit" value="Do IT!">
-				<input type="button" value="Nah mate!" onClick="window.opener.location.reload(true); window.close();">
-				<input type="text" size="50" name="[%customer.$key.id%]changes">
-				</input>
-				<br>
 				<a href="">Delete me!</a>
 				</div>
 				<div id='[%customer.$key.id%]tabs-2'>
-					 Comment (500):  
-					 Date (YYYY-MM-DD): 
-					[% FOREACH comment = comments %]
-						[% IF comment.id == customer.$key.id %]
+					[% FOREACH comment = comments.$key.id %]
+					 	Comment (500):  
 						<textarea name="[% comment.id %]comment" cols=125
 						rows=3>[% comment.comment %]</textarea>
+					 	Date (YYYY-MM-DD): 
 			 			<input type="text" size=10 name="[% comment.id %]date"
 						value="[% comment.date %]">
 						<a href="/sscomsure.pl?id=[% comment.id %]">
 							Delete me!</a>
-						[% END %]
 					[% END %]
 					<textarea name="comment" cols=125 rows=3></textarea>
 					<input type="text" size=10 name="date" value="$today">
