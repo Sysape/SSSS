@@ -27,8 +27,8 @@
     
                 // Tabs
 				// we need to have a tabs section for every customer id.
-				[% FOREACH key = customer.keys %]
-                	\$('#[%customer.$key.id%]tabs').tabs();
+				[% FOREACH customer = customers %]
+                	\$('#[%customer.id%]tabs').tabs();
 				[%END%]
 
                 // Datepicker

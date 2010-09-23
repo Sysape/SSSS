@@ -166,13 +166,18 @@ if ($ENV{'REQUEST_METHOD'} eq "POST"){
 	#retrieve from mysql the customers details we want.
 	my $sth = $dbh->prepare($sql);
 	$sth->execute(@bind) or die $sth->errstr;
-	my $ref = $sth->fetchall_hashref('id');
+	my $ref = $sth->fetchall_arrayref({});
 	
 	# get the comments for the customer ids we have.
+	# start composing the SQL statemnet we need.
 	my $commentsql = "SELECT * FROM comment" ;
+	# declare an array to store the bind vars for the SQL
 	my @commentbind;
-	foreach my $key (sort (keys %{$ref})) {
-		push (@commentbind, $key);
+	# Step through the $ref array and push all the customer ids onto
+	# the bindvar array whilst also extending the SQL statment with
+	# additional ? OR ?'s
+	foreach (@$ref) {
+		push (@commentbind, @$ref[0]);
 		if ($commentsql =~ /WHERE/){
 			$commentsql .= " OR ?";
 		}else{
@@ -188,7 +193,7 @@ if ($ENV{'REQUEST_METHOD'} eq "POST"){
 		copyright => 'released under the GPL 2008',
 		columns => \@column,
 		parms => $parms,
-		customer => $ref,
+		customers => $ref,
 		comments => $commentref,
 	};
 	
