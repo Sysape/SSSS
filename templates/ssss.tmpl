@@ -81,15 +81,15 @@ jquery.ssss sql and header.end
 		</tr>
 		<!-- start the form out side the loop --!>	
 		<form action="/cgi-bin/ssss.pl" method="post">
-		[% FOREACH key = customer.keys %]
+		[% FOREACH customer = customers %]
 		<tr class="norm">
 			[% FOREACH column = columns %]
 				[% IF column == 'email' ;
-					text = customer.$key.$column.substr(0, 13) %]
-					<td><a href=mailto:[%customer.$key.$column%]> $text </a></td>
+					text = customer.$column.substr(0, 13) %]
+					<td><a href=mailto:[%customer.$column%]> $text </a></td>
 				[% ELSE %]
   					<td>
-					[% customer.$key.$item %] 
+					[% customer.$column %] 
 					<span>
 					[% FOREACH comment = comments %]
 						[% IF comment.custid == key %]
@@ -106,64 +106,64 @@ jquery.ssss sql and header.end
 			<!-- add a close div with and X in it, so clicking the X
 			closes the open pane with js --!>
 			<div class='close'>X</div>
-			<div id ='[%customer.$key.id%]tabs'>
+			<div id ='[%customer.id%]tabs'>
 				<ul>
-					<li><a href="#[%customer.$key.id%]tabs-1">Main</a></li>
-					<li><a href="#[%customer.$key.id%]tabs-2">Comments</a></li>
-					<li><a href="#[%customer.$key.id%]tabs-3">Project Manglement</a></li>
-					<li><a href="#[%customer.$key.id%]tabs-4">Attachments</a></li>
+					<li><a href="#[%customer.id%]tabs-1">Main</a></li>
+					<li><a href="#[%customer.id%]tabs-2">Comments</a></li>
+					<li><a href="#[%customer.id%]tabs-3">Project Manglement</a></li>
+					<li><a href="#[%customer.id%]tabs-4">Attachments</a></li>
 				</ul>
 
-				<div id='[%customer.$key.id%]tabs-1'>
+				<div id='[%customer.id%]tabs-1'>
 				<!-- Show the ID so people can read it, we don't need to pass
 				this to the cgi as it's used as part of the name for the
 				relevant fields. To mkae life easier no field names can start
 				with a number so that ^[0-9]+ matches the key on the front on
 				the field name. --!>
-				ID: [% customer.$key.id %]  
-				<--! we need to have the label and the <input> on the same line
+				ID: [% customer.id %]  
+				<!-- we need to have the label and the <input> on the same line
 				so we use some <span>s --!>
 				<span style="white-space: nowraps;">
 				Action Date (YYYY-MM-DD): <input type="text" size=10
-					name="[% customer.$key.id %]actdate"
-					value='[% customer.$key.actdate %]'>
+					name="[% customer.id %]actdate"
+					value='[% customer.actdate %]'>
 				</span>
 				<span style="white-space: nowraps;">
 				Name (50): <input type="text" size=50
-					name="[% customer.$key.id %]name"
-				 	value="[% customer.$key.name %]" />	
+					name="[% customer.id %]name"
+				 	value="[% customer.name %]" />	
 				</span>
 				<span style="white-space: nowraps;">
-				Address (250): <textarea name="[% customer.$key.id %]address"
-					rows=5 cols=50>[% customer.$key.address %]</textarea>
+				Address (250): <textarea name="[% customer.id %]address"
+					rows=5 cols=50>[% customer.address %]</textarea>
 				</span>
 				<span style="white-space: nowraps;">
 				Phone (50): <input type="text" size=50
-					name="[% customer.$key.id %]phone"
-				 	value="[% customer.$key.phone %]"/>
+					name="[% customer.id %]phone"
+				 	value="[% customer.phone %]"/>
 				</span>
 				<span style="white-space: nowraps;">
 				Email (50): <input type="text" size=50
-					name="[% customer.$key.id %]email"
-				 	value="[% customer.$key.email %]"/>
+					name="[% customer.id %]email"
+				 	value="[% customer.email %]"/>
 				</span>
 				<span style="white-space: nowraps;">
 				Reference (5): <input type="text" size=5
-					name="[% customer.$key.id %]reff"
-				 	value="[% customer.$key.reff %]"/>
+					name="[% customer.id %]reff"
+				 	value="[% customer.reff %]"/>
 				</span>
 				<span style="white-space: nowraps;">
-				Grant Type : <select name="[% customer.$key.id %]grantype">
+				Grant Type : <select name="[% customer.id %]grantype">
 							<option></option>
-								<option [% IF customer.$key.grantype == 'st1' -%]
+								<option [% IF customer.grantype == 'st1' -%]
 										selected="selected"
 										[%- END -%]
 								>st1</option>
-								<option [% IF customer.$key.grantype == 'st2' -%]
+								<option [% IF customer.grantype == 'st2' -%]
 										selected="selected"
 										[%- END -%]
 								>st2</option>
-								<option [% IF customer.$key.grantype == 'ph2' -%]
+								<option [% IF customer.grantype == 'ph2' -%]
 										selected="selected"
 										[%- END -%]
 								>ph2</option>	
@@ -171,54 +171,54 @@ jquery.ssss sql and header.end
 				</span>
 				<span style="white-space: nowraps;">
 				Lead: (5): <input type="text" size=5
-					name="[% customer.$key.id %]lead"
-				 	value="[% customer.$key.lead %]">
+					name="[% customer.id %]lead"
+				 	value="[% customer.lead %]">
 				</span>
 				<span style="white-space: nowraps;">
 				First Contact (YYYY-MM-DD): <input type="text" size=10
-					name="[% customer.$key.id %]first"
-				 	value="[% customer.$key.first %]">
+					name="[% customer.id %]first"
+				 	value="[% customer.first %]">
 				</span>
 				<span style="white-space: nowraps;">
-				Stage: <select name="[% customer.$key.id %]stage">
-								<option [% IF  customer.$key.stage == 'first' -%]
+				Stage: <select name="[% customer.id %]stage">
+								<option [% IF  customer.stage == 'first' -%]
 										selected="selected"
 										[%- END -%]
 								>first</option>
-								<option [% IF  customer.$key.stage == 'quote' -%]
+								<option [% IF  customer.stage == 'quote' -%]
 										selected="selected"
 										[%- END -%]
 								>quote</option>
-								<option [% IF  customer.$key.stage == 'happen' -%]
+								<option [% IF  customer.stage == 'happen' -%]
 										selected="selected"
 										[%- END -%]
 								>happen</option>	
-								<option [% IF  customer.$key.stage == 'lost' -%]
+								<option [% IF  customer.stage == 'lost' -%]
 										selected="selected"
 										[%- END -%]
 								>lost</option>	
-								<option [% IF  customer.$key.stage == 'completed' -%]
+								<option [% IF  customer.stage == 'completed' -%]
 										selected="selected"
 										[%- END -%]
 								>completed</option>	
 							</select>
 				</span>
 				<span style="white-space: nowraps;">
-				Assigned to : <select name="[% customer.$key.id %]assign">
+				Assigned to : <select name="[% customer.id %]assign">
 								<option></option>
-								<option [% IF  customer.$key.assign == 'rich' -%]
+								<option [% IF  customer.assign == 'rich' -%]
 										selected="selected"
 										[%- END -%]
 								>rich</option>
-								<option [% IF  customer.$key.assign == 'mik' -%]
+								<option [% IF  customer.assign == 'mik' -%]
 										selected="selected"
 										[%- END -%]
 								>mik</option>
-								<option [% IF  customer.$key.assign == 'rob' -%]
+								<option [% IF  customer.assign == 'rob' -%]
 										selected="selected"
 										[%- END -%]
 								>rob</option>	
-								<option [% IF  customer.$key.assign == 'raj' -%]
+								<option [% IF  customer.assign == 'raj' -%]
 										selected="selected"
 										[%- END -%]
 								>raj</option>	
@@ -228,8 +228,8 @@ jquery.ssss sql and header.end
             	<INPUT type="submit" value="Do IT!">
 				<a href="">Delete me!</a>
 				</div>
-				<div id='[%customer.$key.id%]tabs-2'>
-					[% FOREACH comment = comments.$key.id %]
+				<div id='[%customer.id%]tabs-2'>
+					[% FOREACH comment = comments.id %]
 					 	Comment (500):  
 						<textarea name="[% comment.id %]comment" cols=125
 						rows=3>[% comment.comment %]</textarea>
@@ -242,10 +242,10 @@ jquery.ssss sql and header.end
 					<textarea name="comment" cols=125 rows=3></textarea>
 					<input type="text" size=10 name="date" value="$today">
 				</div>
-				<div id='[%customer.$key.id%]tabs-3'>
+				<div id='[%customer.id%]tabs-3'>
 					Some guff!
 				</div>
-				<div id='[%customer.$key.id%]tabs-4'>
+				<div id='[%customer.id%]tabs-4'>
 					Filez
 				</div>
 			</div>
