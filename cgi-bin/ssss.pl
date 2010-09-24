@@ -50,10 +50,10 @@ if ($ENV{'REQUEST_METHOD'} eq "POST"){
 	# so now we need to see what table we need to update and then build the
 	# right sql statement for that table
 	foreach my $table (keys %$update){
-		if ($table == 'cust'){
+		if ($table eq 'cust'){
 			# prepare the updating sql statement outside the loop so we only
 			# do it once.
-			my $upsql  = $dbh->prepare('UPDATE customer SET actdate = ?, name = ?, address = ?, phone = ?,email = ?, reff = ?, grantype = ?, lead = ?, first = ?, stage = ?, assign  = ? WHERE id = ?');
+			my $upsql = $dbh->prepare('UPDATE customer SET actdate = ?, name = ?, address = ?, phone = ?,email = ?, reff = ?, grantype = ?, lead = ?, first = ?, stage = ?, assign  = ? WHERE id = ?');
 		 	foreach(keys %{$update->{'cust'}}){
 				$upsql->execute($update->{'cust'}->{$_}->{'actdate'},
 	                    $update->{'cust'}->{$_}->{'name'},
@@ -68,7 +68,7 @@ if ($ENV{'REQUEST_METHOD'} eq "POST"){
 	                    $update->{'cust'}->{$_}->{'assign'},
 						$_) or die "$upsql->errstr : $_";
 			}
-		}elsif ($table == 'comm'){
+		}elsif ($table eq 'comm'){
 			# do the same for the comment table
 			my $upsql = $dbh->prepare('UPDATE comment SET comment = ?, date = ? WHERE id = ?');
 			foreach(keys %{$update->{'comm'}}){
