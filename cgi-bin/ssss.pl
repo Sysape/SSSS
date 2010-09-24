@@ -38,31 +38,49 @@ if ($ENV{'REQUEST_METHOD'} eq "POST"){
 	# so we're writing a quick and dirty update routine which will just update
 	# every customer in the db, hopefully the db will be clever enough to not
 	# bother actually updating tose records which haven't changed.
-	# prepare the updating sql statement outside the loop so we only do it once.
-	my $upsql  = $dbh->prepare('UPDATE customer SET actdate = ?, name = ?, address = ?, phone = ?,email = ?, reff = ?, grantype = ?, lead = ?, first = ?, stage = ?, assign  = ? WHERE id = ?');
-	# so the fields are all named in the format id.name, we'd probably like
-	# it to be wadged into a hash where the first key is the id and the next
-	# key is the field name.
+
+	# so the fields are all named in the table.format id.name, we'd probably
+	# like it to be wadged into a hash where the first key is the table and 
+	# the next id and the last is the field name.
 	my $update;
 	foreach(keys %{$parms}){
-		next unless (/(\d+)(\D+)/);
-		$update->{$1}->{$2} = $parms->{$_};
+		next unless (/(\D+)(\d+)(\D+)/);
+		$update->{$1}->{$2}->{$3} = $parms->{$_};
 	}
-	foreach(keys %{$update}){
-		$upsql->execute($update->{$_}->{'actdate'},
-	                    $update->{$_}->{'name'},
-	                    $update->{$_}->{'address'},
-	                    $update->{$_}->{'phone'},
-	                    $update->{$_}->{'email'},
-	                    $update->{$_}->{'reff'},
-	                    $update->{$_}->{'grantype'},
-	                    $update->{$_}->{'lead'},
-	                    $update->{$_}->{'first'},
-	                    $update->{$_}->{'stage'},
-	                    $update->{$_}->{'assign'},
+	# so now we need to see what table we need to update and then build the
+	# right sql statement for that table
+	foreach my $table (keys %$update){
+		if ($table == 'cust'){
+			# prepare the updating sql statement outside the loop so we only
+			# do it once.
+			my $upsql  = $dbh->prepare('UPDATE customer SET actdate = ?, name = ?, address = ?, phone = ?,email = ?, reff = ?, grantype = ?, lead = ?, first = ?, stage = ?, assign  = ? WHERE id = ?');
+		 	foreach(keys %{$update->{'cust'}}){
+				$upsql->execute($update->{'cust'}->{$_}->{'actdate'},
+	                    $update->{'cust'}->{$_}->{'name'},
+	                    $update->{'cust'}->{$_}->{'address'},
+	                    $update->{'cust'}->{$_}->{'phone'},
+	                    $update->{'cust'}->{$_}->{'email'},
+	                    $update->{'cust'}->{$_}->{'reff'},
+	                    $update->{'cust'}->{$_}->{'grantype'},
+	                    $update->{'cust'}->{$_}->{'lead'},
+	                    $update->{'cust'}->{$_}->{'first'},
+	                    $update->{'cust'}->{$_}->{'stage'},
+	                    $update->{'cust'}->{$_}->{'assign'},
 						$_) or die "$upsql->errstr : $_";
+			}
+		}elsif ($table == 'comm'){
+			# do the same for the comment table
+			my $upsql = $dbh->prepare('UPDATE comment SET comment = ?, date = ? WHERE id = ?');
+			foreach(keys %{$update->{'comm'}}){
+				$upsql->execute($update->{'comm'}->{$_}->{'comment'},
+						$update->{'comm'}->{$_}->{'date'},
+						$_) or die "$upsql->errstr : $_";
+			}
+		}else{
+			die "invalid table specified in update loop \n";
+		}
 	}
-	# now we need to do something with the comments section and so forth
+	# now we need to do something with the new comments section and so forth
 	# I've left his coment in as placeholder for all the old code I deleted
 	
 	# if we have any new cgi parameters then we need a new customer record.
@@ -97,7 +115,8 @@ if ($ENV{'REQUEST_METHOD'} eq "POST"){
 	$dbh->disconnect();
 	# isssue a redirect to the browser so the user knows something happened.
 	# eventually this needs to be the referer url or if there isn't the ssss
-	print $query->redirect('/cgi-bin//ssss.pl');
+	my $redirect = $query->referer() || "/cgi-bin//ssss.pl";
+	print $query->redirect($redirect);
 }else{
 	# now we do the normal thing to display rows of 
 	#The next 3 mys should probably go in some kind of inheretied conf file.
@@ -177,7 +196,7 @@ if ($ENV{'REQUEST_METHOD'} eq "POST"){
 	# the bindvar array whilst also extending the SQL statment with
 	# additional ? OR ?'s
 	foreach (@$ref) {
-		push (@commentbind, @$ref[0]);
+		push (@commentbind, $_->{'id'});
 		if ($commentsql =~ /WHERE/){
 			$commentsql .= " OR ?";
 		}else{
@@ -186,12 +205,13 @@ if ($ENV{'REQUEST_METHOD'} eq "POST"){
 	}
 	my $custsth = $dbh->prepare($commentsql);
 	$custsth->execute(@commentbind) or die $custsth->errstr;
-	my $commentref = $custsth->fetchall_hashref('custid');
+	my $commentref = $custsth->fetchall_arrayref({});
 	
 	
 	my $vars = {
 		copyright => 'released under the GPL 2008',
 		columns => \@column,
+		like => \@like,
 		parms => $parms,
 		customers => $ref,
 		comments => $commentref,

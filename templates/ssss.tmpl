@@ -86,17 +86,10 @@ jquery.ssss sql and header.end
 			[% FOREACH column = columns %]
 				[% IF column == 'email' ;
 					text = customer.$column.substr(0, 13) %]
-					<td><a href=mailto:[%customer.$column%]> $text </a></td>
+					<td><a href=mailto:[%customer.$column%]>$text</a></td>
 				[% ELSE %]
   					<td>
 					[% customer.$column %] 
-					<span>
-					[% FOREACH comment = comments %]
-						[% IF comment.custid == key %]
-							[% comment.date %] [% comment.comment %]
-						[% END %]
-					[% END %]
-					</span>
 					</td>
 				[% END %]
 			[% END %]
@@ -125,35 +118,35 @@ jquery.ssss sql and header.end
 				so we use some <span>s --!>
 				<span style="white-space: nowraps;">
 				Action Date (YYYY-MM-DD): <input type="text" size=10
-					name="[% customer.id %]actdate"
+					name="cust[% customer.id %]actdate"
 					value='[% customer.actdate %]'>
 				</span>
 				<span style="white-space: nowraps;">
 				Name (50): <input type="text" size=50
-					name="[% customer.id %]name"
+					name="cust[% customer.id %]name"
 				 	value="[% customer.name %]" />	
 				</span>
 				<span style="white-space: nowraps;">
-				Address (250): <textarea name="[% customer.id %]address"
+				Address (250): <textarea name="cust[% customer.id %]address"
 					rows=5 cols=50>[% customer.address %]</textarea>
 				</span>
 				<span style="white-space: nowraps;">
 				Phone (50): <input type="text" size=50
-					name="[% customer.id %]phone"
+					name="cust[% customer.id %]phone"
 				 	value="[% customer.phone %]"/>
 				</span>
 				<span style="white-space: nowraps;">
 				Email (50): <input type="text" size=50
-					name="[% customer.id %]email"
+					name="cust[% customer.id %]email"
 				 	value="[% customer.email %]"/>
 				</span>
 				<span style="white-space: nowraps;">
 				Reference (5): <input type="text" size=5
-					name="[% customer.id %]reff"
+					name="cust[% customer.id %]reff"
 				 	value="[% customer.reff %]"/>
 				</span>
 				<span style="white-space: nowraps;">
-				Grant Type : <select name="[% customer.id %]grantype">
+				Grant Type : <select name="cust[% customer.id %]grantype">
 							<option></option>
 								<option [% IF customer.grantype == 'st1' -%]
 										selected="selected"
@@ -171,16 +164,16 @@ jquery.ssss sql and header.end
 				</span>
 				<span style="white-space: nowraps;">
 				Lead: (5): <input type="text" size=5
-					name="[% customer.id %]lead"
+					name="cust[% customer.id %]lead"
 				 	value="[% customer.lead %]">
 				</span>
 				<span style="white-space: nowraps;">
 				First Contact (YYYY-MM-DD): <input type="text" size=10
-					name="[% customer.id %]first"
+					name="cust[% customer.id %]first"
 				 	value="[% customer.first %]">
 				</span>
 				<span style="white-space: nowraps;">
-				Stage: <select name="[% customer.id %]stage">
+				Stage: <select name="cust[% customer.id %]stage">
 								<option [% IF  customer.stage == 'first' -%]
 										selected="selected"
 										[%- END -%]
@@ -204,7 +197,7 @@ jquery.ssss sql and header.end
 							</select>
 				</span>
 				<span style="white-space: nowraps;">
-				Assigned to : <select name="[% customer.id %]assign">
+				Assigned to : <select name="cust[% customer.id %]assign">
 								<option></option>
 								<option [% IF  customer.assign == 'rich' -%]
 										selected="selected"
@@ -229,18 +222,22 @@ jquery.ssss sql and header.end
 				<a href="">Delete me!</a>
 				</div>
 				<div id='[%customer.id%]tabs-2'>
-					[% FOREACH comment = comments.id %]
+					[%# step through the comments handed by the cgi -%]
+					[%- FOREACH comment = comments -%]
+					[%- NEXT UNLESS comment.custid == customer.id -%]
 					 	Comment (500):  
-						<textarea name="[% comment.id %]comment" cols=125
+						<textarea name="comm[% comment.id %]comment" cols=125
 						rows=3>[% comment.comment %]</textarea>
 					 	Date (YYYY-MM-DD): 
-			 			<input type="text" size=10 name="[% comment.id %]date"
+			 			<input type="text" size=10 name="comm[% comment.id %]date"
 						value="[% comment.date %]">
 						<a href="/sscomsure.pl?id=[% comment.id %]">
 							Delete me!</a>
 					[% END %]
-					<textarea name="comment" cols=125 rows=3></textarea>
-					<input type="text" size=10 name="date" value="$today">
+					 Comment (500):  
+					<textarea name="newcomment" cols=125 rows=3></textarea>
+					 Date (YYYY-MM-DD): 
+					<input type="text" size=10 name="newdate" value="$today">
 				</div>
 				<div id='[%customer.id%]tabs-3'>
 					Some guff!
@@ -257,7 +254,7 @@ jquery.ssss sql and header.end
 			NEW <Br>
 			Action Date (YYYY-MM-DD): <input type="text" size=10
 				name="newactdate"><BR>
-			Name (50): <input class="foo" type="text" size=50 name="newname"/>	<BR>
+			Name (50): <input class="foo" type="text" size=50 name="newname"/><BR>
 			Address (250):
 				 <textarea name="newaddress" rows=5 cols=50></textarea> <BR>
 			Phone (50): <input type="text" size=50 name="newphone"/> <BR>
