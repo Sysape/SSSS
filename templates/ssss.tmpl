@@ -98,7 +98,7 @@ jquery.ssss sql and header.end
 			<td colspan="12">
 			<!-- add a close div with and X in it, so clicking the X
 			closes the open pane with js --!>
-			<div class='close'>X</div>
+			<div class='close'>X [%customer.id%] [%customer.name%]</div>
 			<div id ='[%customer.id%]tabs'>
 				<ul>
 					<li><a href="#[%customer.id%]tabs-1">Main</a></li>
@@ -219,7 +219,8 @@ jquery.ssss sql and header.end
 				</span>
 				<BR>
             	<INPUT type="submit" value="Do IT!">
-				<a href="">Delete me!</a>
+				<a href="/cgi-bin/ssdel.pl?table=customer&id=[%customer.id%]">
+					Delete me!</a>
 				</div>
 				<div id='[%customer.id%]tabs-2'>
 					[%# step through the comments handed by the cgi -%]
@@ -231,19 +232,23 @@ jquery.ssss sql and header.end
 					 	Date (YYYY-MM-DD): 
 			 			<input type="text" size=10 name="comm[% comment.id %]date"
 						value="[% comment.date %]">
-						<a href="/sscomsure.pl?id=[% comment.id %]">
+						<a href="/cgi-bin/ssdel.pl?table=comment&id=[% comment.id %]">
 							Delete me!</a>
 					[% END %]
-					 Comment (500):  
-					<textarea name="newcomment" cols=125 rows=3></textarea>
-					 Date (YYYY-MM-DD): 
-					<input type="text" size=10 name="newdate" value="$today">
+					Comment (500):  
+					<textarea name="new[%customer.id%]comment" cols=125
+					 rows=3></textarea>
+					Date (YYYY-MM-DD): 
+					<input type="text" size=10 name="new[%customer.id%]date"
+					 value="$today">
+            	<INPUT type="submit" value="Do IT!">
 				</div>
 				<div id='[%customer.id%]tabs-3'>
 					Some guff!
 				</div>
 				<div id='[%customer.id%]tabs-4'>
 					Filez
+					<input type='file'/>
 				</div>
 			</div>
 			</td>
