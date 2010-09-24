@@ -76,25 +76,30 @@ if ($ENV{'REQUEST_METHOD'} eq "POST"){
 						$update->{'comm'}->{$_}->{'date'},
 						$_) or die "$upsql->errstr : $_";
 			}
+		# Ok so this breaks the logic of using $table as a varname as this
+		# 'table' isn't actually a table because I broke the naming convention
+		# and called new comments new.custid.comment 
+		}elsif ($table eq 'new'){
+			my $commsql = $dbh->prepare(
+				'INSERT comment (custid, date, comment) VALUES (?,?,?)');
+			foreach(keys %{$update->{'new'}}){
+				# if there's nothing in the comment field we don't want
+				# to dubmit it.
+				next unless $update->{'new'}->{$_}->{'comment'};
+				$commsql->execute($_, $update->{'new'}->{$_}->{'date'},
+							$update->{'new'}->{$_}->{'comment'})
+							or die "$commsql->errstr : $_";
+			}
 		}else{
 			die "invalid table specified in update loop \n";
 		}
 	}
-	# now we need to do something with the new comments section and so forth
-	# I've left his coment in as placeholder for all the old code I deleted
-	
-	# if we have any new cgi parameters then we need a new customer record.
-	if ( $parms->{'newactdate'} ||
-		$parms->{'newname'} ||
+	# if we have any of these new cgi parameters then we need a new customerr
+	# record.
+	if ( $parms->{'newname'} ||
 		$parms->{'newaddress'} ||
 		$parms->{'newphone'} ||
-		$parms->{'newemail'} ||
-		$parms->{'newreff'} ||
-		$parms->{'newgrantype'} ||
-		$parms->{'newlead'} ||
-		$parms->{'newfirst'} ||
-		$parms->{'newstage'} ||
-		$parms->{'newassign'}) {
+		$parms->{'newemail'} ) {
 		# prepare a sql statement for the INSET
 		my $newcussth = $dbh->prepare( "INSERT customer (actdate, name, address, phone, email, reff, grantype, lead, first, stage, assign) VALUES (?,?,?,?,?,?,?,?,?,?,?)" );
 		# execute is using the new parameters from the cgi
@@ -215,6 +220,7 @@ if ($ENV{'REQUEST_METHOD'} eq "POST"){
 		parms => $parms,
 		customers => $ref,
 		comments => $commentref,
+		today => $today
 	};
 	
 	$tt->process('ssss.tmpl', $vars)
