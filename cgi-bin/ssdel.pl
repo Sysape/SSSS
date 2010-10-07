@@ -18,13 +18,22 @@ my  $dbh = DBI->connect($$sqldetails{db}, $$sqldetails{user},
 my $query = new CGI;
 my $id = $query->param('id') or die "No id!";
 my $table = $query->param('table');
+my $file = $query->param('file');
 # a basic check to see we're not being cracked, should probably check the
 # referer too, but that can wait
-die unless ($table eq 'customer' || $table eq 'comment');
+die unless ($table eq 'customer' || $table eq 'comment' || $table eq 'file');
 
-# delete the thing identified by id from the table.
-my $del = $dbh->prepare("DELETE FROM $table WHERE id = ?");
-$del->execute($id);
+# first deal with the special case of $table eq file
+if ($table eq 'file'){
+	# Untaint the vars
+	$id =~ /([\d]+)/ ; $id = $1;
+	$file =~ /([\w.]+)/ ; $file = $1;
+	unlink("../files/$id/$file");
+}else{
+	# delete the thing identified by id from the table.
+	my $del = $dbh->prepare("DELETE FROM $table WHERE id = ?");
+	$del->execute($id);
+}
 
 $dbh->disconnect();
 

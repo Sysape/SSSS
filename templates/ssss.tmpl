@@ -80,7 +80,8 @@ jquery.ssss sql and header.end
 		</form>
 		</tr>
 		<!-- start the form out side the loop --!>	
-		<form action="/cgi-bin/ssss.pl" method="post">
+		<form action="/cgi-bin/ssss.pl" method="post"
+						enctype="multipart/form-data">
 		[% FOREACH customer = customers %]
 		<tr class="norm">
 			[% FOREACH column = columns %]
@@ -120,6 +121,7 @@ jquery.ssss sql and header.end
 				Action Date (YYYY-MM-DD): <input type="text" size=10
 					name="cust[% customer.id %]actdate"
 					value='[% customer.actdate %]'>
+					<div type="text" id="datepicker[%customer.id%]act"></div>
 				</span>
 				<span style="white-space: nowraps;">
 				Name (50): <input type="text" size=50
@@ -171,6 +173,7 @@ jquery.ssss sql and header.end
 				First Contact (YYYY-MM-DD): <input type="text" size=10
 					name="cust[% customer.id %]first"
 				 	value="[% customer.first %]">
+					<div type="text" id="datepicker[%customer.id%]first"></div>
 				</span>
 				<span style="white-space: nowraps;">
 				Stage: <select name="cust[% customer.id %]stage">
@@ -231,7 +234,7 @@ jquery.ssss sql and header.end
 						rows=3>[% comment.comment %]</textarea>
 					 	Date (YYYY-MM-DD): 
 			 			<input type="text" size=10 name="comm[% comment.id %]date"
-						value="[% comment.date %]">
+						value="[% comment.date %]" id="datepicker">
 						<a href="/cgi-bin/ssdel.pl?table=comment&id=[% comment.id %]">
 							Delete me!</a>
 					[% END %]
@@ -240,15 +243,25 @@ jquery.ssss sql and header.end
 					 rows=3></textarea>
 					Date (YYYY-MM-DD): 
 					<input type="text" size=10 name="new[%customer.id%]date"
-					 value="$today">
+					 id="datepicker" value="$today">
             	<INPUT type="submit" value="Do IT!">
 				</div>
 				<div id='[%customer.id%]tabs-3'>
 					Some guff!
 				</div>
 				<div id='[%customer.id%]tabs-4'>
-					Filez
-					<input type='file'/>
+					Filez: <br>
+					[% id = customer.id %]
+						<table>
+					[% FOREACH file = files.$id %]
+						<tr>
+						<td><a href="/files/[%id%]/[%file%]">[%file%]</a> </td>
+						<td><a href="/cgi-bin/ssdel.pl?table=file&id=[%customer.id%]&file=[%file%]">Delete me!</a></td>
+						<tr>
+					[% END %]
+						</table>
+					<input type='file' name='files[%customer.id%]file'/>
+            		<INPUT type="submit" value="Do IT!">
 				</div>
 			</div>
 			</td>
@@ -258,7 +271,7 @@ jquery.ssss sql and header.end
 			<td colspan='4'>
 			NEW <Br>
 			Action Date (YYYY-MM-DD): <input type="text" size=10
-				name="newactdate"><BR>
+				id="datepicker" name="newactdate"><BR>
 			Name (50): <input class="foo" type="text" size=50 name="newname"/><BR>
 			Address (250):
 				 <textarea name="newaddress" rows=5 cols=50></textarea> <BR>
@@ -290,6 +303,14 @@ jquery.ssss sql and header.end
 							<option>raj</option>
 						</select>
 			</td>
+			<td colspan='4'>
+				Comment (500):  
+				<textarea name="newcomment" cols=50
+				 rows=10></textarea>
+				Date (YYYY-MM-DD): 
+				<input type="text" size=10 name="newdate"
+				 id="datepicker" value="$today">
+			</td>		
 			<td> <INPUT type="submit" value="Do IT!"> </td>
 		<tr>
 		</form>
@@ -299,7 +320,7 @@ jquery.ssss sql and header.end
     		&copy; [% copyright %]
   	</div>
 	</div>
-	<!-- disconnect from database, to stop error --!>
+	<!-- disconnect from database, to stop warning --!>
 	[% DBI.disconnect %] 
 </body>
 </html>
