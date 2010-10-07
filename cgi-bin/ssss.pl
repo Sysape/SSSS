@@ -6,6 +6,10 @@ use DBI;
 use YAML::XS;
 use Data::Dumper;
 
+# detaint the path
+$ENV{'PATH'} = '/bin:/usr/bin';
+
+
 #setup a template directory
 
 my $tt = Template->new({
@@ -90,6 +94,26 @@ if ($ENV{'REQUEST_METHOD'} eq "POST"){
 							$update->{'new'}->{$_}->{'comment'})
 							or die "$commsql->errstr : $_";
 			}
+		}elsif ($table eq 'files'){
+		# Again not really a DB table, but if we have a newfile parameter
+		# then we'd best do something with it
+			foreach(keys %{$update->{'files'}}){
+				# if there's nothing to upload BREAK BREAK!
+				next unless $update->{'files'}->{$_}->{'file'};
+				my $dir = "../files/$_";
+				my $file = $update->{'files'}->{$_}->{'file'};
+				# check for tainted filenames
+				next unless $file =~ /([\w.]+)/;
+				$file = $1;
+				# we need create the dir to stick stuff in, if this exists
+				# the following command will fail harmlessly I hope.
+				mkdir "$dir", 0775; 
+				open(LOCAL, ">$dir/$file") or die $!; 
+				my $fhp = 'files'.$_.'file';
+				my $fh = $query->upload("$fhp");
+			  	# undef may be returned if it's not a valid file handle
+				while(<$fh>) { print LOCAL $_; } 
+			}
 		}else{
 			die "invalid table specified in update loop \n";
 		}
@@ -114,6 +138,18 @@ if ($ENV{'REQUEST_METHOD'} eq "POST"){
 						$parms->{'newfirst'},
 						$parms->{'newstage'},
 						$parms->{'newassign'}) or die $newcussth->errstr;	
+		# we might need to insert a comment so we need the id of the customet
+		# we just inserted
+		my $ins_id = $newcussth->{'mysql_insertid'};
+		# if we have a newcomment then we need to add a comment using the
+		# mysql_insertid which tells us what the customer id is
+		if ($parms->{'newcomment'}){
+			my $newcommsth = $dbh->prepare(
+				'INSERT comment (custid, date, comment) VALUES (?,?,?)');
+			$newcommsth->execute($ins_id,$parms->{'newdate'},
+									$parms->{'newcomment'});
+		}
+		
 	}
 	# disconnect from the db
 	$dbh->commit();
@@ -212,6 +248,12 @@ if ($ENV{'REQUEST_METHOD'} eq "POST"){
 	$custsth->execute(@commentbind) or die $custsth->errstr;
 	my $commentref = $custsth->fetchall_arrayref({});
 	
+	# we need to list the contents of the files dirs for each customer.
+	my $files ;
+	foreach (@$ref) {
+		my @ls = `ls "../files/$_->{'id'}/"`;
+		$files->{$_->{'id'}} = \@ls;
+	}
 	
 	my $vars = {
 		copyright => 'released under the GPL 2008',
@@ -220,7 +262,8 @@ if ($ENV{'REQUEST_METHOD'} eq "POST"){
 		parms => $parms,
 		customers => $ref,
 		comments => $commentref,
-		today => $today
+		today => $today,
+		files => $files
 	};
 	
 	$tt->process('ssss.tmpl', $vars)
