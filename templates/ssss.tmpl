@@ -17,24 +17,24 @@ jquery.ssss sql and header.end
 --!>
 	<!-- the start of the form that limits the selection of clients from 
 		the db. --!>
-	<table border=1 width="100%">
 	<form action="/cgi-bin/ssss.pl" method="get">
+	<table border=1 width="100%">
 		<tr>
-		[% FOREACH item = column %]	
-			<th> [% item %] </th> 
+		[% FOREACH column = columns %]	
+			<th> [% column %] </th> 
     	[% END %]
 		</tr>
 		<tr>
-		[% FOREACH item = column %]	
+		[% FOREACH column = columns %]	
 			<td> 
-				<INPUT type="radio" name="order" value="[% item %] ASC"
-				[%- IF parms.order == "$item ASC" -%]
+				<INPUT type="radio" name="order" value="[% column %] ASC"
+				[%- IF parms.order == "$column ASC" -%]
 					checked
 				[%- END -%]
 				> u
 				<br>
-			 	<INPUT type="radio" name="order" value="[% item %] DESC"
-				[%- IF parms.order == "$item DESC" -%]
+			 	<INPUT type="radio" name="order" value="[% column %] DESC"
+				[%- IF parms.order == "$column DESC" -%]
 					checked
 				[%- END -%]
 				> d
@@ -44,30 +44,30 @@ jquery.ssss sql and header.end
 		</tr>
 
         <tr>
-        [% FOREACH thingy = column %]
+        [% FOREACH column = columns %]
             <td> 
-			[% IF like.grep(thingy).0 %]
-			<input type="text" size=[% thingy.length * 2 %] name="$thingy"
-				[%- IF parms.$thingy -%]
-					value="[% parms.$thingy %]"
+			[% IF like.grep(column).0 %]
+			<input type="text" size=[% column.length * 2 %] name="$column"
+				[%- IF parms.$column -%]
+					value="[% parms.$column %]"
 				[% END %]
 			>
 			[% ELSE %]	
-			<select name="$thingy">
+			<select name="$column">
 				<option>ALL</option>
-				[% IF thingy == "stage" %]
+				[% IF column == "stage" %]
 					<option
-						[%- IF parms.$thingy == 'ACTIVE' -%]
+						[%- IF parms.$column == 'ACTIVE' -%]
 							selected
 						[%- END -%]
 					>ACTIVE</option>
 				[% END %]	
             	[% FOREACH cell = 
-					DBI.query("SELECT DISTINCT $thingy FROM customer") %]
+					DBI.query("SELECT DISTINCT $column FROM customer") %]
                     [% values = cell.list('values') %]
 					[% FOREACH value = values %]
                 		<option
-							[%- IF parms.$thingy == value -%]
+							[%- IF parms.$column == value -%]
 								selected
 							[%- END -%]
 						>$value</option>
@@ -77,26 +77,22 @@ jquery.ssss sql and header.end
 			</select>
             </td>
         [% END %]
-		</form>
 		</tr>
+	</table>
+	</form>
 		<!-- start the form out side the loop --!>	
-		<form action="/cgi-bin/ssss.pl" method="post">
-		[% FOREACH key = customer.keys %]
+	<form action="/cgi-bin/ssss.pl" method="post"
+			enctype="multipart/form-data" id="dirtyForm">
+	<table border=1 width="100%">
+		[% FOREACH customer = customers %]
 		<tr class="norm">
-			[% FOREACH item = column %]
-				[% IF item == 'email' ;
-					text = customer.$key.$item.substr(0, 13) %]
-					<td><a href=mailto:[%customer.$key.$item%]> $text </a></td>
+			[% FOREACH column = columns %]
+				[% IF column == 'email' ;
+					text = customer.$column.substr(0, 13) %]
+					<td><a href=mailto:[%customer.$column%]>$text</a></td>
 				[% ELSE %]
   					<td>
-					[% customer.$key.$item %] 
-					<span>
-					[% FOREACH comment = comments %]
-						[% IF comment.custid == key %]
-							[% comment.date %] [% comment.comment %]
-						[% END %]
-					[% END %]
-					</span>
+					[% customer.$column %] 
 					</td>
 				[% END %]
 			[% END %]
@@ -105,130 +101,176 @@ jquery.ssss sql and header.end
 			<td colspan="12">
 			<!-- add a close div with and X in it, so clicking the X
 			closes the open pane with js --!>
-			<div class='close'>X</div>
-			<div id ='[%customer.$key.id%]tabs'>
+			<div class='close'>X [%customer.id%] [%customer.name%]</div>
+			<div id ='[%customer.id%]tabs'>
 				<ul>
-					<li><a href="#[%customer.$key.id%]tabs-1">Main</a></li>
-					<li><a href="#[%customer.$key.id%]tabs-2">Comments</a></li>
-					<li><a href="#[%customer.$key.id%]tabs-3">Project Manglement</a></li>
-					<li><a href="#[%customer.$key.id%]tabs-4">Attachments</a></li>
+					<li><a href="#[%customer.id%]tabs-1">Main</a></li>
+					<li><a href="#[%customer.id%]tabs-2">Comments</a></li>
+					<li><a href="#[%customer.id%]tabs-3">Project Manglement</a></li>
+					<li><a href="#[%customer.id%]tabs-4">Attachments</a></li>
 				</ul>
 
-				<div id='[%customer.$key.id%]tabs-1'>
+				<div id='[%customer.id%]tabs-1'>
 				<!-- Show the ID so people can read it, we don't need to pass
 				this to the cgi as it's used as part of the name for the
 				relevant fields. To mkae life easier no field names can start
 				with a number so that ^[0-9]+ matches the key on the front on
 				the field name. --!>
-				ID: [% customer.$key.id %]  
-				Action Date (YYYY-MM-DD): <input type="text" size=10
-					name="[% customer.$key.id %]actdate"
-					value='[% customer.$key.actdate %]'>
-				Name (50): <input type="text" size=50
-					name="[% customer.$key.id %]name"
-				 	value="[% customer.$key.name %]" />	
-				Address (250): <textarea name="[% customer.$key.id %]address"
-					rows=5 cols=50>[% customer.$key.address %]</textarea>
-				Phone (50): <input type="text" size=50
-					name="[% customer.$key.id %]phone"
-				 	value="[% customer.$key.phone %]"/>
-				Email (50): <input type="text" size=50
-					name="[% customer.$key.id %]email"
-				 	value="[% customer.$key.email %]"/>
-				Reference (5): <input type="text" size=5
-					name="[% customer.$key.id %]reff"
-				 	value="[% customer.$key.reff %]"/>
-				Grant Type : <select name="[% customer.$key.id %]grantype">
-							<option></option>
-								<option [% IF customer.$key.grantype == 'st1' -%]
-										selected="selected"
-										[%- END -%]
-								>st1</option>
-								<option [% IF customer.$key.grantype == 'st2' -%]
-										selected="selected"
-										[%- END -%]
-								>st2</option>
-								<option [% IF customer.$key.grantype == 'ph2' -%]
-										selected="selected"
-										[%- END -%]
-								>ph2</option>	
-							</select> 
-				Lead: (5): <input type="text" size=5
-					name="[% customer.$key.id %]lead"
-				 	value="[% customer.$key.lead %]">
-				First Contact (YYYY-MM-DD): <input type="text" size=10
-					name="[% customer.$key.id %]first"
-				 	value="[% customer.$key.first %]">
-				Stage: <select name="[% customer.$key.id %]stage">
-								<option [% IF  customer.$key.stage == 'first' -%]
-										selected="selected"
-										[%- END -%]
-								>first</option>
-								<option [% IF  customer.$key.stage == 'quote' -%]
-										selected="selected"
-										[%- END -%]
-								>quote</option>
-								<option [% IF  customer.$key.stage == 'happen' -%]
-										selected="selected"
-										[%- END -%]
-								>happen</option>	
-								<option [% IF  customer.$key.stage == 'lost' -%]
-										selected="selected"
-										[%- END -%]
-								>lost</option>	
-								<option [% IF  customer.$key.stage == 'completed' -%]
-										selected="selected"
-										[%- END -%]
-								>completed</option>	
-							</select>
-				Assigned to : <select name="[% customer.$key.id %]assign">
-								<option></option>
-								<option [% IF  customer.$key.assign == 'rich' -%]
-										selected="selected"
-										[%- END -%]
-								>rich</option>
-								<option [% IF  customer.$key.assign == 'mik' -%]
-										selected="selected"
-										[%- END -%]
-								>mik</option>
-								<option [% IF  customer.$key.assign == 'rob' -%]
-										selected="selected"
-										[%- END -%]
-								>rob</option>	
-								<option [% IF  customer.$key.assign == 'raj' -%]
-										selected="selected"
-										[%- END -%]
-								>raj</option>	
-							</select>
+				ID: [% customer.id %]  
+				<!-- we need to have the label and the <input> on the same line
+				so we use some <span>s --!>
+				<label for="datepicker[% customer.id %]act">
+				Action Date<noscript> (YYYY-MM-DD)</noscript>:</label> 
+				<input type="text" size=10
+					name="cust[% customer.id %]actdate"
+					id="datepicker[% customer.id %]act"
+					value='[% customer.actdate %]'>
+				<label for="cust[% customer.id %]name">
+				Name<noscript>(50)</noscript>:</label> <input type="text"
+					size='[% customer.name.length || 1 %]'
+					name="cust[% customer.id %]name"
+					class="countable50"
+					id="cust[% customer.id %]name"
+				 	value="[% customer.name %]" />	
+				<label for="cust[% customer.id %]address">
+				Address<noscript>(250)</noscript>:</label> <textarea
+					name="cust[% customer.id %]address"
+					class="countable250"
+					id="cust[% customer.id %]address"
+					rows=5 cols=50>[% customer.address %]</textarea>
+				<label for="cust[% customer.id %]phone">
+				Phone<noscript>(50)</noscript>:</label>
+				<input type="text"
+					size='[% customer.phone.length || 1 %]'
+					name="cust[% customer.id %]phone"
+					class="countable50"
+					id="cust[% customer.id %]phone"
+				 	value="[% customer.phone %]"/>
+				<label for="cust[% customer.id %]email">
+				Email<noscript>(50)</noscript>:</label>
+				<input type="text"
+					name="cust[% customer.id %]email"
+					size='[% customer.email.length || 1 %]'
+					id="cust[% customer.id %]email"
+					class="countable50"
+				 	value="[% customer.email %]"/>
+				<label for="cust[% customer.id %]reff">
+				Reference<noscript>(5)</noscript>:</label>
+				<input type="text"
+					name="cust[% customer.id %]reff"
+					size='[% customer.reff.length || 1 %]'
+					class="countable5"
+				 	value="[% customer.reff %]"/>
+				<label for="cust[% customer.id %]grantype">
+				Grant Type:</label>
+					 <select name="cust[% customer.id %]grantype"
+							id="cust[% customer.id %]grantype">
+						<option></option>
+							<option [% IF customer.grantype == 'st1' -%]
+									selected="selected"
+									[%- END -%]>st1</option>
+							<option [% IF customer.grantype == 'st2' -%]
+									selected="selected"
+									[%- END -%]>st2</option>
+							<option [% IF customer.grantype == 'ph2' -%]
+									selected="selected"
+									[%- END -%]>ph2</option>	
+					</select> 
+				<label for="cust[% customer.id %]lead">
+				Lead<noscript>(5)</noscript>:</label> <input type="text"
+					name="cust[% customer.id %]lead"
+					size='[% customer.lead.length || 1 %]'
+					class="countable5"
+					id="cust[% customer.id %]lead"
+				 	value="[% customer.lead %]">
+				<label for="datepicker[% customer.id %]first">
+				First Contact<noscript>(YYYY-MM-DD)</noscript>:</label>
+				<input type="text" size=10
+					name="cust[% customer.id %]first"
+					id="datepicker[%customer.id%]first"
+				 	value="[% customer.first %]">
+				<label for="cust[% customer.id %]stage">Stage:</label>
+				<select name="cust[% customer.id %]stage"
+						id="cust[% customer.id %]stage">
+					<option [% IF  customer.stage == 'first' -%]
+						selected="selected"[%- END -%]>first</option>
+					<option [% IF  customer.stage == 'quote' -%]
+						selected="selected"[%- END -%]>quote</option>
+					<option [% IF  customer.stage == 'visited' -%]
+						selected="selected"[%- END -%]>visited</option>
+					<option [% IF  customer.stage == 'happen' -%]
+						selected="selected"[%- END -%]>happen</option>	
+					<option [% IF  customer.stage == 'lost' -%]
+						selected="selected"[%- END -%]>lost</option>	
+					<option [% IF  customer.stage == 'completed' -%]
+						selected="selected"[%- END -%]>completed</option>	
+					<option [% IF  customer.stage == 'closed' -%]
+						selected="selected"[%- END -%]>closed</option>	
+				</select>
+				<label for="cust[% customer.id %]assign">Assigned to:</label>
+				<select name="cust[% customer.id %]assign">
+					<option></option>
+					<option [% IF  customer.assign == 'rich' -%]
+						selected="selected"[%- END -%]>rich</option>
+					<option [% IF  customer.assign == 'mik' -%]
+						selected="selected"[%- END -%]>mik</option>
+					<option [% IF  customer.assign == 'rob' -%]
+						selected="selected"[%- END -%]>rob</option>	
+					<option [% IF  customer.assign == 'raj' -%]
+						selected="selected"[%- END -%]>raj</option>	
+				</select>
 				<BR>
             	<INPUT type="submit" value="Do IT!">
-				<input type="button" value="Nah mate!" onClick="window.opener.location.reload(true); window.close();">
-				<input type="text" size="50" name="[%customer.$key.id%]changes">
-				</input>
-				<br>
-				<a href="">Delete me!</a>
+				<a href="/cgi-bin/ssdel.pl?table=customer&id=[%customer.id%]">
+					Delete me!</a>
 				</div>
-				<div id='[%customer.$key.id%]tabs-2'>
-					 Comment (500):  
-					 Date (YYYY-MM-DD): 
-					[% FOREACH comment = comments %]
-						[% IF comment.id == customer.$key.id %]
-						<textarea name="[% comment.id %]comment" cols=125
+				<div id='[%customer.id%]tabs-2'>
+					[%# step through the comments handed by the cgi -%]
+					[%- FOREACH comment = comments -%]
+					[%- NEXT UNLESS comment.custid == customer.id -%]
+				 	<label for="comm[% comment.id %]comment">Comment
+					<noscript>(500)</noscript>:</label>  
+					<textarea name="comm[% comment.id %]comment"
+						id="comm[% comment.id %]comment" cols=125
+						class="countable500"
 						rows=3>[% comment.comment %]</textarea>
-			 			<input type="text" size=10 name="[% comment.id %]date"
-						value="[% comment.date %]">
-						<a href="/sscomsure.pl?id=[% comment.id %]">
+				 	<label for="datepicker[% comment.id %]">Date
+					<noscript>(YYYY-MM-DD)</noscript>:</label>  
+			 		<input type="text" size=10
+						name="comm[% comment.id %]date"
+						value="[% comment.date %]"
+						id="datepicker[% comment.id %]">
+					<a href="/cgi-bin/ssdel.pl?table=comment&id=[% comment.id %]">
 							Delete me!</a>
-						[% END %]
 					[% END %]
-					<textarea name="comment" cols=125 rows=3></textarea>
-					<input type="text" size=10 name="date" value="$today">
+					<label for="new[%customer.id%]comment">Comment
+					<noscript>(500)</noscript>:</label>
+					<textarea name="new[%customer.id%]comment"
+							name="new[%customer.id%]comment" cols=125
+							class="countable500"
+							rows=3></textarea>
+					<label for="datepicker[%customer.id%]">Date
+					<noscript>(YYYY-MM-DD)</noscript>:</label>
+					<input type="text" size=10 name="new[%customer.id%]date"
+					  id="datepicker[% customer.id %]comment" value="$today">
+            	<INPUT type="submit" value="Do IT!">
 				</div>
-				<div id='[%customer.$key.id%]tabs-3'>
+				<div id='[%customer.id%]tabs-3'>
 					Some guff!
 				</div>
-				<div id='[%customer.$key.id%]tabs-4'>
-					Filez
+				<div id='[%customer.id%]tabs-4'>
+					Filez: <br>
+					[% id = customer.id %]
+						<table>
+					[% FOREACH file = files.$id %]
+						<tr>
+						<td><a href="/files/[%id%]/[%file%]">[%file%]</a> </td>
+						<td><a href="/cgi-bin/ssdel.pl?table=file&id=[%customer.id%]&file=[%file%]">Delete me!</a></td>
+						<tr>
+					[% END %]
+						</table>
+					<input type='file' name='files[%customer.id%]file'/>
+            		<INPUT type="submit" value="Do IT!">
 				</div>
 			</div>
 			</td>
@@ -237,49 +279,80 @@ jquery.ssss sql and header.end
 		<tr>	
 			<td colspan='4'>
 			NEW <Br>
-			Action Date (YYYY-MM-DD): <input type="text" size=10
+			<label for="datepickernewact">Action Date:<noscript>(YYYY-MM-DD)
+			</noscript>:</label>
+			<input type="text" size=10 id="datepickernewact"
 				name="newactdate"><BR>
-			Name (50): <input class="foo" type="text" size=50 name="newname"/>	<BR>
-			Address (250):
-				 <textarea name="newaddress" rows=5 cols=50></textarea> <BR>
-			Phone (50): <input type="text" size=50 name="newphone"/> <BR>
-			Email (50): <input type="text" size=50 name="newemail"/> <BR>	
+			<label for="newname">Name<noscript>(50)</noscript>:</label>
+			<input id="newname" type="text" size=50 name="newname"
+				class="countable50"/><BR>
+			<label for="newadress">Address<noscript>(250)</noscript>:</label>
+			 <textarea name="newaddress" id="newaddress" rows=5
+				cols=50 class="countable250"></textarea> <BR>
+			<label for="newphone">Phone<noscript>(50)</noscript>:</label>
+			<input type="text" size=50 name="newphone" id="newphone"
+				class="countable50"/> <BR>
+			<label for="newemail">Email<noscript>(50):</noscript></label>
+			<input type="text" size=50 name="newemail" id="newemail"
+				class="countable50"/> <BR>	
 			</td><td colspan="0">
-			Reference (5): <input type="text" size=5 name="newreff"/> <BR>
-			Grant Type : <select name="newgrantype">
-							<option></option>
-							<option>st1</option>
-							<option>st2</option>
-							<option >ph2</option>	
-						</select> <BR>
-			Lead: (5): <input type="text" size=5 name="newlead"/> <BR>
-			First Contact (YYYY-MM-DD): <input type="text" size=10
-				name="newfirst"/><BR>
-			Stage: <select name="newstage">
-							<option selected="selected">first</option>
-							<option>quote</option>
-							<option>happen</option>	
-							<option>lost</option>	
-							<option>completed</option>	
-						</select> <BR>
-			Assigned to : <select name="newassign">
-							<option></option>
-							<option>rich</option>
-							<option>mik</option>
-							<option>rob</option>
-							<option>raj</option>
-						</select>
+			<label for="newreff">Reference<noscript>(5)</noscript>:</label>
+			<input type="text" size=5 name="newreff" id="newreff"
+				class="countable5"/> <BR>
+			<label for="newgranttype">Grant Type :</label>
+			<select name="newgrantype" id="newgrantype">
+				<option></option>
+				<option>st1</option>
+				<option>st2</option>
+				<option >ph2</option>	
+			</select> <BR>
+			<label for="newlead">Lead<noscript>(5)</noscript>:</label>
+			<input type=text" size=5 name="newlead" id="newlead"
+				class="countable5"/> <BR>
+			<label for="datepickerfirst">First Contact<noscript>(YYYY-MM-DD):
+			</noscript></label><input type="text" size=10
+				id="datepickernewfirst"name="newfirst"/><BR>
+			<label for="newstage">Stage:</label>
+			<select name="newstage" id="newstage">
+				<option selected="selected">first</option>
+				<option>quote</option>
+				<option>visited</option>
+				<option>happen</option>	
+				<option>lost</option>	
+				<option>completed</option>	
+				<option>closed</option>	
+			</select> <BR>
+			<label for="newassign">Assigned to :</label>
+			<select name="newassign" id="newassign">
+				<option></option>
+				<option>rich</option>
+				<option>mik</option>
+				<option>rob</option>
+				<option>raj</option>
+			</select>
 			</td>
+			<td colspan='4'>
+				<label for="newcomment">Comment<noscript>(500)</noscript>:
+				</label>
+				<textarea name="newcomment" id="newcomment" cols=50
+				 rows=10 class="countable500"></textarea>
+				<label for="datepickernewcomment">Date<noscript>(YYYY-MM-DD)
+				</noscript>:</label>
+				<input type="text" size=10 name="newdate"
+				 id="datepickernewcomment" value="$today">
+			</td>		
 			<td> <INPUT type="submit" value="Do IT!"> </td>
 		<tr>
-		</form>
 	</table>
+	<input type="text" name="changes" id ="changes">
+	<noscript><input type="hidden" name="noscript" value="23"></noscript> 
+	</form>
 	<div id="footer">
   	<div id="copyright"	>
     		&copy; [% copyright %]
   	</div>
 	</div>
-	<!-- disconnect from database, to stop error --!>
+	<!-- disconnect from database, to stop warning --!>
 	[% DBI.disconnect %] 
 </body>
 </html>
