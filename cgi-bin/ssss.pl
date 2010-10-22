@@ -92,8 +92,8 @@ if ($ENV{'REQUEST_METHOD'} eq "POST"){
 			# do the same for the comment table
 			my $upsql = $dbh->prepare('UPDATE comment SET comment = ?, date = ? WHERE id = ?');
 			foreach(@{$update->{'comm'}}){
-				$upsql->execute($parms{'comms'.$_.'comment'},
-						$parms->{'comm'}->{$_}->{'date'},
+				$upsql->execute($parms->{'comm'.$_.'comment'},
+						$parms->{'comm'.$_.'date'},
 						$_) or die "$upsql->errstr : $_";
 			}
 		# Ok so this breaks the logic of using $table as a varname as this
@@ -105,19 +105,19 @@ if ($ENV{'REQUEST_METHOD'} eq "POST"){
 			foreach(@{$update->{'new'}}){
 				# if there's nothing in the comment field we don't want
 				# to dubmit it.
-				next unless $update->{'new'}->{$_}->{'comment'};
-				$commsql->execute($_, $update->{'new'}->{$_}->{'date'},
-							$update->{'new'}->{$_}->{'comment'})
+				next unless $parms->{'new'.$_.'comment'};
+				$commsql->execute($_, $parms->{'new'.$_.'date'},
+							$parms->{'new'.$_.'comment'})
 							or die "$commsql->errstr : $_";
 			}
 		}elsif ($table eq 'files'){
 		# Again not really a DB table, but if we have a newfile parameter
 		# then we'd best do something with it
-			foreach(keys %{$update->{'files'}}){
+			foreach(@{$update->{'files'}}){
 				# if there's nothing to upload BREAK BREAK!
-				next unless $update->{'files'}->{$_}->{'file'};
+				next unless $parms->{'files'.$_.'file'};
 				my $dir = "../files/$_";
-				my $file = $update->{'files'}->{$_}->{'file'};
+				my $file = $parms->{'files'.$_.'file'};
 				# check for tainted filenames
 				next unless $file =~ /([\w.]+)/;
 				$file = $1;
