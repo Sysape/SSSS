@@ -101,5 +101,17 @@
 			'maxChars': 250,
 			'maxCharsWarning': 245
 		}); 	
+		// add confirmation to delete links
+	    \$('.delete').click(function(){
+            var answer = confirm('Delete '+jQuery(this).attr('title'));
+            // jQuery(this).attr('title') gets anchor title attribute
+            return answer; // answer is a boolean
+        }); 
+		// add confirmation to the form submit
+		\$('.submit').click(function(){
+			var answer = confirm('Update: '+jQuery("#changes").attr('value'));
+			// hopefully this returns the value of changes.
+			return answer; 
+        }); 
     });
 </script>

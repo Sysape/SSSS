@@ -38,7 +38,7 @@ jquery.ssss sql and header.end
 					checked
 				[%- END -%]
 				> d
-				<input type="submit" value="do it!">
+				<input type="submit" value="Filter!">
 			</td> 
     	[% END %]
 		</tr>
@@ -220,8 +220,10 @@ jquery.ssss sql and header.end
 						selected="selected"[%- END -%]>raj</option>	
 				</select>
 				<BR>
-            	<INPUT type="submit" value="Do IT!">
-				<a href="/cgi-bin/ssdel.pl?table=customer&id=[%customer.id%]">
+            	<INPUT type="submit" class="submit" value="Do IT!">
+				<a href="/cgi-bin/ssdel.pl?table=customer&id=[%customer.id%]"
+					class="delete"
+					title="Customer: [%customer.id%] Name: [%customer.name%]">
 					Delete me!</a>
 				</div>
 				<div id='[%customer.id%]tabs-2'>
@@ -240,7 +242,10 @@ jquery.ssss sql and header.end
 						name="comm[% comment.id %]date"
 						value="[% comment.date %]"
 						id="datepicker[% comment.id %]">
-					<a href="/cgi-bin/ssdel.pl?table=comment&id=[% comment.id %]">
+					<a
+					href="/cgi-bin/ssdel.pl?table=comment&id=[% comment.id %]"
+					class="delete"
+					title="Comment: [%comment.id%]: [%comment.comment.substr(0,23)%]...">
 							Delete me!</a>
 					[% END %]
 					<label for="new[%customer.id%]comment">Comment
@@ -253,7 +258,7 @@ jquery.ssss sql and header.end
 					<noscript>(YYYY-MM-DD)</noscript>:</label>
 					<input type="text" size=10 name="new[%customer.id%]date"
 					  id="datepicker[% customer.id %]comment" value="$today">
-            	<INPUT type="submit" value="Do IT!">
+            	<INPUT type="submit" class="submit" value="Do IT!">
 				</div>
 				<div id='[%customer.id%]tabs-3'>
 					Some guff!
@@ -265,7 +270,11 @@ jquery.ssss sql and header.end
 					[% FOREACH file = files.$id %]
 						<tr>
 						<td><a href="/files/[%id%]/[%file%]">[%file%]</a> </td>
-						<td><a href="/cgi-bin/ssdel.pl?table=file&id=[%customer.id%]&file=[%file%]">Delete me!</a></td>
+						<td>
+							<a
+					  		href="/cgi-bin/ssdel.pl?table=file&id=[%customer.id%]&file=[%file%]"
+							class="delete" title="[%file%]">
+							Delete me!</a></td>
 						<tr>
 					[% END %]
 						</table>
@@ -341,10 +350,10 @@ jquery.ssss sql and header.end
 				<input type="text" size=10 name="newdate"
 				 id="datepickernewcomment" value="$today">
 			</td>		
-			<td> <INPUT type="submit" value="Do IT!"> </td>
+			<td> <INPUT type="submit" class="submit" value="Do IT!"> </td>
 		<tr>
 	</table>
-	<input type="text" name="changes" id ="changes">
+	<input type="hidden" name="changes" id ="changes">
 	<noscript><input type="hidden" name="noscript" value="23"></noscript> 
 	</form>
 	<div id="footer">
