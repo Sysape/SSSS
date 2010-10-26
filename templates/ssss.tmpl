@@ -278,8 +278,12 @@ jquery.ssss sql and header.end
 						<tr>
 					[% END %]
 						</table>
-					<input type='file' name='files[%customer.id%]file'/>
-            		<INPUT type="submit" value="Do IT!">
+					<div id="file-[%customer.id%]">
+						<noscript>
+							<input type='file' name='files[%customer.id%]file'/>
+            				<INPUT type="submit" value="Do IT!">
+						</noscript>
+					</div>
 				</div>
 			</div>
 			</td>
