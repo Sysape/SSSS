@@ -110,27 +110,29 @@ if ($ENV{'REQUEST_METHOD'} eq "POST"){
 							$parms->{'new'.$_.'comment'})
 							or die "$commsql->errstr : $_";
 			}
-		}elsif ($table eq 'files'){
-		# Again not really a DB table, but if we have a newfile parameter
-		# then we'd best do something with it
-			foreach(@{$update->{'files'}}){
-				# if there's nothing to upload BREAK BREAK!
-				next unless $parms->{'files'.$_.'file'};
-				my $dir = "../files/$_";
-				my $file = $parms->{'files'.$_.'file'};
-				# check for tainted filenames
-				next unless $file =~ /([\w.]+)/;
-				$file = $1;
-				# we need create the dir to stick stuff in, if this exists
-				# the following command will fail harmlessly I hope.
-				mkdir "$dir", 0775; 
-				open(LOCAL, ">$dir/$file") or die $!; 
-				my $fhp = 'files'.$_.'file';
-				my $fh = $query->upload("$fhp");
-			  	# undef may be returned if it's not a valid file handle
-				while(<$fh>) { print LOCAL $_; } 
-			}
-		}else{
+# I'm implementing a funky Ajax file uploader so commenting this bit out
+# for now. Not deleting it as it contains some useful code for refs.
+#		}elsif ($table eq 'files'){
+#		# Again not really a DB table, but if we have a newfile parameter
+#		# then we'd best do something with it
+#			foreach(@{$update->{'files'}}){
+#				# if there's nothing to upload BREAK BREAK!
+#				next unless $parms->{'files'.$_.'file'};
+#				my $dir = "../files/$_";
+#				my $file = $parms->{'files'.$_.'file'};
+#				# check for tainted filenames
+#				next unless $file =~ /([\w.]+)/;
+#				$file = $1;
+#				# we need create the dir to stick stuff in, if this exists
+#				# the following command will fail harmlessly I hope.
+#				mkdir "$dir", 0775; 
+#				open(LOCAL, ">$dir/$file") or die $!; 
+#				my $fhp = 'files'.$_.'file';
+#				my $fh = $query->upload("$fhp");
+#			  	# undef may be returned if it's not a valid file handle
+#				while(<$fh>) { print LOCAL $_; } 
+#			}
+#		}else{
 			die "invalid table specified in update loop \n";
 		}
 	}

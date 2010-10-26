@@ -10,6 +10,9 @@
 <!-- load the EasyCharCounter plugin --!>
 <script type="text/javascript" src="/js/jquery.jqEasyCharCounter.mod.js">
 </script>
+<!-- load the file-uploader plugin --!>
+<script type="text/javascript" src="/js/fileuploader.js">
+</script>
 	<!-- when the document is ready hide the edit rows of the table
 	and set up click events to toggle the normal and editable rows
 	when the row is clicked --!>
@@ -26,15 +29,13 @@
 			\$(this).parent().parent().toggle();
 	     });
 		// the UI script startup guff
-        // Tabs
-		// we need to have a tabs section for every customer id.
 		[% FOREACH customer = customers %]
+        	// Tabs
+			// we need to have a tabs section for every customer id.
         	\$('#[%customer.id%]tabs').tabs();
-		[%END%]
-        // Datepicker
-		// we need to have an Actdate and a Firstdate picker for
-		// each customer
-		[% FOREACH customer = customers %]
+        	// Datepicker
+			// we need to have an Actdate and a Firstdate picker for
+			// each customer
         	\$('#datepicker[%customer.id%]act').datepicker({
 				dateFormat: 'yy-mm-dd'
         	});
@@ -44,6 +45,21 @@
         	\$('#datepicker[%customer.id%]comment').datepicker({
 				dateFormat: 'yy-mm-dd'
         	});
+			// set up the fileuploader script
+			// as we want the [customer.id] to be passed into the upload.pl we
+			// need one of these for every customer.
+	    	var uploader = new qq.FileUploader({
+        		// pass the dom node (ex. $(selector)[0] for jQuery users)
+        		element: document.getElementById('file-[%customer.id%]'),
+        		// path to server-side upload script
+        		action: '/cgi-bin/upload.pl',
+				// turn debugging on to see wtf is going on
+				debug: true,
+				// pass the customer.id through.
+				params: {
+					cust: '[%customer.id%]'
+				}
+    		});
 		[%END%]
 		// and one for each of the comments
 		[% FOREACH comment = comments %]
@@ -113,5 +129,6 @@
 			// hopefully this returns the value of changes.
 			return answer; 
         }); 
+
     });
 </script>
