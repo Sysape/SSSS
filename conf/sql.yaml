@@ -1,0 +1,4 @@
+---
+db: 'dbi:mysql:solsystest'
+pass: '*****'
+user: 'solsys'
