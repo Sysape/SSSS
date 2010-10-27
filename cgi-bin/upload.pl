@@ -15,7 +15,7 @@ my $IN = new CGI;
 my $file = $IN->param('POSTDATA');
 my $temp_id = $IN->param('temp_id');
 my $params = $IN->Vars;
-my $foo = join (',' , keys %$params);
+my $foo = join (',' , values %$params);
 
 die "foo is: $foo";
 
