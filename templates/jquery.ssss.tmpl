@@ -22,15 +22,19 @@
 <script type="text/javascript">
 	\$(document).ready(function(){
 		\$(".edit").hide();
+		// this is for functionality like rich wants
+		\$(".close").hide();
 		\$("tr.norm").click(function(event){
 			\$(this).next(".edit").toggle();
-			\$(this).toggle();
+		// commented the next line out to have functionality like rich wants
+		//	\$(this).toggle();
 	     });
 		// The close div should close stuff
-		\$(".close").click(function(event){
-			\$(this).parent().parent().prev(".norm").toggle();
-			\$(this).parent().parent().toggle();
-	     });
+		// commented the next lines out to have functionality like rich wants
+		//\$(".close").click(function(event){
+		//	\$(this).parent().parent().prev(".norm").toggle();
+		//	\$(this).parent().parent().toggle();
+	    // });
 		// the UI script startup guff
 		[% FOREACH customer = customers %]
         	// Tabs

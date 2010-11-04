@@ -269,7 +269,7 @@ if ($ENV{'REQUEST_METHOD'} eq "POST"){
 	# we need to list the contents of the files dirs for each customer.
 	my $files ;
 	foreach (@$ref) {
-		my @ls = `ls "../files/$_->{'id'}/"`;
+		my @ls = `ls -t "../files/$_->{'id'}/"`;
 		$files->{$_->{'id'}} = \@ls;
 	}
 	
