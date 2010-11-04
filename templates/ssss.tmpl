@@ -269,7 +269,8 @@ jquery.ssss sql and header.end
 						<table>
 					[% FOREACH file = files.$id %]
 						<tr>
-						<td><a href="/files/[%id%]/[%file%]">[%file%]</a> </td>
+						<td><a href="/files/[%id%]/[%file%]" target="_blank"
+							   >[%file%]</a> </td>
 						<td>
 							<a
 					  		href="/cgi-bin/ssdel.pl?table=file&id=[%customer.id%]&file=[%file%]"
