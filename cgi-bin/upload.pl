@@ -1,66 +1,82 @@
-#!/usr/bin/perl
+#!/usr/bin/perl -Tw
+
+# Copyright Michael J G Day, 2010 
+# contact via code[at]gatrell[dot]org 
+
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 
 use strict;
-use CGI::Carp qw(fatalsToBrowser);
-
-use Digest::MD5;
+use CGI qw(:standard);
+use URI;
+use CGI::Carp;
+use URI::QueryParam;
+use JSON;
 
 my $uploaddir = '../files';
 
-my $maxFileSize = 0.5 * 1024 * 1024; # 1/2mb max file size...
-
-use CGI;
 my $IN = new CGI;
 
+# because the filuploader.js submits data as application/octet-stream the
+# file data will be in POSTDATA and the query string will not be accessible
+# using CGI's param or Vars methods.
+
 my $file = $IN->param('POSTDATA');
-my $temp_id = $IN->param('temp_id');
-my $params = $IN->Vars;
-my $foo = join (',' , values %$params);
 
-die "foo is: $foo";
+# get the URI from the environment.
 
-# make a random filename, and we guess the file type later on...
-my $name = Digest::MD5::md5_base64( rand );
-   $name =~ s/\+/_/g;
-   $name =~ s/\//_/g;
+my $url = $ENV{'REQUEST_URI'};
 
-my $type;
-if ($file =~ /^GIF/) {
-    $type = "gif";
-} elsif ($file =~ /PNG/) {
-    $type = "png";
-} elsif ($file =~ /JFIF/) {
-    $type = "jpg";
+my $uri = URI->new($url, "http");
+
+# so now we create a hash of the params
+my $params = $uri->query_form_hash;
+
+# create a vars for the JSON reply
+my $reply;
+
+# and create json object to do the translations.
+my $json = JSON->new->allow_nonref;
+
+# set the customer directory to the cust cgi parameter.
+my $custdir = $params->{'cust'};
+# set the filename to the qqfile dgi parameter.
+my $filename = $params->{'qqfile'};
+# now we need to detaint the directory name and file name
+unless ($filename =~ /^[\w\.]+$/ && $custdir =~ /^[\w\.]+$/){
+	 $reply = {error => "Illegal characters in filename - please only use [A-Z] [a-z] [0-9] . and _"};
 }
 
-if (!$type) {
-    print qq|{ "success": false, "error": "Invalid file type..." }|;
-    print STDERR "file has been NOT been uploaded... \n";
-}
+mkdir("$uploaddir/$custdir", 0775);
 
-print STDERR "Making dir: $uploaddir/$temp_id \n";
 
-mkdir("$uploaddir/$temp_id");
+print $IN->header('application/json');
 
-open(WRITEIT, ">$uploaddir/$name.$type") or die "Cant write to $uploaddir/$name.$type. Reason: $!";
-    print WRITEIT $file;
-close(WRITEIT);
+# if the reply var has been already set it's an error.
 
-my $check_size = -s "$uploaddir/$name.$type";
-
-print STDERR qq|Main filesize: $check_size  Max Filesize: $maxFileSize \n\n|;
-
-print $IN->header();
-if ($check_size < 1) {
-    print STDERR "ooops, its empty - gonna get rid of it!\n";
-    print qq|{ "success": false, "error": "File is empty..." }|;
-    print STDERR "file has been NOT been uploaded... \n";
-} elsif ($check_size > $maxFileSize) {
-    print STDERR "ooops, its too large - gonna get rid of it!\n";
-    print qq|{ "success": false, "error": "File is too large..." }|;
-    print STDERR "file has been NOT been uploaded... \n";
-} else  {
-    print qq|{ "success": true }|;
-
-    print STDERR "file has been successfully uploaded... thank you.\n";
+if ($reply)	{
+	print $json->encode($reply);
+}else{
+	# set message to sucess message
+	$reply = {success => JSON::true};
+	# open the file for writing or set reply to failure
+	open(WRITEIT, ">$uploaddir/$custdir/$filename") or
+	 $reply = {error => "Cant write to $uploaddir/$custdir/$filename. Reason: $!"};
+	print WRITEIT $file;
+	close(WRITEIT);
+	# write to logfile about failure.
+	carp $json->encode($reply) if (keys (%$reply) eq "error");
+	# return error to browser via json.
+	print $json->encode($reply);
 }
