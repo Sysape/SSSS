@@ -1,4 +1,0 @@
----
-db: 'dbi:mysql:solsystest'
-pass: 'w0kk4'
-user: 'solsys'
