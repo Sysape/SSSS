@@ -1,0 +1,38 @@
+body {font-family: monospace; font-size: 120%}
+td {font-size: 84% }
+th {font-weight: bold; }
+option {font-size: 72%}
+
+a.tip {
+	position: relative;
+}
+
+a.tip span {
+	display: none;
+	position: absolute;
+	top: 20px;
+	left: -10px;
+	width: 125px;
+	padding: 5px;
+	z-index: 100;
+	background: #000;
+	color: #fff;
+	-moz-border-radius: 5px; /* this works only in camino/firefox */
+	-webkit-border-radius: 5px; /* this is just for Safari */
+}
+
+a:hover.tip {
+	font-size: 99%; /* this is just for IE */
+}
+
+a:hover.tip span {
+	display: block;
+}
+
+tr.norm {
+}
+tr.clicked {
+	display: none;
+}
+
+.dirtyField {color:green;}
