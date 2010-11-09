@@ -47,9 +47,23 @@ if ($ENV{'REQUEST_METHOD'} eq "POST"){
 	# like it to be wadged into a hash where the first key is the table and 
 	# the next id and the last is the field name.
 	my $update;
-	foreach(keys %{$parms}){
-		next unless (/(\D+)(\d+)(\D+)/);
-		$update->{$1}->{$2}->{$3} = $parms->{$_};
+
+	# we've got a javascript field that contains a list of the feilds that
+	# have changed now so we cna foreach over that and not all the fields
+	# on the form. Of course if the user doesn't have js then this will
+	# break stuff so we check for the hidden field that's in the <noscript>
+	# tags and if we have that we step through parms.	
+	if ($parms->{'noscript'}){
+		warn $parms->{'noscript'};
+		foreach(keys %{$parms}){
+			next unless (/(\D+)(\d+)(\D+)/);
+			$update->{$1}->{$2}->{$3} = $parms->{$_};
+		}
+	}else{
+		foreach(split(/,/, $parms->{'changes'})){
+			next unless (/(\D+)(\d+)(\D+)/);
+			$update->{$1}->{$2}->{$3} = $parms->{$_};
+		}
 	}
 	# so now we need to see what table we need to update and then build the
 	# right sql statement for that table

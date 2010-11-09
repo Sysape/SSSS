@@ -17,8 +17,8 @@ jquery.ssss sql and header.end
 --!>
 	<!-- the start of the form that limits the selection of clients from 
 		the db. --!>
-	<table border=1 width="100%">
 	<form action="/cgi-bin/ssss.pl" method="get">
+	<table border=1 width="100%">
 		<tr>
 		[% FOREACH column = columns %]	
 			<th> [% column %] </th> 
@@ -77,11 +77,13 @@ jquery.ssss sql and header.end
 			</select>
             </td>
         [% END %]
-		</form>
 		</tr>
+	</table>
+	</form>
 		<!-- start the form out side the loop --!>	
-		<form action="/cgi-bin/ssss.pl" method="post"
-						enctype="multipart/form-data">
+	<form action="/cgi-bin/ssss.pl" method="post"
+			enctype="multipart/form-data" id="dirtyForm">
+	<table border=1 width="100%">
 		[% FOREACH customer = customers %]
 		<tr class="norm">
 			[% FOREACH column = columns %]
@@ -117,109 +119,106 @@ jquery.ssss sql and header.end
 				ID: [% customer.id %]  
 				<!-- we need to have the label and the <input> on the same line
 				so we use some <span>s --!>
-				<span style="white-space: nowraps;">
-				Action Date (YYYY-MM-DD): <input type="text" size=10
+				<label for="datepicker[% customer.id %]act">
+				Action Date<noscript> (YYYY-MM-DD)</noscript>:</label> 
+				<input type="text" size=10
 					name="cust[% customer.id %]actdate"
+					id="datepicker[% customer.id %]act"
 					value='[% customer.actdate %]'>
-					<div type="text" id="datepicker[%customer.id%]act"></div>
-				</span>
-				<span style="white-space: nowraps;">
-				Name (50): <input type="text" size=50
+				<label for="cust[% customer.id %]name">
+				Name<noscript>(50)</noscript>:</label> <input type="text"
+					size='[% customer.name.length || 1 %]'
 					name="cust[% customer.id %]name"
+					class="countable50"
+					id="cust[% customer.id %]name"
 				 	value="[% customer.name %]" />	
-				</span>
-				<span style="white-space: nowraps;">
-				Address (250): <textarea name="cust[% customer.id %]address"
+				<label for="cust[% customer.id %]address">
+				Address<noscript>(250)</noscript>:</label> <textarea
+					name="cust[% customer.id %]address"
+					class="countable250"
+					id="cust[% customer.id %]address"
 					rows=5 cols=50>[% customer.address %]</textarea>
-				</span>
-				<span style="white-space: nowraps;">
-				Phone (50): <input type="text" size=50
+				<label for="cust[% customer.id %]phone">
+				Phone<noscript>(50)</noscript>:</label>
+				<input type="text"
+					size='[% customer.phone.length || 1 %]'
 					name="cust[% customer.id %]phone"
+					class="countable50"
+					id="cust[% customer.id %]phone"
 				 	value="[% customer.phone %]"/>
-				</span>
-				<span style="white-space: nowraps;">
-				Email (50): <input type="text" size=50
+				<label for="cust[% customer.id %]email">
+				Email<noscript>(50)</noscript>:</label>
+				<input type="text"
 					name="cust[% customer.id %]email"
+					size='[% customer.email.length || 1 %]'
+					id="cust[% customer.id %]email"
+					class="countable50"
 				 	value="[% customer.email %]"/>
-				</span>
-				<span style="white-space: nowraps;">
-				Reference (5): <input type="text" size=5
+				<label for="cust[% customer.id %]reff">
+				Reference<noscript>(5)</noscript>:</label>
+				<input type="text"
 					name="cust[% customer.id %]reff"
+					size='[% customer.reff.length || 1 %]'
+					class="countable5"
 				 	value="[% customer.reff %]"/>
-				</span>
-				<span style="white-space: nowraps;">
-				Grant Type : <select name="cust[% customer.id %]grantype">
-							<option></option>
-								<option [% IF customer.grantype == 'st1' -%]
-										selected="selected"
-										[%- END -%]
-								>st1</option>
-								<option [% IF customer.grantype == 'st2' -%]
-										selected="selected"
-										[%- END -%]
-								>st2</option>
-								<option [% IF customer.grantype == 'ph2' -%]
-										selected="selected"
-										[%- END -%]
-								>ph2</option>	
-							</select> 
-				</span>
-				<span style="white-space: nowraps;">
-				Lead: (5): <input type="text" size=5
+				<label for="cust[% customer.id %]grantype">
+				Grant Type:</label>
+					 <select name="cust[% customer.id %]grantype"
+							id="cust[% customer.id %]grantype">
+						<option></option>
+							<option [% IF customer.grantype == 'st1' -%]
+									selected="selected"
+									[%- END -%]>st1</option>
+							<option [% IF customer.grantype == 'st2' -%]
+									selected="selected"
+									[%- END -%]>st2</option>
+							<option [% IF customer.grantype == 'ph2' -%]
+									selected="selected"
+									[%- END -%]>ph2</option>	
+					</select> 
+				<label for="cust[% customer.id %]lead">
+				Lead<noscript>(5)</noscript>:</label> <input type="text"
 					name="cust[% customer.id %]lead"
+					size='[% customer.lead.length || 1 %]'
+					class="countable5"
+					id="cust[% customer.id %]lead"
 				 	value="[% customer.lead %]">
-				</span>
-				<span style="white-space: nowraps;">
-				First Contact (YYYY-MM-DD): <input type="text" size=10
+				<label for="datepicker[% customer.id %]first">
+				First Contact<noscript>(YYYY-MM-DD)</noscript>:</label>
+				<input type="text" size=10
 					name="cust[% customer.id %]first"
+					id="datepicker[%customer.id%]first"
 				 	value="[% customer.first %]">
-					<div type="text" id="datepicker[%customer.id%]first"></div>
-				</span>
-				<span style="white-space: nowraps;">
-				Stage: <select name="cust[% customer.id %]stage">
-								<option [% IF  customer.stage == 'first' -%]
-										selected="selected"
-										[%- END -%]
-								>first</option>
-								<option [% IF  customer.stage == 'quote' -%]
-										selected="selected"
-										[%- END -%]
-								>quote</option>
-								<option [% IF  customer.stage == 'happen' -%]
-										selected="selected"
-										[%- END -%]
-								>happen</option>	
-								<option [% IF  customer.stage == 'lost' -%]
-										selected="selected"
-										[%- END -%]
-								>lost</option>	
-								<option [% IF  customer.stage == 'completed' -%]
-										selected="selected"
-										[%- END -%]
-								>completed</option>	
-							</select>
-				</span>
-				<span style="white-space: nowraps;">
-				Assigned to : <select name="cust[% customer.id %]assign">
-								<option></option>
-								<option [% IF  customer.assign == 'rich' -%]
-										selected="selected"
-										[%- END -%]
-								>rich</option>
-								<option [% IF  customer.assign == 'mik' -%]
-										selected="selected"
-										[%- END -%]
-								>mik</option>
-								<option [% IF  customer.assign == 'rob' -%]
-										selected="selected"
-										[%- END -%]
-								>rob</option>	
-								<option [% IF  customer.assign == 'raj' -%]
-										selected="selected"
-										[%- END -%]
-								>raj</option>	
-							</select>
-				</span>
+				<label for="cust[% customer.id %]stage">Stage:</label>
+				<select name="cust[% customer.id %]stage"
+						id="cust[% customer.id %]stage">
+					<option [% IF  customer.stage == 'first' -%]
+						selected="selected"[%- END -%]>first</option>
+					<option [% IF  customer.stage == 'quote' -%]
+						selected="selected"[%- END -%]>quote</option>
+					<option [% IF  customer.stage == 'visited' -%]
+						selected="selected"[%- END -%]>visited</option>
+					<option [% IF  customer.stage == 'happen' -%]
+						selected="selected"[%- END -%]>happen</option>	
+					<option [% IF  customer.stage == 'lost' -%]
+						selected="selected"[%- END -%]>lost</option>	
+					<option [% IF  customer.stage == 'completed' -%]
+						selected="selected"[%- END -%]>completed</option>	
+					<option [% IF  customer.stage == 'closed' -%]
+						selected="selected"[%- END -%]>closed</option>	
+				</select>
+				<label for="cust[% customer.id %]assign">Assigned to:</label>
+				<select name="cust[% customer.id %]assign">
+					<option></option>
+					<option [% IF  customer.assign == 'rich' -%]
+						selected="selected"[%- END -%]>rich</option>
+					<option [% IF  customer.assign == 'mik' -%]
+						selected="selected"[%- END -%]>mik</option>
+					<option [% IF  customer.assign == 'rob' -%]
+						selected="selected"[%- END -%]>rob</option>	
+					<option [% IF  customer.assign == 'raj' -%]
+						selected="selected"[%- END -%]>raj</option>	
+				</select>
 				<BR>
             	<INPUT type="submit" value="Do IT!">
 				<a href="/cgi-bin/ssdel.pl?table=customer&id=[%customer.id%]">
@@ -229,21 +228,31 @@ jquery.ssss sql and header.end
 					[%# step through the comments handed by the cgi -%]
 					[%- FOREACH comment = comments -%]
 					[%- NEXT UNLESS comment.custid == customer.id -%]
-					 	Comment (500):  
-						<textarea name="comm[% comment.id %]comment" cols=125
+				 	<label for="comm[% comment.id %]comment">Comment
+					<noscript>(500)</noscript>:</label>  
+					<textarea name="comm[% comment.id %]comment"
+						id="comm[% comment.id %]comment" cols=125
+						class="countable500"
 						rows=3>[% comment.comment %]</textarea>
-					 	Date (YYYY-MM-DD): 
-			 			<input type="text" size=10 name="comm[% comment.id %]date"
-						value="[% comment.date %]" id="datepicker">
-						<a href="/cgi-bin/ssdel.pl?table=comment&id=[% comment.id %]">
+				 	<label for="datepicker[% comment.id %]">Date
+					<noscript>(YYYY-MM-DD)</noscript>:</label>  
+			 		<input type="text" size=10
+						name="comm[% comment.id %]date"
+						value="[% comment.date %]"
+						id="datepicker[% comment.id %]">
+					<a href="/cgi-bin/ssdel.pl?table=comment&id=[% comment.id %]">
 							Delete me!</a>
 					[% END %]
-					Comment (500):  
-					<textarea name="new[%customer.id%]comment" cols=125
-					 rows=3></textarea>
-					Date (YYYY-MM-DD): 
+					<label for="new[%customer.id%]comment">Comment
+					<noscript>(500)</noscript>:</label>
+					<textarea name="new[%customer.id%]comment"
+							name="new[%customer.id%]comment" cols=125
+							class="countable500"
+							rows=3></textarea>
+					<label for="datepicker[%customer.id%]">Date
+					<noscript>(YYYY-MM-DD)</noscript>:</label>
 					<input type="text" size=10 name="new[%customer.id%]date"
-					 id="datepicker" value="$today">
+					  id="datepicker[% customer.id %]comment" value="$today">
             	<INPUT type="submit" value="Do IT!">
 				</div>
 				<div id='[%customer.id%]tabs-3'>
@@ -270,51 +279,74 @@ jquery.ssss sql and header.end
 		<tr>	
 			<td colspan='4'>
 			NEW <Br>
-			Action Date (YYYY-MM-DD): <input type="text" size=10
-				id="datepicker" name="newactdate"><BR>
-			Name (50): <input class="foo" type="text" size=50 name="newname"/><BR>
-			Address (250):
-				 <textarea name="newaddress" rows=5 cols=50></textarea> <BR>
-			Phone (50): <input type="text" size=50 name="newphone"/> <BR>
-			Email (50): <input type="text" size=50 name="newemail"/> <BR>	
+			<label for="datepickernewact">Action Date:<noscript>(YYYY-MM-DD)
+			</noscript>:</label>
+			<input type="text" size=10 id="datepickernewact"
+				name="newactdate"><BR>
+			<label for="newname">Name<noscript>(50)</noscript>:</label>
+			<input id="newname" type="text" size=50 name="newname"
+				class="countable50"/><BR>
+			<label for="newadress">Address<noscript>(250)</noscript>:</label>
+			 <textarea name="newaddress" id="newaddress" rows=5
+				cols=50 class="countable250"></textarea> <BR>
+			<label for="newphone">Phone<noscript>(50)</noscript>:</label>
+			<input type="text" size=50 name="newphone" id="newphone"
+				class="countable50"/> <BR>
+			<label for="newemail">Email<noscript>(50):</noscript></label>
+			<input type="text" size=50 name="newemail" id="newemail"
+				class="countable50"/> <BR>	
 			</td><td colspan="0">
-			Reference (5): <input type="text" size=5 name="newreff"/> <BR>
-			Grant Type : <select name="newgrantype">
-							<option></option>
-							<option>st1</option>
-							<option>st2</option>
-							<option >ph2</option>	
-						</select> <BR>
-			Lead: (5): <input type="text" size=5 name="newlead"/> <BR>
-			First Contact (YYYY-MM-DD): <input type="text" size=10
-				name="newfirst"/><BR>
-			Stage: <select name="newstage">
-							<option selected="selected">first</option>
-							<option>quote</option>
-							<option>happen</option>	
-							<option>lost</option>	
-							<option>completed</option>	
-						</select> <BR>
-			Assigned to : <select name="newassign">
-							<option></option>
-							<option>rich</option>
-							<option>mik</option>
-							<option>rob</option>
-							<option>raj</option>
-						</select>
+			<label for="newreff">Reference<noscript>(5)</noscript>:</label>
+			<input type="text" size=5 name="newreff" id="newreff"
+				class="countable5"/> <BR>
+			<label for="newgranttype">Grant Type :</label>
+			<select name="newgrantype" id="newgrantype">
+				<option></option>
+				<option>st1</option>
+				<option>st2</option>
+				<option >ph2</option>	
+			</select> <BR>
+			<label for="newlead">Lead<noscript>(5)</noscript>:</label>
+			<input type=text" size=5 name="newlead" id="newlead"
+				class="countable5"/> <BR>
+			<label for="datepickerfirst">First Contact<noscript>(YYYY-MM-DD):
+			</noscript></label><input type="text" size=10
+				id="datepickernewfirst"name="newfirst"/><BR>
+			<label for="newstage">Stage:</label>
+			<select name="newstage" id="newstage">
+				<option selected="selected">first</option>
+				<option>quote</option>
+				<option>visited</option>
+				<option>happen</option>	
+				<option>lost</option>	
+				<option>completed</option>	
+				<option>closed</option>	
+			</select> <BR>
+			<label for="newassign">Assigned to :</label>
+			<select name="newassign" id="newassign">
+				<option></option>
+				<option>rich</option>
+				<option>mik</option>
+				<option>rob</option>
+				<option>raj</option>
+			</select>
 			</td>
 			<td colspan='4'>
-				Comment (500):  
-				<textarea name="newcomment" cols=50
-				 rows=10></textarea>
-				Date (YYYY-MM-DD): 
+				<label for="newcomment">Comment<noscript>(500)</noscript>:
+				</label>
+				<textarea name="newcomment" id="newcomment" cols=50
+				 rows=10 class="countable500"></textarea>
+				<label for="datepickernewcomment">Date<noscript>(YYYY-MM-DD)
+				</noscript>:</label>
 				<input type="text" size=10 name="newdate"
-				 id="datepicker" value="$today">
+				 id="datepickernewcomment" value="$today">
 			</td>		
 			<td> <INPUT type="submit" value="Do IT!"> </td>
 		<tr>
-		</form>
 	</table>
+	<input type="text" name="changes" id ="changes">
+	<noscript><input type="hidden" name="noscript" value="23"></noscript> 
+	</form>
 	<div id="footer">
   	<div id="copyright"	>
     		&copy; [% copyright %]
