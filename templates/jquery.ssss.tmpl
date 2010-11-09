@@ -1,0 +1,145 @@
+[%# we need to use $$ not $ in vars so Template::Toolkit don't trash em %]
+<!-- load the jquery library from the js dir --!>
+<script type="text/javascript" src="/js/jquery.js"></script>
+<!-- an load the jquery-ui library too --!>
+<script type="text/javascript" src="/js/jquery-ui-1.8.4.custom.min.js">
+</script>
+<!-- load the dirtyfields plugin --!>
+<script type="text/javascript" src="/js/jquery.dirtyFields.packed.js">
+</script>
+<!-- load the EasyCharCounter plugin --!>
+<script type="text/javascript" src="/js/jquery.jqEasyCharCounter.mod.js">
+</script>
+<!-- load the file-uploader plugin --!>
+<script type="text/javascript" src="/js/fileuploader.js">
+</script>
+<!-- load the supertextarea plugin --!>
+<script type="text/javascript" src="/js/jquery.supertextarea.min.js">
+</script>
+	<!-- when the document is ready hide the edit rows of the table
+	and set up click events to toggle the normal and editable rows
+	when the row is clicked --!>
+<script type="text/javascript">
+	\$(document).ready(function(){
+		\$(".edit").hide();
+		// this is for functionality like rich wants
+		\$(".close").hide();
+		\$("tr.norm").click(function(event){
+			\$(this).next(".edit").toggle();
+		// commented the next line out to have functionality like rich wants
+		//	\$(this).toggle();
+	     });
+		// The close div should close stuff
+		// commented the next lines out to have functionality like rich wants
+		//\$(".close").click(function(event){
+		//	\$(this).parent().parent().prev(".norm").toggle();
+		//	\$(this).parent().parent().toggle();
+	    // });
+		// the UI script startup guff
+		[% FOREACH customer = customers %]
+        	// Tabs
+			// we need to have a tabs section for every customer id.
+        	\$('#[%customer.id%]tabs').tabs();
+        	// Datepicker
+			// we need to have an Actdate and a Firstdate picker for
+			// each customer
+        	\$('#datepicker[%customer.id%]act').datepicker({
+				dateFormat: 'yy-mm-dd'
+        	});
+        	\$('#datepicker[%customer.id%]first').datepicker({
+				dateFormat: 'yy-mm-dd'
+        	});
+        	\$('#datepicker[%customer.id%]comment').datepicker({
+				dateFormat: 'yy-mm-dd'
+        	});
+			// set up the fileuploader script
+			// as we want the [customer.id] to be passed into the upload.pl we
+			// need one of these for every customer.
+	    	var uploader = new qq.FileUploader({
+        		// pass the dom node (ex. $(selector)[0] for jQuery users)
+        		element: document.getElementById('file-[%customer.id%]'),
+        		// path to server-side upload script
+        		action: '/cgi-bin/upload.pl',
+				// turn debugging on to see wtf is going on
+				debug: true,
+				// pass the customer.id through.
+				params: {
+					cust: '[%customer.id%]'
+				}
+    		});
+		[%END%]
+		// and one for each of the comments
+		[% FOREACH comment = comments %]
+        	\$('#datepicker[% comment.id %]').datepicker({
+				dateFormat: 'yy-mm-dd'
+        	});
+       [% END %] 
+		// and for the new form.
+				
+        	\$('#datepickernewact').datepicker({
+				dateFormat: 'yy-mm-dd'
+        	});
+        	\$('#datepickernewfirst').datepicker({
+				dateFormat: 'yy-mm-dd'
+        	});
+        	\$('#datepickernewcomment').datepicker({
+				dateFormat: 'yy-mm-dd'
+        	});
+        //hover states on the static widgets
+        \$('#dialog_link, ul#icons li').hover(
+            function() { $$(this).addClass('ui-state-hover'); }, 
+            function() { $$(this).removeClass('ui-state-hover'); }
+        );
+       	//use DirtyForm to show when the form is dirty
+		var dirty={
+			denoteDirtyForm: true,
+	        denoteDirtyOptions:true,
+		  	dirtyOptionClass:"dirtyChoice",
+	       	trimText:true,
+			formChangeCallback: function(result,dirtyFieldsArray) {
+            if(result)
+                {
+                    \$("#changes").val(dirtyFieldsArray);
+                }
+            else
+                {
+                    \$("#changes").val();
+                }
+			}
+		};
+		\$('#dirtyForm').dirtyFields(dirty); 
+		\$('.countable50').jqEasyCounter({
+			'maxChars': 50,
+			'maxCharsWarning': 45
+		}); 	
+		\$('.countable5').jqEasyCounter({
+			'maxChars': 5,
+			'maxCharsWarning': 4
+		}); 	
+		// add confirmation to delete links
+	    \$('.delete').click(function(){
+            var answer = confirm('Delete '+jQuery(this).attr('title'));
+            // jQuery(this).attr('title') gets anchor title attribute
+            return answer; // answer is a boolean
+        }); 
+		// add confirmation to the form submit
+		\$('.submit').click(function(){
+			var answer = confirm('Update: '+jQuery("#changes").attr('value'));
+			// hopefully this returns the value of changes.
+			return answer; 
+        }); 
+		// turn textareas into supertext areas with char limits of 250 and 500
+		// comment out for the moment as it's borked and we're getting support
+		// from the author.
+		//\$('.countable500').supertextarea({ 
+	   //		tabr: {use: true, space: true, num: 3}
+   	//		, maxl: 500
+   	//		, dsrm: {use: true, text: 'Remaining'}
+     //   }); 
+	//	\$('.countable250').supertextarea({ 
+	 //  		tabr: {use: true, space: true, num: 3}
+   	//		, maxl: 250
+   	//		, dsrm: {use: true, text: 'Remaining'}
+     //   }); 
+    });
+</script>
