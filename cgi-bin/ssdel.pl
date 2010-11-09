@@ -40,4 +40,3 @@ $dbh->disconnect();
 # redirect back to where we came from.
 my $redirect = $query->referer() || "/cgi-bin//ssss.pl";
 print $query->redirect($redirect);
-

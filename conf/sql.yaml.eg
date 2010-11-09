@@ -1,0 +1,4 @@
+---
+db: 'dbi:mysql:dbname'
+pass: 'pass'
+user: 'user'

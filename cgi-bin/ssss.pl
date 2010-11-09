@@ -9,7 +9,6 @@ use Data::Dumper;
 # detaint the path
 $ENV{'PATH'} = '/bin:/usr/bin';
 
-
 #setup a template directory
 
 my $tt = Template->new({
@@ -43,9 +42,9 @@ if ($ENV{'REQUEST_METHOD'} eq "POST"){
 	# every customer in the db, hopefully the db will be clever enough to not
 	# bother actually updating tose records which haven't changed.
 
-	# so the fields are all named in the table.format id.name, we'd probably
-	# like it to be wadged into a hash where the first key is the table and 
-	# the next id and the last is the field name.
+	# so the fields are all named in the format table.id.name, we need a
+	# list of which tables need to be updated for which ids so a hash
+	# of arrays is probably the way forward.
 	my $update;
 
 	# we've got a javascript field that contains a list of the feilds that
@@ -57,41 +56,43 @@ if ($ENV{'REQUEST_METHOD'} eq "POST"){
 		warn $parms->{'noscript'};
 		foreach(keys %{$parms}){
 			next unless (/(\D+)(\d+)(\D+)/);
-			$update->{$1}->{$2}->{$3} = $parms->{$_};
+			push (@{$update->{$1}}, $2);
 		}
 	}else{
 		foreach(split(/,/, $parms->{'changes'})){
 			next unless (/(\D+)(\d+)(\D+)/);
-			$update->{$1}->{$2}->{$3} = $parms->{$_};
+			push (@{$update->{$1}}, $2);
 		}
 	}
-	# so now we need to see what table we need to update and then build the
-	# right sql statement for that table
+	# so now we need to see what table we need to update
 	foreach my $table (keys %$update){
 		if ($table eq 'cust'){
-			# prepare the updating sql statement outside the loop so we only
-			# do it once.
+			# Prepare the customer update sql statement here, outside the
+			# loop, so we only do it once, this updates all the fields for
+			# that customer rather than just the ones that have changed, but
+			# that's probably quicker than preparing individual statements
+			# for each customer, and mae my brain hurt less.
 			my $upsql = $dbh->prepare('UPDATE customer SET actdate = ?, name = ?, address = ?, phone = ?,email = ?, reff = ?, grantype = ?, lead = ?, first = ?, stage = ?, assign  = ? WHERE id = ?');
-		 	foreach(keys %{$update->{'cust'}}){
-				$upsql->execute($update->{'cust'}->{$_}->{'actdate'},
-	                    $update->{'cust'}->{$_}->{'name'},
-	                    $update->{'cust'}->{$_}->{'address'},
-	                    $update->{'cust'}->{$_}->{'phone'},
-	                    $update->{'cust'}->{$_}->{'email'},
-	                    $update->{'cust'}->{$_}->{'reff'},
-	                    $update->{'cust'}->{$_}->{'grantype'},
-	                    $update->{'cust'}->{$_}->{'lead'},
-	                    $update->{'cust'}->{$_}->{'first'},
-	                    $update->{'cust'}->{$_}->{'stage'},
-	                    $update->{'cust'}->{$_}->{'assign'},
+		 	foreach(@{$update->{'cust'}}){
+				$upsql->execute($parms->{"cust".$_."actdate"},
+						$parms->{'cust'.$_.'name'},
+						$parms->{'cust'.$_.'address'},
+						$parms->{'cust'.$_.'phone'},
+						$parms->{'cust'.$_.'email'},
+						$parms->{'cust'.$_.'reff'},
+						$parms->{'cust'.$_.'grantype'},
+						$parms->{'cust'.$_.'lead'},
+						$parms->{'cust'.$_.'first'},
+						$parms->{'cust'.$_.'stage'},
+						$parms->{'cust'.$_.'assign'},
 						$_) or die "$upsql->errstr : $_";
 			}
 		}elsif ($table eq 'comm'){
 			# do the same for the comment table
 			my $upsql = $dbh->prepare('UPDATE comment SET comment = ?, date = ? WHERE id = ?');
-			foreach(keys %{$update->{'comm'}}){
-				$upsql->execute($update->{'comm'}->{$_}->{'comment'},
-						$update->{'comm'}->{$_}->{'date'},
+			foreach(@{$update->{'comm'}}){
+				$upsql->execute($parms->{'comm'.$_.'comment'},
+						$parms->{'comm'.$_.'date'},
 						$_) or die "$upsql->errstr : $_";
 			}
 		# Ok so this breaks the logic of using $table as a varname as this
@@ -100,35 +101,37 @@ if ($ENV{'REQUEST_METHOD'} eq "POST"){
 		}elsif ($table eq 'new'){
 			my $commsql = $dbh->prepare(
 				'INSERT comment (custid, date, comment) VALUES (?,?,?)');
-			foreach(keys %{$update->{'new'}}){
+			foreach(@{$update->{'new'}}){
 				# if there's nothing in the comment field we don't want
 				# to dubmit it.
-				next unless $update->{'new'}->{$_}->{'comment'};
-				$commsql->execute($_, $update->{'new'}->{$_}->{'date'},
-							$update->{'new'}->{$_}->{'comment'})
+				next unless $parms->{'new'.$_.'comment'};
+				$commsql->execute($_, $parms->{'new'.$_.'date'},
+							$parms->{'new'.$_.'comment'})
 							or die "$commsql->errstr : $_";
 			}
-		}elsif ($table eq 'files'){
-		# Again not really a DB table, but if we have a newfile parameter
-		# then we'd best do something with it
-			foreach(keys %{$update->{'files'}}){
-				# if there's nothing to upload BREAK BREAK!
-				next unless $update->{'files'}->{$_}->{'file'};
-				my $dir = "../files/$_";
-				my $file = $update->{'files'}->{$_}->{'file'};
-				# check for tainted filenames
-				next unless $file =~ /([\w.]+)/;
-				$file = $1;
-				# we need create the dir to stick stuff in, if this exists
-				# the following command will fail harmlessly I hope.
-				mkdir "$dir", 0775; 
-				open(LOCAL, ">$dir/$file") or die $!; 
-				my $fhp = 'files'.$_.'file';
-				my $fh = $query->upload("$fhp");
-			  	# undef may be returned if it's not a valid file handle
-				while(<$fh>) { print LOCAL $_; } 
-			}
-		}else{
+# I'm implementing a funky Ajax file uploader so commenting this bit out
+# for now. Not deleting it as it contains some useful code for refs.
+#		}elsif ($table eq 'files'){
+#		# Again not really a DB table, but if we have a newfile parameter
+#		# then we'd best do something with it
+#			foreach(@{$update->{'files'}}){
+#				# if there's nothing to upload BREAK BREAK!
+#				next unless $parms->{'files'.$_.'file'};
+#				my $dir = "../files/$_";
+#				my $file = $parms->{'files'.$_.'file'};
+#				# check for tainted filenames
+#				next unless $file =~ /([\w.]+)/;
+#				$file = $1;
+#				# we need create the dir to stick stuff in, if this exists
+#				# the following command will fail harmlessly I hope.
+#				mkdir "$dir", 0775; 
+#				open(LOCAL, ">$dir/$file") or die $!; 
+#				my $fhp = 'files'.$_.'file';
+#				my $fh = $query->upload("$fhp");
+#			  	# undef may be returned if it's not a valid file handle
+#				while(<$fh>) { print LOCAL $_; } 
+#			}
+#		}else{
 			die "invalid table specified in update loop \n";
 		}
 	}
@@ -265,7 +268,7 @@ if ($ENV{'REQUEST_METHOD'} eq "POST"){
 	# we need to list the contents of the files dirs for each customer.
 	my $files ;
 	foreach (@$ref) {
-		my @ls = `ls "../files/$_->{'id'}/"`;
+		my @ls = `ls -t "../files/$_->{'id'}/"`;
 		$files->{$_->{'id'}} = \@ls;
 	}
 	
