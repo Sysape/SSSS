@@ -1,21 +1,22 @@
 [% INCLUDE header.tmpl %]
 	<a href="/ssnewform.pl" target="_blank"> New </a>
 [% INCLUDE sql.tmpl %]
+
+
 <script type="text/javascript">
-function removeElement()
-{
-document.getElementById("imgbox1").style.display="none";
+
+function displayRow(){
+var norm = document.getElementById("norm");
+var click = document.getElementById("clicked");
+if (norm.style.display == '') norm.style.display = 'none';
+else norm.style.display = '';
+if (click.style.display == 'none') click.style.display = '';
+else click.style.display ='none';
 }
-function changeVisibility()
-{
-document.getElementById("imgbox2").style.visibility="hidden";
-}
-function resetElement()
-{
-document.getElementById("imgbox1").style.display="block";
-document.getElementById("imgbox2").style.visibility="visible";
-}
+
 </script>
+
+<input class="box"  type="button" onclick="displayRow()" value="Bomm" />
 
 	<form action="/ssss.pl" method="get">
 	<table border=1 width="100%">
@@ -79,7 +80,7 @@ document.getElementById("imgbox2").style.visibility="visible";
         [% END %]
 		</tr>
 		[% FOREACH key = customer.keys.sort %]
-		<tr class="norm">
+		<tr id="norm" onclick="removeElement()">
 			[% FOREACH item = column %]
 				[% IF item == 'email' ;
 					text = customer.$key.$item.substr(0, 13) %]
@@ -100,7 +101,7 @@ document.getElementById("imgbox2").style.visibility="visible";
 				[% END %]
 			[% END %]
 		</tr>
-		<tr class="clicked">
+		<tr id="clicked" onclick="resetElement()">
 			<td colspan="4">
 			ID: <INPUT type="radio" name="id" value="[% customer.$key.id %]"
 			 checked="checked"> <BR>

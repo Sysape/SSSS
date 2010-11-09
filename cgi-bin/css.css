@@ -29,3 +29,8 @@ a:hover.tip span {
 	display: block;
 }
 
+tr.norm {
+}
+tr.clicked {
+	display: none;
+}
