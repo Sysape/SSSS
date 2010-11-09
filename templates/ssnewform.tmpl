@@ -1,5 +1,12 @@
 [% INCLUDE header.tmpl %]
+<<<<<<< HEAD
+		[% USE DBI( database = 'dbi:mysql:solsys',
+	       	username = 'solsys',
+			password = 'w0kk4' )
+		%]
+=======
 [% INCLUDE sql.tmpl %]
+>>>>>>> b90c6d9431e9c565c159916efb9b404d1882ce42
 		[% IF id == 'new' %]
 			[% id = '' %]
 		[% END %]
