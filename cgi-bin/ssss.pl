@@ -266,9 +266,12 @@ if ($ENV{'REQUEST_METHOD'} eq "POST"){
 	my $commentref = $custsth->fetchall_arrayref({});
 	
 	# we need to list the contents of the files dirs for each customer.
+	# if no files have been uploaded the dir doesn't exist so check 
+	# for that with -e in a ?: 
 	my $files ;
 	foreach (@$ref) {
-		my @ls = `ls -t "../files/$_->{'id'}/"`;
+		my @ls = -e "../files/$_->{'id'}/" ? `ls -t "../files/$_->{'id'}/"`
+				: '';
 		$files->{$_->{'id'}} = \@ls;
 	}
 	
