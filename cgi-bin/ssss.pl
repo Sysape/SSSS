@@ -1,6 +1,7 @@
 #!/usr/bin/perl -Tw
 use strict;
 use CGI;  # don't reinvent the wheel
+use CGI::Carp;
 use Template;
 use DBI;
 use YAML::XS;
@@ -195,6 +196,11 @@ if ($ENV{'REQUEST_METHOD'} eq "POST"){
 	
 	# set the sort order for the sql statement.
 	my $order = $parms->{'order'}|| 'id';
+
+	# loading ALL the records is breaking the server/browser so this line
+	# sets the paramater to ACTIVE.
+	# commented out coz it don't really w**k
+	#$parms->{'id'} = '23' unless $parms->{'id'};
 	
 	# go through the list of is columns and see which are turned on in the
 	# cgi parameters, add to the sql statement and the bind values
@@ -265,16 +271,14 @@ if ($ENV{'REQUEST_METHOD'} eq "POST"){
 	$custsth->execute(@commentbind) or die $custsth->errstr;
 	my $commentref = $custsth->fetchall_arrayref({});
 	
-	# we need to list the contents of the files dirs for each customer.
-	# if no files have been uploaded the dir doesn't exist so check 
-	# for that with -e in a ?: 
+	# we need to list the contents of the files dirs for each dir that
+	# exists.
 	my $files ;
-	foreach (@$ref) {
-		my @ls = -e "../files/$_->{'id'}/" ? `ls -t "../files/$_->{'id'}/"`
-				: '';
-		$files->{$_->{'id'}} = \@ls;
+	my @dirs = `ls -t ../files`;
+	foreach (@dirs) {
+		my @ls = `ls -t "../files/$_/"`;
+		$files->$_ = \@ls;
 	}
-	
 	my $vars = {
 		copyright => 'released under the GPL 2008',
 		columns => \@column,
@@ -285,7 +289,6 @@ if ($ENV{'REQUEST_METHOD'} eq "POST"){
 		today => $today,
 		files => $files
 	};
-	
 	$tt->process('ssss.tmpl', $vars)
 	    || die $tt->error(), "\n";
 	
