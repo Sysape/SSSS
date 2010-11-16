@@ -6,8 +6,8 @@ jquery.ssss sql and header.end
 <!-- the jquery stuff we need to make the page behave nicely --!>
 [% INCLUDE jquery.ssss.tmpl %]
 <!-- make connection to the database so we can read/write to it --!>
-    [% USE DBI( database = 'dbi:mysql:solsystest',
-        username = 'solsys' ,
+    [% USE DBI( database = 'dbi:mysql:solsys',
+        username = 'solsystest' ,
         password = 'w0kk4' )
     %]
 <!-- and the bottom of the header --!>
