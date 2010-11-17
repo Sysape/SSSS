@@ -7,7 +7,7 @@ jquery.ssss sql and header.end
 [% INCLUDE jquery.ssss.tmpl %]
 <!-- make connection to the database so we can read/write to it --!>
     [% USE DBI( database = 'dbi:mysql:solsys',
-        username = 'solsystest' ,
+        username = 'solsys' ,
         password = 'w0kk4' )
     %]
 <!-- and the bottom of the header --!>
@@ -330,6 +330,7 @@ jquery.ssss sql and header.end
 				class="countable5"/> <BR>
 			<label for="datepickerfirst">First Contact<noscript>(YYYY-MM-DD):
 			</noscript></label><input type="text" size=10
+				class="datepicker"
 				id="datepickernewfirst"name="newfirst"/><BR>
 			<label for="newstage">Stage:</label>
 			<select name="newstage" id="newstage">
