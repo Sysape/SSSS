@@ -1,15 +1,8 @@
 #!/usr/bin/perl -Tw
 use strict;
 use CGI;  # don't reinvent the wheel
-use Template;
 use DBI;
 use YAML::XS;
-
-# set up a few things
-my $tt = Template->new({
-    INCLUDE_PATH => '../templates',
-    INTERPOLATE  => 1,
-}) || die "$Template::ERROR\n";
 
 #Load the mysql login info from a YAML file in the conf directory
 
@@ -22,6 +15,14 @@ my  $dbh = DBI->connect($$sqldetails{db}, $$sqldetails{user},
              $$sqldetails{pass},
 			{ RaiseError => 1, AutoCommit => 0 }) 
 			or die "Database connection not made: $DBI::errstr";
+use Template;
+
+#setup a template directory
+
+my $tt = Template->new({
+    INCLUDE_PATH => '../templates',
+    INTERPOLATE  => 1,
+}) || die "$Template::ERROR\n";
 
 my $query = new CGI;
 my $id = $query->param('id') || 'new';
