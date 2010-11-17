@@ -122,6 +122,7 @@ jquery.ssss sql and header.end
 				<label for="datepicker[% customer.id %]act">
 				Action Date<noscript> (YYYY-MM-DD)</noscript>:</label> 
 				<input type="text" size=10
+					class="datepicker"
 					name="cust[% customer.id %]actdate"
 					id="datepicker[% customer.id %]act"
 					value='[% customer.actdate %]'>
@@ -187,6 +188,7 @@ jquery.ssss sql and header.end
 				First Contact<noscript>(YYYY-MM-DD)</noscript>:</label>
 				<input type="text" size=10
 					name="cust[% customer.id %]first"
+					class="datepicker"
 					id="datepicker[%customer.id%]first"
 				 	value="[% customer.first %]">
 				<label for="cust[% customer.id %]stage">Stage:</label>
@@ -240,6 +242,7 @@ jquery.ssss sql and header.end
 					<noscript>(YYYY-MM-DD)</noscript>:</label>  
 			 		<input type="text" size=10
 						name="comm[% comment.id %]date"
+					class="datepicker"
 						value="[% comment.date %]"
 						id="datepicker[% comment.id %]">
 					<a
@@ -257,6 +260,7 @@ jquery.ssss sql and header.end
 					<label for="datepicker[%customer.id%]">Date
 					<noscript>(YYYY-MM-DD)</noscript>:</label>
 					<input type="text" size=10 name="new[%customer.id%]date"
+					class="datepicker"
 					  id="datepicker[% customer.id %]comment" value="$today">
             	<INPUT type="submit" class="submit" value="Do IT!">
 				</div>
@@ -296,6 +300,7 @@ jquery.ssss sql and header.end
 			<label for="datepickernewact">Action Date:<noscript>(YYYY-MM-DD)
 			</noscript>:</label>
 			<input type="text" size=10 id="datepickernewact"
+					class="datepicker"
 				name="newactdate"><BR>
 			<label for="newname">Name<noscript>(50)</noscript>:</label>
 			<input id="newname" type="text" size=50 name="newname"
@@ -353,6 +358,7 @@ jquery.ssss sql and header.end
 				<label for="datepickernewcomment">Date<noscript>(YYYY-MM-DD)
 				</noscript>:</label>
 				<input type="text" size=10 name="newdate"
+					class="datepicker"
 				 id="datepickernewcomment" value="$today">
 			</td>		
 			<td> <INPUT type="submit" class="submit" value="Do IT!"> </td>

@@ -43,15 +43,15 @@
         	// Datepicker
 			// we need to have an Actdate and a Firstdate picker for
 			// each customer
-        	\$('#datepicker[%customer.id%]act').datepicker({
-				dateFormat: 'yy-mm-dd'
-        	});
-        	\$('#datepicker[%customer.id%]first').datepicker({
-				dateFormat: 'yy-mm-dd'
-        	});
-        	\$('#datepicker[%customer.id%]comment').datepicker({
-				dateFormat: 'yy-mm-dd'
-        	});
+        	//\$('#datepicker[%customer.id%]act').datepicker({
+			//	dateFormat: 'yy-mm-dd'
+        	//});
+        	//\$('#datepicker[%customer.id%]first').datepicker({
+			//	dateFormat: 'yy-mm-dd'
+        	//});
+        	//\$('#datepicker[%customer.id%]comment').datepicker({
+			//	dateFormat: 'yy-mm-dd'
+        	//});
 			// set up the fileuploader script
 			// as we want the [customer.id] to be passed into the upload.pl we
 			// need one of these for every customer.
@@ -69,22 +69,22 @@
     		});
 		[%END%]
 		// and one for each of the comments
-		[% FOREACH comment = comments %]
-        	\$('#datepicker[% comment.id %]').datepicker({
-				dateFormat: 'yy-mm-dd'
-        	});
-       [% END %] 
+		[%# FOREACH comment = comments %]
+        	//\$('#datepicker[% comment.id %]').datepicker({
+			//	dateFormat: 'yy-mm-dd'
+        	//});
+       [%# END %] 
 		// and for the new form.
 				
-        	\$('#datepickernewact').datepicker({
+        	\$('.datepicker').datepicker({
 				dateFormat: 'yy-mm-dd'
         	});
-        	\$('#datepickernewfirst').datepicker({
-				dateFormat: 'yy-mm-dd'
-        	});
-        	\$('#datepickernewcomment').datepicker({
-				dateFormat: 'yy-mm-dd'
-        	});
+        	//\$('#datepickernewfirst').datepicker({
+			//	dateFormat: 'yy-mm-dd'
+        	//});
+        	//\$('#datepickernewcomment').datepicker({
+			//	dateFormat: 'yy-mm-dd'
+        	//});
         //hover states on the static widgets
         \$('#dialog_link, ul#icons li').hover(
             function() { $$(this).addClass('ui-state-hover'); }, 
