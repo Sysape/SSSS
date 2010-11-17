@@ -5,11 +5,6 @@ jquery.ssss sql and header.end
 %]
 <!-- the jquery stuff we need to make the page behave nicely --!>
 [% INCLUDE jquery.ssss.tmpl %]
-<!-- make connection to the database so we can read/write to it --!>
-    [% USE DBI( database = 'dbi:mysql:solsys',
-        username = 'solsys' ,
-        password = 'w0kk4' )
-    %]
 <!-- and the bottom of the header --!>
 [% INSERT header.end.tmpl %]
 <!-- this is wrong, dunno quite how to do new tings yet
@@ -62,8 +57,7 @@ jquery.ssss sql and header.end
 						[%- END -%]
 					>ACTIVE</option>
 				[% END %]	
-            	[% FOREACH cell = 
-					DBI.query("SELECT DISTINCT $column FROM customer") %]
+            	[% FOREACH cell = islist.$column %]
                     [% values = cell.list('values') %]
 					[% FOREACH value = values %]
                 		<option
@@ -305,7 +299,7 @@ jquery.ssss sql and header.end
 			<label for="newname">Name<noscript>(50)</noscript>:</label>
 			<input id="newname" type="text" size=50 name="newname"
 				class="countable50"/><BR>
-			<label for="newadress">Address<noscript>(250)</noscript>:</label>
+			<label for="newaddress">Address<noscript>(250)</noscript>:</label>
 			 <textarea name="newaddress" id="newaddress" rows=5
 				cols=50 class="countable250"></textarea> <BR>
 			<label for="newphone">Phone<noscript>(50)</noscript>:</label>
@@ -318,7 +312,7 @@ jquery.ssss sql and header.end
 			<label for="newreff">Reference<noscript>(5)</noscript>:</label>
 			<input type="text" size=5 name="newreff" id="newreff"
 				class="countable5"/> <BR>
-			<label for="newgranttype">Grant Type :</label>
+			<label for="newgrantype">Grant Type:</label>
 			<select name="newgrantype" id="newgrantype">
 				<option></option>
 				<option>st1</option>
@@ -328,10 +322,11 @@ jquery.ssss sql and header.end
 			<label for="newlead">Lead<noscript>(5)</noscript>:</label>
 			<input type=text" size=5 name="newlead" id="newlead"
 				class="countable5"/> <BR>
-			<label for="datepickerfirst">First Contact<noscript>(YYYY-MM-DD):
-			</noscript></label><input type="text" size=10
+			<label for="datepickernewfirst">First Contact <noscript>(YYYY-MM-DD)
+			</noscript>:</label>
+			<input type="text" size=10
 				class="datepicker"
-				id="datepickernewfirst"name="newfirst"/><BR>
+				id="datepickernewfirst" name="newfirst"/><BR>
 			<label for="newstage">Stage:</label>
 			<select name="newstage" id="newstage">
 				<option selected="selected">first</option>
