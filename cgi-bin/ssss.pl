@@ -144,7 +144,7 @@ if ($ENV{'REQUEST_METHOD'} eq "POST"){
 		$parms->{'newemail'} ) {
 		# prepare a sql statement for the INSET
 		my $newcussth = $dbh->prepare( "INSERT customer (actdate, name, address, phone, email, reff, grantype, lead, first, stage, assign) VALUES (?,?,?,?,?,?,?,?,?,?,?)" );
-		# execute is using the new parameters from the cgi
+		# execute the sql using the new parameters from the cgi
 		$newcussth->execute( $parms->{'newactdate'},
 						$parms->{'newname'},
 						$parms->{'newaddress'},
@@ -251,6 +251,17 @@ if ($ENV{'REQUEST_METHOD'} eq "POST"){
 	$sth->execute(@bind) or die $sth->errstr;
 	my $ref = $sth->fetchall_arrayref({});
 	
+	# We need to have a unique list of the items in the @is array from
+	# the db
+	# create a hashref to stick the data in.
+	my $islist;
+	foreach (@is) {
+		# prepare the sql statement inside the loop as each one is different
+		my $issth = $dbh->prepare("SELECT DISTINCT $_ FROM customer");
+		$issth->execute() or die $issth->errstr;
+		$islist->{$_} = $issth->fetchall_arrayref();
+	}
+	carp Dumper $islist;
 	# get the comments for the customer ids we have.
 	# start composing the SQL statemnet we need.
 	my $commentsql = "SELECT * FROM comment" ;
@@ -276,8 +287,10 @@ if ($ENV{'REQUEST_METHOD'} eq "POST"){
 	my $files ;
 	my @dirs = `ls -t ../files`;
 	foreach (@dirs) {
-		my @ls = `ls -t "../files/$_/"`;
-		$files->$_ = \@ls;
+		if (m/([\d]+)/){
+			my @ls = `ls -t "../files/$1/"`;
+			$files->{$1} = \@ls;
+		}else{ carp "erroneous dir names $_.";}
 	}
 	my $vars = {
 		copyright => 'released under the GPL 2008',
@@ -287,7 +300,8 @@ if ($ENV{'REQUEST_METHOD'} eq "POST"){
 		customers => $ref,
 		comments => $commentref,
 		today => $today,
-		files => $files
+		files => $files,
+		islist => $islist
 	};
 	$tt->process('ssss.tmpl', $vars)
 	    || die $tt->error(), "\n";

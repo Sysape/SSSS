@@ -57,9 +57,8 @@ jquery.ssss sql and header.end
 						[%- END -%]
 					>ACTIVE</option>
 				[% END %]	
-            	[% FOREACH cell = islist.$column %]
-                    [% values = cell.list('values') %]
-					[% FOREACH value = values %]
+            	[% FOREACH values = islist.$column %]
+            		[% FOREACH value = values %]
                 		<option
 							[%- IF parms.$column == value -%]
 								selected
