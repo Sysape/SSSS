@@ -196,21 +196,24 @@ if ($ENV{'REQUEST_METHOD'} eq "POST"){
 	# set the sort order for the sql statement.
 	my $order = $parms->{'order'}|| 'id';
 
-	# loading ALL the records is breaking the server/browser so this line
-	# sets the paramater to ACTIVE.
-	# commented out coz it don't really w**k
-	#$parms->{'id'} = '23' unless $parms->{'id'};
+	# If we've not chosen the stage and not selected a single user by id we
+	# probably only want ACTIVE jobs so set stage to ACTIVE
+	unless ($parms->{'stage'}){
+		$parms->{'stage'} = 'ACTIVE' unless $parms->{'id'};
+	}
+	
 	
 	# go through the list of is columns and see which are turned on in the
 	# cgi parameters, add to the sql statement and the bind values
 	foreach(@is){
 		if ($parms->{$_} && $parms->{$_} ne 'ALL'){
 			if ($sql =~ /WHERE/){
-				if ($_ eq 'stage' && $parms->{$_} eq 'ACTIVE'){
 				# Special case for stage which can be ACTIVE and needs 3 values
-					$sql .= " AND stage in ( ?, ?, ?)";
+				if ($_ eq 'stage' && $parms->{$_} eq 'ACTIVE'){
+					$sql .= " AND stage in ( ?, ?, ?, ?)";
 					push(@bind, "quote");
 					push(@bind, "first");
+					push(@bind, "visited");
 					push(@bind, "happen");
 				}else{
 					$sql .= " AND $_ = ?";
@@ -218,9 +221,10 @@ if ($ENV{'REQUEST_METHOD'} eq "POST"){
 				}
 			} else {
 				if ($_ eq 'stage' && $parms->{$_} eq 'ACTIVE'){
-					$sql .= " WHERE stage in ( ?, ?, ?)";
+					$sql .= " WHERE stage in ( ?, ?, ?, ?)";
 					push(@bind, "quote");
 					push(@bind, "first");
+					push(@bind, "visited");
 					push(@bind, "happen");
 				}else{
 					$sql .= " WHERE $_ = ?";
