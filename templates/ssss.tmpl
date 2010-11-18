@@ -42,13 +42,14 @@ jquery.ssss sql and header.end
         [% FOREACH column = columns %]
             <td> 
 			[% IF like.grep(column).0 %]
-			<input type="text" size=[% column.length * 2 %] name="$column"
+			<input type="text" size=[% column.length * 2 %]
+				name="[% column %]"
 				[%- IF parms.$column -%]
 					value="[% parms.$column %]"
 				[% END %]
 			>
 			[% ELSE %]	
-			<select name="$column">
+			<select name="[% column %]">
 				<option>ALL</option>
 				[% IF column == "stage" %]
 					<option
@@ -63,7 +64,7 @@ jquery.ssss sql and header.end
 							[%- IF parms.$column == value -%]
 								selected
 							[%- END -%]
-						>$value</option>
+						>[% value %]</option>
 					[% END %]
 				[% END %]
 			[% END %]
@@ -82,7 +83,7 @@ jquery.ssss sql and header.end
 			[% FOREACH column = columns %]
 				[% IF column == 'email' ;
 					text = customer.$column.substr(0, 13) %]
-					<td><a href=mailto:[%customer.$column%]>$text</a></td>
+					<td><a href=mailto:[%customer.$column%]>[% text %]</a></td>
 				[% ELSE %]
   					<td>
 					[% customer.$column %] 
@@ -253,8 +254,9 @@ jquery.ssss sql and header.end
 					<label for="datepicker[%customer.id%]">Date
 					<noscript>(YYYY-MM-DD)</noscript>:</label>
 					<input type="text" size=10 name="new[%customer.id%]date"
-					class="datepicker"
-					  id="datepicker[% customer.id %]comment" value="$today">
+						class="datepicker"
+					  	id="datepicker[% customer.id %]comment"
+					 	value="[% today %]">
             	<INPUT type="submit" class="submit" value="Do IT!">
 				</div>
 				<div id='[%customer.id%]tabs-3'>
@@ -354,7 +356,7 @@ jquery.ssss sql and header.end
 				</noscript>:</label>
 				<input type="text" size=10 name="newdate"
 					class="datepicker"
-				 id="datepickernewcomment" value="$today">
+				 id="datepickernewcomment" value="[% today %]">
 			</td>		
 			<td> <INPUT type="submit" class="submit" value="Do IT!"> </td>
 		<tr>

@@ -1,4 +1,3 @@
-[%# we need to use $$ not $ in vars so Template::Toolkit don't trash em %]
 <!-- load the jquery library from the js dir --!>
 <script type="text/javascript" src="/js/jquery.js"></script>
 <!-- an load the jquery-ui library too --!>
@@ -20,12 +19,12 @@
 	and set up click events to toggle the normal and editable rows
 	when the row is clicked --!>
 <script type="text/javascript">
-	\$(document).ready(function(){
-		\$(".edit").hide();
+	$(document).ready(function(){
+		$(".edit").hide();
 		// this is for functionality like rich wants
-		\$(".close").hide();
-		\$("tr.norm").click(function(event){
-			\$(this).next(".edit").toggle();
+		$(".close").hide();
+		$("tr.norm").click(function(event){
+			$(this).next(".edit").toggle();
 		// commented the next line out to have functionality like rich wants
 		//	\$(this).toggle();
 	     });
@@ -39,7 +38,7 @@
 		[% FOREACH customer = customers %]
         	// Tabs
 			// we need to have a tabs section for every customer id.
-        	\$('#[%customer.id%]tabs').tabs();
+        	$('#[%customer.id%]tabs').tabs();
 			// set up the fileuploader script
 			// as we want the [customer.id] to be passed into the upload.pl we
 			// need one of these for every customer.
@@ -57,13 +56,13 @@
     		});
 		[%END%]
 		// Add in a datepicker for things of class="datepicker"
-       	\$('.datepicker').datepicker({
+       	$('.datepicker').datepicker({
 			dateFormat: 'yy-mm-dd'
        	});
         //hover states on the static widgets
-        \$('#dialog_link, ul#icons li').hover(
-            function() { $$(this).addClass('ui-state-hover'); }, 
-            function() { $$(this).removeClass('ui-state-hover'); }
+        $('#dialog_link, ul#icons li').hover(
+            function() { $(this).addClass('ui-state-hover'); }, 
+            function() { $(this).removeClass('ui-state-hover'); }
         );
        	//use DirtyForm to show when the form is dirty
 		var dirty={
@@ -74,31 +73,31 @@
 			formChangeCallback: function(result,dirtyFieldsArray) {
             if(result)
                 {
-                    \$("#changes").val(dirtyFieldsArray);
+                    $("#changes").val(dirtyFieldsArray);
                 }
             else
                 {
-                    \$("#changes").val();
+                    $("#changes").val();
                 }
 			}
 		};
-		\$('#dirtyForm').dirtyFields(dirty); 
-		\$('.countable50').jqEasyCounter({
+		$('#dirtyForm').dirtyFields(dirty); 
+		$('.countable50').jqEasyCounter({
 			'maxChars': 50,
 			'maxCharsWarning': 45
 		}); 	
-		\$('.countable5').jqEasyCounter({
+		$('.countable5').jqEasyCounter({
 			'maxChars': 5,
 			'maxCharsWarning': 4
 		}); 	
 		// add confirmation to delete links
-	    \$('.delete').click(function(){
+	    $('.delete').click(function(){
             var answer = confirm('Delete '+jQuery(this).attr('title'));
             // jQuery(this).attr('title') gets anchor title attribute
             return answer; // answer is a boolean
         }); 
 		// add confirmation to the form submit
-		\$('.submit').click(function(){
+		$('.submit').click(function(){
 			var answer = confirm('Update: '+jQuery("#changes").attr('value'));
 			// hopefully this returns the value of changes.
 			return answer; 

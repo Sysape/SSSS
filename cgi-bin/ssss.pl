@@ -14,7 +14,6 @@ $ENV{'PATH'} = '/bin:/usr/bin';
 
 my $tt = Template->new({
     INCLUDE_PATH => '../templates',
-    INTERPOLATE  => 1,
 }) || die "$Template::ERROR\n";
 
 # get sql config from ../conf/sql.yaml and open database.
@@ -261,7 +260,6 @@ if ($ENV{'REQUEST_METHOD'} eq "POST"){
 		$issth->execute() or die $issth->errstr;
 		$islist->{$_} = $issth->fetchall_arrayref();
 	}
-	carp Dumper $islist;
 	# get the comments for the customer ids we have.
 	# start composing the SQL statemnet we need.
 	my $commentsql = "SELECT * FROM comment" ;
