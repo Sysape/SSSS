@@ -264,25 +264,26 @@ if ($ENV{'REQUEST_METHOD'} eq "POST"){
 		$issth->execute() or die $issth->errstr;
 		$islist->{$_} = $issth->fetchall_arrayref();
 	}
-	# get the comments for the customer ids we have.
-	# start composing the SQL statemnet we need.
-	my $commentsql = "SELECT * FROM comment" ;
-	# declare an array to store the bind vars for the SQL
-	my @commentbind;
-	# Step through the $ref array and push all the customer ids onto
-	# the bindvar array whilst also extending the SQL statment with
-	# additional ? OR ?'s
-	foreach (@$ref) {
-		push (@commentbind, $_->{'id'});
-		if ($commentsql =~ /WHERE/){
-			$commentsql .= " OR ?";
-		}else{
-			$commentsql .= " WHERE custid = ?";
-		}		
-	}
-	my $custsth = $dbh->prepare($commentsql);
-	$custsth->execute(@commentbind) or die $custsth->errstr;
-	my $commentref = $custsth->fetchall_arrayref({});
+# commented out as we're moving this to it's own script and AJAJing it back in
+	## get the comments for the customer ids we have.
+	## start composing the SQL statemnet we need.
+	#my $commentsql = "SELECT * FROM comment" ;
+	## declare an array to store the bind vars for the SQL
+	#my @commentbind;
+	## Step through the $ref array and push all the customer ids onto
+	## the bindvar array whilst also extending the SQL statment with
+	## additional ? OR ?'s
+	#foreach (@$ref) {
+	#	push (@commentbind, $_->{'id'});
+	#	if ($commentsql =~ /WHERE/){
+	#		$commentsql .= " OR ?";
+	#	}else{
+	#		$commentsql .= " WHERE custid = ?";
+	#	}		
+	#}
+	#my $custsth = $dbh->prepare($commentsql);
+	#$custsth->execute(@commentbind) or die $custsth->errstr;
+	#my $commentref = $custsth->fetchall_arrayref({});
 	
 	# we need to list the contents of the files dirs for each dir that
 	# exists.
@@ -300,7 +301,7 @@ if ($ENV{'REQUEST_METHOD'} eq "POST"){
 		like => \@like,
 		parms => $parms,
 		customers => $ref,
-		comments => $commentref,
+#		comments => $commentref,
 		today => $today,
 		files => $files,
 		islist => $islist

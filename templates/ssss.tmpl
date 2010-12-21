@@ -99,7 +99,8 @@ jquery.ssss sql and header.end
 			<div id ='[%customer.id%]tabs'>
 				<ul>
 					<li><a href="#[%customer.id%]tabs-1">Main</a></li>
-					<li><a href="#[%customer.id%]tabs-2">Comments</a></li>
+					<li><a href="/cgi-bin/comment.pl?custid=[%customer.id%]"
+						>Comments</a></li>
 					<li><a href="#[%customer.id%]tabs-3">Project Manglement</a></li>
 					<li><a href="#[%customer.id%]tabs-4">Attachments</a></li>
 				</ul>
@@ -221,43 +222,6 @@ jquery.ssss sql and header.end
 					class="delete"
 					title="Customer: [%customer.id%] Name: [%customer.name%]">
 					Delete me!</a>
-				</div>
-				<div id='[%customer.id%]tabs-2'>
-					[%# step through the comments handed by the cgi -%]
-					[%- FOREACH comment = comments -%]
-					[%- NEXT UNLESS comment.custid == customer.id -%]
-				 	<label for="comm[% comment.id %]comment">Comment
-					<noscript>(500)</noscript>:</label>  
-					<textarea name="comm[% comment.id %]comment"
-						id="comm[% comment.id %]comment" cols=125
-						class="countable500"
-						rows=3>[% comment.comment %]</textarea>
-				 	<label for="datepicker[% comment.id %]">Date
-					<noscript>(YYYY-MM-DD)</noscript>:</label>  
-			 		<input type="text" size=10
-						name="comm[% comment.id %]date"
-					class="datepicker"
-						value="[% comment.date %]"
-						id="datepicker[% comment.id %]">
-					<a
-					href="/cgi-bin/ssdel.pl?table=comment&id=[% comment.id %]"
-					class="delete"
-					title="Comment: [%comment.id%]: [%comment.comment.substr(0,23)%]...">
-							Delete me!</a>
-					[% END %]
-					<label for="new[%customer.id%]comment">Comment
-					<noscript>(500)</noscript>:</label>
-					<textarea name="new[%customer.id%]comment"
-							name="new[%customer.id%]comment" cols=125
-							class="countable500"
-							rows=3></textarea>
-					<label for="datepicker[%customer.id%]">Date
-					<noscript>(YYYY-MM-DD)</noscript>:</label>
-					<input type="text" size=10 name="new[%customer.id%]date"
-						class="datepicker"
-					  	id="datepicker[% customer.id %]comment"
-					 	value="[% today %]">
-            	<INPUT type="submit" class="submit" value="Do IT!">
 				</div>
 				<div id='[%customer.id%]tabs-3'>
 					Some guff!
