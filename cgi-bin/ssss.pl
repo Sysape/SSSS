@@ -87,28 +87,28 @@ if ($ENV{'REQUEST_METHOD'} eq "POST"){
 						$parms->{'cust'.$_.'assign'},
 						$_) or die "$upsql->errstr : $_";
 			}
-		}elsif ($table eq 'comm'){
-			# do the same for the comment table
-			my $upsql = $dbh->prepare('UPDATE comment SET comment = ?, date = ? WHERE id = ?');
-			foreach(@{$update->{'comm'}}){
-				$upsql->execute($parms->{'comm'.$_.'comment'},
-						$parms->{'comm'.$_.'date'},
-						$_) or die "$upsql->errstr : $_";
-			}
+	#	}elsif ($table eq 'comm'){
+	#		# do the same for the comment table
+	#		my $upsql = $dbh->prepare('UPDATE comment SET comment = ?, date = ? WHERE id = ?');
+	#		foreach(@{$update->{'comm'}}){
+	#			$upsql->execute($parms->{'comm'.$_.'comment'},
+	#					$parms->{'comm'.$_.'date'},
+	#					$_) or die "$upsql->errstr : $_";
+	#		}
 		# Ok so this breaks the logic of using $table as a varname as this
 		# 'table' isn't actually a table because I broke the naming convention
 		# and called new comments new.custid.comment 
-		}elsif ($table eq 'new'){
-			my $commsql = $dbh->prepare(
-				'INSERT comment (custid, date, comment) VALUES (?,?,?)');
-			foreach(@{$update->{'new'}}){
-				# if there's nothing in the comment field we don't want
-				# to dubmit it.
-				next unless $parms->{'new'.$_.'comment'};
-				$commsql->execute($_, $parms->{'new'.$_.'date'},
-							$parms->{'new'.$_.'comment'})
-							or die "$commsql->errstr : $_";
-			}
+	#	}elsif ($table eq 'new'){
+	#		my $commsql = $dbh->prepare(
+	#			'INSERT comment (custid, date, comment) VALUES (?,?,?)');
+	#		foreach(@{$update->{'new'}}){
+	#			# if there's nothing in the comment field we don't want
+	#			# to dubmit it.
+	#			next unless $parms->{'new'.$_.'comment'};
+	#			$commsql->execute($_, $parms->{'new'.$_.'date'},
+	#						$parms->{'new'.$_.'comment'})
+	#						or die "$commsql->errstr : $_";
+	#		}
 # I'm implementing a funky Ajax file uploader so commenting this bit out
 # for now. Not deleting it as it contains some useful code for refs.
 #		}elsif ($table eq 'files'){
@@ -131,7 +131,7 @@ if ($ENV{'REQUEST_METHOD'} eq "POST"){
 #			  	# undef may be returned if it's not a valid file handle
 #				while(<$fh>) { print LOCAL $_; } 
 #			}
-#		}else{
+		}else{
 			die "invalid table specified in update loop \n";
 		}
 	}

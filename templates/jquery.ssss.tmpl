@@ -27,6 +27,11 @@
 			$(this).next(".edit").toggle();
 		// commented the next line out to have functionality like rich wants
 		//	\$(this).toggle();
+			// We need to load and trigger the tabs javascript stuff when we
+			// open them too.
+			var id = $(this).find("td").first().text().trim();
+			//alert(id);
+			$("#"+id+"tabs").tabs("load", 1);
 	     });
 		// The close div should close stuff
 		// commented the next lines out to have functionality like rich wants
