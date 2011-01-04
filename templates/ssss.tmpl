@@ -97,7 +97,8 @@ jquery.ssss sql and header.end
 			<div id ='[%customer.id%]tabs'>
 				<ul>
 					<li><a href="#[%customer.id%]tabs-1">Main</a></li>
-					<li><a href="#[%customer.id%]tabs-2">Comments</a></li>
+					<li><a href="/cgi-bin/comment.pl?custid=[%customer.id%]"
+						>Comments</a></li>
 					<li><a href="#[%customer.id%]tabs-3">Project Manglement</a></li>
 					<li><a href="#[%customer.id%]tabs-4">Attachments</a></li>
 				</ul>
@@ -219,8 +220,6 @@ jquery.ssss sql and header.end
 					class="delete"
 					title="Customer: [%customer.id%] Name: [%customer.name%]">
 					Delete me!</a>
-				</div>
-				<div id='[%customer.id%]tabs-2'>
 				</div>
 				<div id='[%customer.id%]tabs-3'>
 					Some guff!

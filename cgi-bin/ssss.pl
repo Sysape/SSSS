@@ -87,28 +87,28 @@ if ($ENV{'REQUEST_METHOD'} eq "POST"){
 						$parms->{'cust'.$_.'assign'},
 						$_) or die "$upsql->errstr : $_";
 			}
-		}elsif ($table eq 'comm'){
-			# do the same for the comment table
-			my $upsql = $dbh->prepare('UPDATE comment SET comment = ?, date = ? WHERE id = ?');
-			foreach(@{$update->{'comm'}}){
-				$upsql->execute($parms->{'comm'.$_.'comment'},
-						$parms->{'comm'.$_.'date'},
-						$_) or die "$upsql->errstr : $_";
-			}
+	#	}elsif ($table eq 'comm'){
+	#		# do the same for the comment table
+	#		my $upsql = $dbh->prepare('UPDATE comment SET comment = ?, date = ? WHERE id = ?');
+	#		foreach(@{$update->{'comm'}}){
+	#			$upsql->execute($parms->{'comm'.$_.'comment'},
+	#					$parms->{'comm'.$_.'date'},
+	#					$_) or die "$upsql->errstr : $_";
+	#		}
 		# Ok so this breaks the logic of using $table as a varname as this
 		# 'table' isn't actually a table because I broke the naming convention
 		# and called new comments new.custid.comment 
-		}elsif ($table eq 'new'){
-			my $commsql = $dbh->prepare(
-				'INSERT comment (custid, date, comment) VALUES (?,?,?)');
-			foreach(@{$update->{'new'}}){
-				# if there's nothing in the comment field we don't want
-				# to dubmit it.
-				next unless $parms->{'new'.$_.'comment'};
-				$commsql->execute($_, $parms->{'new'.$_.'date'},
-							$parms->{'new'.$_.'comment'})
-							or die "$commsql->errstr : $_";
-			}
+	#	}elsif ($table eq 'new'){
+	#		my $commsql = $dbh->prepare(
+	#			'INSERT comment (custid, date, comment) VALUES (?,?,?)');
+	#		foreach(@{$update->{'new'}}){
+	#			# if there's nothing in the comment field we don't want
+	#			# to dubmit it.
+	#			next unless $parms->{'new'.$_.'comment'};
+	#			$commsql->execute($_, $parms->{'new'.$_.'date'},
+	#						$parms->{'new'.$_.'comment'})
+	#						or die "$commsql->errstr : $_";
+	#		}
 # I'm implementing a funky Ajax file uploader so commenting this bit out
 # for now. Not deleting it as it contains some useful code for refs.
 #		}elsif ($table eq 'files'){
@@ -131,7 +131,7 @@ if ($ENV{'REQUEST_METHOD'} eq "POST"){
 #			  	# undef may be returned if it's not a valid file handle
 #				while(<$fh>) { print LOCAL $_; } 
 #			}
-#		}else{
+		}else{
 			die "invalid table specified in update loop \n";
 		}
 	}
@@ -264,25 +264,26 @@ if ($ENV{'REQUEST_METHOD'} eq "POST"){
 		$issth->execute() or die $issth->errstr;
 		$islist->{$_} = $issth->fetchall_arrayref();
 	}
-	# get the comments for the customer ids we have.
-	# start composing the SQL statemnet we need.
-	my $commentsql = "SELECT * FROM comment" ;
-	# declare an array to store the bind vars for the SQL
-	my @commentbind;
-	# Step through the $ref array and push all the customer ids onto
-	# the bindvar array whilst also extending the SQL statment with
-	# additional ? OR ?'s
-	foreach (@$ref) {
-		push (@commentbind, $_->{'id'});
-		if ($commentsql =~ /WHERE/){
-			$commentsql .= " OR ?";
-		}else{
-			$commentsql .= " WHERE custid = ?";
-		}		
-	}
-	my $custsth = $dbh->prepare($commentsql);
-	$custsth->execute(@commentbind) or die $custsth->errstr;
-	my $commentref = $custsth->fetchall_arrayref({});
+# commented out as we're moving this to it's own script and AJAJing it back in
+	## get the comments for the customer ids we have.
+	## start composing the SQL statemnet we need.
+	#my $commentsql = "SELECT * FROM comment" ;
+	## declare an array to store the bind vars for the SQL
+	#my @commentbind;
+	## Step through the $ref array and push all the customer ids onto
+	## the bindvar array whilst also extending the SQL statment with
+	## additional ? OR ?'s
+	#foreach (@$ref) {
+	#	push (@commentbind, $_->{'id'});
+	#	if ($commentsql =~ /WHERE/){
+	#		$commentsql .= " OR ?";
+	#	}else{
+	#		$commentsql .= " WHERE custid = ?";
+	#	}		
+	#}
+	#my $custsth = $dbh->prepare($commentsql);
+	#$custsth->execute(@commentbind) or die $custsth->errstr;
+	#my $commentref = $custsth->fetchall_arrayref({});
 	
 	# we need to list the contents of the files dirs for each dir that
 	# exists.
@@ -300,7 +301,7 @@ if ($ENV{'REQUEST_METHOD'} eq "POST"){
 		like => \@like,
 		parms => $parms,
 		customers => $ref,
-		comments => $commentref,
+#		comments => $commentref,
 		today => $today,
 		files => $files,
 		islist => $islist
