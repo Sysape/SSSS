@@ -7,9 +7,6 @@ jquery.ssss sql and header.end
 [% INCLUDE jquery.ssss.tmpl %]
 <!-- and the bottom of the header --!>
 [% INSERT header.end.tmpl %]
-<!-- this is wrong, dunno quite how to do new tings yet
-	<a href="/ssnewform.pl" target="_blank"> New </a>
---!>
 	<!-- the start of the form that limits the selection of clients from 
 		the db. --!>
 	<form action="/cgi-bin/ssss.pl" method="get">
@@ -73,6 +70,7 @@ jquery.ssss sql and header.end
         [% END %]
 		</tr>
 	</table>
+	<!-- the end of the limiting form --!>
 	</form>
 		<!-- start the form out side the loop --!>	
 	<form action="/cgi-bin/ssss.pl" method="post"
@@ -227,27 +225,6 @@ jquery.ssss sql and header.end
 					Some guff!
 				</div>
 				<div id='[%customer.id%]tabs-4'>
-					Filez: <br>
-					[% id = customer.id %]
-						<table>
-					[% FOREACH file = files.$id %]
-						<tr>
-						<td><a href="/files/[%id%]/[%file%]" target="_blank"
-							   >[%file%]</a> </td>
-						<td>
-							<a
-					  		href="/cgi-bin/ssdel.pl?table=file&id=[%customer.id%]&file=[%file%]"
-							class="delete" title="[%file%]">
-							Delete me!</a></td>
-						<tr>
-					[% END %]
-						</table>
-					<div id="file-[%customer.id%]">
-						<noscript>
-							<input type='file' name='files[%customer.id%]file'/>
-            				<INPUT type="submit" value="Do IT!">
-						</noscript>
-					</div>
 				</div>
 			</div>
 			</td>
@@ -333,7 +310,5 @@ jquery.ssss sql and header.end
     		&copy; [% copyright %]
   	</div>
 	</div>
-	<!-- disconnect from database, to stop warning --!>
-	[% DBI.disconnect %] 
 </body>
 </html>
