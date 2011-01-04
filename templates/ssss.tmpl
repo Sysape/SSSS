@@ -225,6 +225,28 @@ jquery.ssss sql and header.end
 					Some guff!
 				</div>
 				<div id='[%customer.id%]tabs-4'>
+					Filez: <br>
+                    [% id = customer.id %]
+                        <table>
+                    [% FOREACH file = files.$id %]
+                        <tr>
+                        <td><a href="/files/[%id%]/[%file%]" target="_blank"
+                               >[%file%]</a> </td>
+                        <td>
+                            <a
+                            href="/cgi-bin/ssdel.pl?table=file&id=[%customer.id%]&file=[%file%]"
+                            class="delete" title="[%file%]">
+                            Delete me!</a></td>
+                        <tr>
+                    [% END %]
+                        </table>
+                    <div id="file-[%customer.id%]">
+                        <noscript>
+                            <input type='file' name='files[%customer.id%]file'/>
+                            <INPUT type="submit" value="Do IT!">
+                        </noscript>
+                    </div>
+	
 				</div>
 			</div>
 			</td>
