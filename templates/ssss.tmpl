@@ -7,9 +7,6 @@ jquery.ssss sql and header.end
 [% INCLUDE jquery.ssss.tmpl %]
 <!-- and the bottom of the header --!>
 [% INSERT header.end.tmpl %]
-<!-- this is wrong, dunno quite how to do new tings yet
-	<a href="/ssnewform.pl" target="_blank"> New </a>
---!>
 	<!-- the start of the form that limits the selection of clients from 
 		the db. --!>
 	<form action="/cgi-bin/ssss.pl" method="get">
@@ -73,6 +70,7 @@ jquery.ssss sql and header.end
         [% END %]
 		</tr>
 	</table>
+	<!-- the end of the limiting form --!>
 	</form>
 		<!-- start the form out side the loop --!>	
 	<form action="/cgi-bin/ssss.pl" method="post"
@@ -223,67 +221,11 @@ jquery.ssss sql and header.end
 					Delete me!</a>
 				</div>
 				<div id='[%customer.id%]tabs-2'>
-					[%# step through the comments handed by the cgi -%]
-					[%- FOREACH comment = comments -%]
-					[%- NEXT UNLESS comment.custid == customer.id -%]
-				 	<label for="comm[% comment.id %]comment">Comment
-					<noscript>(500)</noscript>:</label>  
-					<textarea name="comm[% comment.id %]comment"
-						id="comm[% comment.id %]comment" cols=125
-						class="countable500"
-						rows=3>[% comment.comment %]</textarea>
-				 	<label for="datepicker[% comment.id %]">Date
-					<noscript>(YYYY-MM-DD)</noscript>:</label>  
-			 		<input type="text" size=10
-						name="comm[% comment.id %]date"
-					class="datepicker"
-						value="[% comment.date %]"
-						id="datepicker[% comment.id %]">
-					<a
-					href="/cgi-bin/ssdel.pl?table=comment&id=[% comment.id %]"
-					class="delete"
-					title="Comment: [%comment.id%]: [%comment.comment.substr(0,23)%]...">
-							Delete me!</a>
-					[% END %]
-					<label for="new[%customer.id%]comment">Comment
-					<noscript>(500)</noscript>:</label>
-					<textarea name="new[%customer.id%]comment"
-							name="new[%customer.id%]comment" cols=125
-							class="countable500"
-							rows=3></textarea>
-					<label for="datepicker[%customer.id%]">Date
-					<noscript>(YYYY-MM-DD)</noscript>:</label>
-					<input type="text" size=10 name="new[%customer.id%]date"
-						class="datepicker"
-					  	id="datepicker[% customer.id %]comment"
-					 	value="[% today %]">
-            	<INPUT type="submit" class="submit" value="Do IT!">
 				</div>
 				<div id='[%customer.id%]tabs-3'>
 					Some guff!
 				</div>
 				<div id='[%customer.id%]tabs-4'>
-					Filez: <br>
-					[% id = customer.id %]
-						<table>
-					[% FOREACH file = files.$id %]
-						<tr>
-						<td><a href="/files/[%id%]/[%file%]" target="_blank"
-							   >[%file%]</a> </td>
-						<td>
-							<a
-					  		href="/cgi-bin/ssdel.pl?table=file&id=[%customer.id%]&file=[%file%]"
-							class="delete" title="[%file%]">
-							Delete me!</a></td>
-						<tr>
-					[% END %]
-						</table>
-					<div id="file-[%customer.id%]">
-						<noscript>
-							<input type='file' name='files[%customer.id%]file'/>
-            				<INPUT type="submit" value="Do IT!">
-						</noscript>
-					</div>
 				</div>
 			</div>
 			</td>
@@ -369,7 +311,5 @@ jquery.ssss sql and header.end
     		&copy; [% copyright %]
   	</div>
 	</div>
-	<!-- disconnect from database, to stop warning --!>
-	[% DBI.disconnect %] 
 </body>
 </html>
