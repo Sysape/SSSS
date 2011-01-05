@@ -43,7 +43,17 @@
 		[% FOREACH customer = customers %]
         	// Tabs
 			// we need to have a tabs section for every customer id.
-        	$('#[%customer.id%]tabs').tabs();
+        	$('#[%customer.id%]tabs').tabs({cache: true},
+				{spinner: 'Retrieving data...'},
+				{load: function(event, ui)
+					{ 
+					// debug
+					//alert("loaded");
+					// Add in a datepicker for things of class="datepicker"
+       				$('.datepicker').datepicker({ dateFormat: 'yy-mm-dd' });
+					}
+				}
+			);
 			// set up the fileuploader script
 			// as we want the [customer.id] to be passed into the upload.pl we
 			// need one of these for every customer.
