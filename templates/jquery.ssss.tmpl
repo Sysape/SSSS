@@ -34,7 +34,6 @@
 			//$("#"+id+"tabs").tabs("load", 1);
 			// make the tabset happen too, which 	
         	$('#'+id+'tabs').tabs({cache: true},
-				{spinner: 'Retrieving data...'},
 				{load: function(event, ui)
 					{ 
 					// debug
@@ -42,8 +41,7 @@
 					// Add in a datepicker for things of class="datepicker"
        				$('.datepicker').datepicker({ dateFormat: 'yy-mm-dd' });
 					}
-				}
-			);
+				});
 			//add in a file uploader 
 	    	var uploader = new qq.FileUploader({
         		// pass the dom node (ex. $(selector)[0] for jQuery users)
@@ -65,10 +63,6 @@
 		//	\$(this).parent().parent().toggle();
 	    // });
 
-		// Add in a datepicker for things of class="datepicker"
-       	$('.datepicker').datepicker({
-			dateFormat: 'yy-mm-dd'
-       	});
         //hover states on the static widgets
         $('#dialog_link, ul#icons li').hover(
             function() { $(this).addClass('ui-state-hover'); }, 
