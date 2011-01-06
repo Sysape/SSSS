@@ -28,22 +28,12 @@
 		// commented the next line out to have functionality like rich wants
 		//	\$(this).toggle();
 			// We need to load and trigger the tabs javascript stuff when we
-			// open them too.
+			// unhide the eidt pane.
 			var id = $(this).find("td").first().text().trim();
 			//alert(id);
-			$("#"+id+"tabs").tabs("load", 1);
-	     });
-		// The close div should close stuff
-		// commented the next lines out to have functionality like rich wants
-		//\$(".close").click(function(event){
-		//	\$(this).parent().parent().prev(".norm").toggle();
-		//	\$(this).parent().parent().toggle();
-	    // });
-		// the UI script startup guff
-		[% FOREACH customer = customers %]
-        	// Tabs
-			// we need to have a tabs section for every customer id.
-        	$('#[%customer.id%]tabs').tabs({cache: true},
+			//$("#"+id+"tabs").tabs("load", 1);
+			// make the tabset happen too, which 	
+        	$('#'+id+'tabs').tabs({cache: true},
 				{spinner: 'Retrieving data...'},
 				{load: function(event, ui)
 					{ 
@@ -54,22 +44,27 @@
 					}
 				}
 			);
-			// set up the fileuploader script
-			// as we want the [customer.id] to be passed into the upload.pl we
-			// need one of these for every customer.
+			//add in a file uploader 
 	    	var uploader = new qq.FileUploader({
         		// pass the dom node (ex. $(selector)[0] for jQuery users)
-        		element: document.getElementById('file-[%customer.id%]'),
+        		element: document.getElementById('file-'+id),
         		// path to server-side upload script
         		action: '/cgi-bin/upload.pl',
 				// turn debugging on to see wtf is going on
-				debug: true,
+				//debug: true,
 				// pass the customer.id through.
 				params: {
-					cust: '[%customer.id%]'
+					cust: id
 				}
     		});
-		[%END%]
+	     });
+		// The close div should close stuff
+		// commented the next lines out to have functionality like rich wants
+		//\$(".close").click(function(event){
+		//	\$(this).parent().parent().prev(".norm").toggle();
+		//	\$(this).parent().parent().toggle();
+	    // });
+
 		// Add in a datepicker for things of class="datepicker"
        	$('.datepicker').datepicker({
 			dateFormat: 'yy-mm-dd'
