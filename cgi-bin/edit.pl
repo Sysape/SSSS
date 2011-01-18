@@ -65,23 +65,12 @@ if ($ENV{'REQUEST_METHOD'} eq "POST"){
 	my $sth = $dbh->prepare('SELECT * from customer where ID = ?');
 	$sth->execute($parms->{'id'}) or die $sth->errstr;
 	my $ref = $sth->fetchall_arrayref({});
-	
-	# We need to have a unique list of the items in the @is array from
-	# the db
-	# create a hashref to stick the data in.
-	my $islist;
-	foreach (@is) {
-		# prepare the sql statement inside the loop as each one is different
-		my $issth = $dbh->prepare("SELECT DISTINCT $_ FROM customer");
-		$issth->execute() or die $issth->errstr;
-		$islist->{$_} = $issth->fetchall_arrayref();
 	}
 	my $vars = {
 		copyright => 'released under the GPL 2008',
 		parms => $parms,
 		customer => $ref,
 		today => $today,
-		islist => $islist
 	};
 	$tt->process('ssss.tmpl', $vars)
 	    || die $tt->error(), "\n";
