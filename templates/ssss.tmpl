@@ -96,13 +96,14 @@ jquery.ssss sql and header.end
 			<div class='close'>X [%customer.id%] [%customer.name%]</div>
 			<div id ='[%customer.id%]tabs'>
 				<ul>
-					<li><a href="#[%customer.id%]tabs-1">Main</a></li>
+					<li><a href="/cgi-bin/edit.pl?id=[%customer.id%]"
+						>Main</a></li>
 					<li><a href="/cgi-bin/comment.pl?custid=[%customer.id%]"
 						>Comments</a></li>
 					<li><a href="#[%customer.id%]tabs-3">Project Manglement</a></li>
 					<li><a href="#[%customer.id%]tabs-4">Attachments</a></li>
 				</ul>
-
+[%# 
 				<div id='[%customer.id%]tabs-1'>
 				<!-- Show the ID so people can read it, we don't need to pass
 				this to the cgi as it's used as part of the name for the
@@ -221,6 +222,7 @@ jquery.ssss sql and header.end
 					title="Customer: [%customer.id%] Name: [%customer.name%]">
 					Delete me!</a>
 				</div>
+%]
 				<div id='[%customer.id%]tabs-3'>
 					Some guff!
 				</div>
