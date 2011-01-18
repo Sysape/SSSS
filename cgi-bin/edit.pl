@@ -54,7 +54,8 @@ if ($ENV{'REQUEST_METHOD'} eq "POST"){
 						$parms->{'first'},
 						$parms->{'stage'},
 						$parms->{'assign'},
-						$parms->{'id'}) or die "$upsql->errstr : $_";
+						$parms->{'id'}) or die
+								"$upsql->errstr : $parms->{'id'}";
 	# disconnect from the db
 	$dbh->commit();
 	$dbh->disconnect();
@@ -65,7 +66,6 @@ if ($ENV{'REQUEST_METHOD'} eq "POST"){
 	my $sth = $dbh->prepare('SELECT * from customer where ID = ?');
 	$sth->execute($parms->{'id'}) or die $sth->errstr;
 	my $ref = $sth->fetchall_arrayref({});
-	}
 	my $vars = {
 		copyright => 'released under the GPL 2008',
 		parms => $parms,
