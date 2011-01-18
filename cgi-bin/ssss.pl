@@ -8,7 +8,7 @@ use YAML::XS;
 use Data::Dumper;
 
 # detaint the path
-tENV{'PATH'} = '/bin:/usr/bin';
+ENV{'PATH'} = '/bin:/usr/bin';
 
 #setup a template directory
 

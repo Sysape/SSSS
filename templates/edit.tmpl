@@ -47,7 +47,7 @@
 	<input type="text" size=10 name="first" class="datepicker"
 	 	value="[% customer.first %]">
 	<label for="stage">Stage:</label>
-	<select name="stage"
+	<select name="stage">
 		<option [% IF  customer.stage == 'first' -%]
 			selected="selected"[%- END -%]>first</option>
 		<option [% IF  customer.stage == 'quote' -%]
