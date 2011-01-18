@@ -55,7 +55,6 @@ if ($ENV{'REQUEST_METHOD'} eq "POST"){
 						$parms->{'stage'},
 						$parms->{'assign'},
 						$parms->{'id'}) or die "$upsql->errstr : $_";
-			}
 	}
 	# disconnect from the db
 	$dbh->commit();
