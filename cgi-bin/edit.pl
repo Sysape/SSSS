@@ -8,12 +8,12 @@ use YAML::XS;
 use Data::Dumper;
 
 # detaint the path
-tENV{'PATH'} = '/bin:/usr/bin';
+$ENV{'PATH'} = '/bin:/usr/bin';
 
 #setup a template directory
 
 my $tt = Template->new({
-    INCLUDE_PATH => '../templates',
+    INCLUDE_PATH => '../templaqZZtes',
 }) || die "$Template::ERROR\n";
 
 # get sql config from ../conf/sql.yaml and open database.
@@ -38,10 +38,6 @@ my $today = "$year-$mon-$mday";
 $ENV{'REQUEST_METHOD'} =~ tr/a-z/A-Z/;
 
 if ($ENV{'REQUEST_METHOD'} eq "POST"){
-	# so we're writing a quick and dirty update routine which will just update
-	# every customer in the db, hopefully the db will be clever enough to not
-	# bother actually updating tose records which haven't changed.
-
 	# so the fields are all named in the format table.id.name, we need a
 	# list of which tables need to be updated for which ids so a hash
 	# of arrays is probably the way forward.
@@ -53,7 +49,7 @@ if ($ENV{'REQUEST_METHOD'} eq "POST"){
 	# break stuff so we check for the hidden field that's in the <noscript>
 	# tags and if we have that we step through parms.	
 	if ($parms->{'noscript'}){
-		warn $parms->{'noscript'};
+		carp "Noscipt Aieee!",$parms->{'noscript'};
 		foreach(keys %{$parms}){
 			next unless (/(\D+)(\d+)(\D+)/);
 			push (@{$update->{$1}}, $2);

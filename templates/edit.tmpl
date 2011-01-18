@@ -1,0 +1,85 @@
+[% INSERT header.start.tmpl %]
+[%# start a form and declare it dirty
+[% INSERT header.end.tmpl %]
+<form action="/cgi-bin/edit.pl" method="post" enctype="multipart/form-data"
+	id="dirtyForm">
+	<!-- show the id and provide a hidden field to pass it thru to the cgi --!>
+	ID: [% customer.id %]
+	<input type='hidden' name='id' value='[% customer.id %]'>  
+	<!-- we need to have the label and the <input> on the same line
+	so we use some <span>s or not at the moment ;) --!>
+	<label for='actdate'>
+	Action Date<noscript> (YYYY-MM-DD)</noscript>:</label> 
+	<input type="text" size=10 class="datepicker" name="actdate"
+		value='[% customer.actdate %]'>
+	<label for="name"> Name<noscript>(50)</noscript>:</label>
+	<input type="text" size='[% customer.name.length || 1 %]'
+		name="name" class="countable50" value="[% customer.name %]" />	
+	<label for="address"> Address<noscript>(250)</noscript>:</label>
+	<textarea name="address" class="countable250"
+		rows=5 cols=50>[% customer.address %]</textarea>
+	<label for="phone">Phone<noscript>(50)</noscript>:</label>
+	<input type="text" size='[% customer.phone.length || 1 %]'
+		name="phone" class="countable50" value="[% customer.phone %]"/>
+	<label for="email">Email<noscript>(50)</noscript>:</label>
+	<input type="text" name="email" size='[% customer.email.length || 1 %]'
+		class="countable50" value="[% customer.email %]"/>
+	<label for="reff"> Reference<noscript>(5)</noscript>:</label>
+	<input type="text" name="reff" size='[% customer.reff.length || 1 %]'
+		class="countable5" value="[% customer.reff %]"/>
+	<label for="grantype">Grant Type:</label>
+		 <select name="grantype" id="cust[% customer.id %]grantype">
+			<option></option>
+				<option [% IF customer.grantype == 'st1' -%]
+						selected="selected"
+						[%- END -%]>st1</option>
+				<option [% IF customer.grantype == 'st2' -%]
+						selected="selected"
+						[%- END -%]>st2</option>
+				<option [% IF customer.grantype == 'ph2' -%]
+						selected="selected"
+						[%- END -%]>ph2</option>	
+		</select> 
+	<label for="lead">Lead<noscript>(5)</noscript>:</label>
+	<input type="text" name="lead" size='[% customer.lead.length || 1 %]'
+		class="countable5" id="lead" value="[% customer.lead %]">
+	<label for="first">First Contact<noscript>(YYYY-MM-DD)</noscript>:</label>
+	<input type="text" size=10 name="first" class="datepicker"
+	 	value="[% customer.first %]">
+	<label for="stage">Stage:</label>
+	<select name="stage"
+		<option [% IF  customer.stage == 'first' -%]
+			selected="selected"[%- END -%]>first</option>
+		<option [% IF  customer.stage == 'quote' -%]
+			selected="selected"[%- END -%]>quote</option>
+		<option [% IF  customer.stage == 'visited' -%]
+			selected="selected"[%- END -%]>visited</option>
+		<option [% IF  customer.stage == 'happen' -%]
+			selected="selected"[%- END -%]>happen</option>	
+		<option [% IF  customer.stage == 'lost' -%]
+			selected="selected"[%- END -%]>lost</option>	
+		<option [% IF  customer.stage == 'completed' -%]
+			selected="selected"[%- END -%]>completed</option>	
+		<option [% IF  customer.stage == 'closed' -%]
+			selected="selected"[%- END -%]>closed</option>	
+	</select>
+	<label for="assign">Assigned to:</label>
+	<select name="assign">
+		<option></option>
+		<option [% IF  customer.assign == 'rich' -%]
+			selected="selected"[%- END -%]>rich</option>
+		<option [% IF  customer.assign == 'mik' -%]
+			selected="selected"[%- END -%]>mik</option>
+		<option [% IF  customer.assign == 'rob' -%]
+			selected="selected"[%- END -%]>rob</option>	
+		<option [% IF  customer.assign == 'raj' -%]
+			selected="selected"[%- END -%]>raj</option>	
+	</select>
+	<BR>
+	<INPUT type="submit" class="submit" value="Do IT!">
+	<a href="/cgi-bin/edit.pl?&id=[%customer.id%]"
+		class="delete"
+		title="Customer: [%customer.id%] Name: [%customer.name%]">
+		Delete me!</a>
+	</div>
+</form>
