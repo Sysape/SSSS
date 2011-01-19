@@ -61,6 +61,10 @@ if ($ENV{'REQUEST_METHOD'} eq "POST"){
 	$dbh->disconnect() or carp "Disconnection failed: $DBI::errstr\n";
 	# we need to reload the edit pane here, using AJAJ I assume, need to
 	# work out how to do that.
+    # redirect to the referer
+    my $redirect = $query->referer() || "/cgi-bin/ssss.pl";
+    print $query->redirect($redirect);
+
 }else{
 	#we need to create a sql statement to get the customers details we want.
 	my $sth = $dbh->prepare('SELECT * from customer where ID = ?');
