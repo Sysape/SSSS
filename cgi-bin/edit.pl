@@ -66,7 +66,7 @@ if ($ENV{'REQUEST_METHOD'} eq "POST"){
 	my $sth = $dbh->prepare('SELECT * from customer where ID = ?');
 	$sth->execute($parms->{'id'}) or die $sth->errstr;
 	# there will only be one row returned so we can get it with
-	my $ref = $sth->fetchrow_hashrow();
+	my $ref = $sth->fetchrow_hashref();
 	
 	my $vars = {
 		copyright => 'released under the GPL 2008',
