@@ -76,6 +76,6 @@ if ($ENV{'REQUEST_METHOD'} eq "POST"){
 	};
 	$tt->process('edit.tmpl', $vars)
 	    || die $tt->error(), "\n";
-	
+	$dbh->commit() or carp "Commit failed: $DBI:errstr\n";
 	$dbh->disconnect or carp "Disconnection failed: $DBI::errstr\n";
 }
