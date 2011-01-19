@@ -57,7 +57,7 @@ if ($ENV{'REQUEST_METHOD'} eq "POST"){
 						$parms->{'id'}) or die
 								"$upsql->errstr : $parms->{'id'}";
 	# disconnect from the db
-	$dbh->commit() or carp "Commit failed: $DBI:errstr\n";
+	$dbh->commit() or carp "Commit failed: $DBI::errstr\n";
 	$dbh->disconnect() or carp "Disconnection failed: $DBI::errstr\n";
 	# we need to reload the edit pane here, using AJAJ I assume, need to
 	# work out how to do that.
@@ -76,6 +76,6 @@ if ($ENV{'REQUEST_METHOD'} eq "POST"){
 	};
 	$tt->process('edit.tmpl', $vars)
 	    || die $tt->error(), "\n";
-	$dbh->commit() or carp "Commit failed: $DBI:errstr\n";
+	$dbh->commit() or carp "Commit failed: $DBI::errstr\n";
 	$dbh->disconnect or carp "Disconnection failed: $DBI::errstr\n";
 }
