@@ -65,7 +65,7 @@ if ($ENV{'REQUEST_METHOD'} eq "POST"){
 	#we need to create a sql statement to get the customers details we want.
 	my $sth = $dbh->prepare('SELECT * from customer where ID = ?');
 	$sth->execute($parms->{'id'}) or die $sth->errstr;
-	my $ref = $sth->fetchall_arrayref({});
+	my $ref = $sth->fetchall_hashref();
 	my $vars = {
 		copyright => 'released under the GPL 2008',
 		parms => $parms,
