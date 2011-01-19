@@ -13,7 +13,7 @@ $ENV{'PATH'} = '/bin:/usr/bin';
 #setup a template directory
 
 my $tt = Template->new({
-    INCLUDE_PATH => '../templaqZZtes',
+    INCLUDE_PATH => '../templates',
 }) || die "$Template::ERROR\n";
 
 # get sql config from ../conf/sql.yaml and open database.
@@ -72,7 +72,7 @@ if ($ENV{'REQUEST_METHOD'} eq "POST"){
 		customer => $ref,
 		today => $today,
 	};
-	$tt->process('ssss.tmpl', $vars)
+	$tt->process('edit.tmpl', $vars)
 	    || die $tt->error(), "\n";
 	
 	$dbh->disconnect or warn "Disconnection failed: $DBI::errstr\n";
