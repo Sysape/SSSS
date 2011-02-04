@@ -1,8 +1,7 @@
 [% INSERT header.start.tmpl %]
-[%# start a form and declare it dirty
-[% INSERT header.end.tmpl %]
+</head> [%# we need to close the head tag opened in header.start.tmpl %]
 <form action="/cgi-bin/edit.pl" method="post" enctype="multipart/form-data"
-	id="dirtyForm">
+	id="dirtyForm[% customer.id %]">
 	<!-- show the id and provide a hidden field to pass it thru to the cgi --!>
 	ID: [% customer.id %]
 	<input type='hidden' name='id' value='[% customer.id %]'>  

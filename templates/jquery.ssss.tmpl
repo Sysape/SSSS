@@ -23,75 +23,77 @@
 		$(".edit").hide();
 		// this is for functionality like rich wants
 		$(".close").hide();
+		//use DirtyForm to show when the form is dirty
+		var dirty={
+			denoteDirtyForm: true, denoteDirtyOptions:true,
+		  	dirtyOptionClass:"dirtyChoice", trimText:true,
+			formChangeCallback: function(result,dirtyFieldsArray) {
+            if(result)
+                {
+                    $("#changes").val(dirtyFieldsArray);
+                }
+            else
+                {
+                    $("#changes").val();
+                }
+			}
+		};
+		$('#dirtyForm').dirtyFields(dirty); 
 		$("tr.norm").click(function(event){
 			$(this).next(".edit").toggle();
 		// commented the next line out to have functionality like rich wants
 		//	\$(this).toggle();
 			// We need to load and trigger the tabs javascript stuff when we
-			// unhide the eidt pane.
+			// unhide the edit pane.
+			// first grab the user id for the current row
 			var id = $(this).find("td").first().text().trim();
 			//alert(id);
 			//$("#"+id+"tabs").tabs("load", 1);
-			// make the tabset happen too, which 	
-        	$('#'+id+'tabs').tabs({cache: true},
-				{load: function(event, ui){ 
-					// debug
-					//alert("loaded");
-					// Add in a datepicker for things of class="datepicker"
-       				$('.datepicker').datepicker({ dateFormat: 'yy-mm-dd' });
-     				//use DirtyForm to show when the form is dirty
-					var dirty={
-						denoteDirtyForm: true,
-	   			     denoteDirtyOptions:true,
-					  	dirtyOptionClass:"dirtyChoice",
-	   			    	trimText:true,
-						formChangeCallback: function(result,dirtyFieldsArray) {
-      			      if(result)
-      			          {
-      			              $("#changes").val(dirtyFieldsArray);
-      			          }
-      			      else
-      			          {
-      			              $("#changes").val();
-      			          }
-						}
-					};
-					$('#dirtyForm').dirtyFields(dirty); 
-					$('.countable50').jqEasyCounter({
-						'maxChars': 50,
-						'maxCharsWarning': 45
-					}); 	
-					$('.countable5').jqEasyCounter({
-						'maxChars': 5,
-						'maxCharsWarning': 4
-					}); 	
-					// add confirmation to delete links
-	   			 $('.delete').click(function(){
-      			      var answer = confirm('Delete '+jQuery(this).attr('title'));
-      			      // jQuery(this).attr('title') gets anchor title attribute
-      			      return answer; // answer is a boolean
-      			  }); 
-					// add confirmation to the form submit
-					$('.submit').click(function(){
-						var answer = confirm('Update: '+jQuery("#changes").attr('value'));
-						// hopefully this returns the value of changes.
-						return answer; 
-      			  }); 
-					// turn textareas into supertext areas with char limits of 250
-					// and 500 comment out for the moment as it's borked and we're
-					//	getting support from the author.
-					$('.countable500').supertextarea({ 
-	   					tabr: {use: true, space: true, num: 3}
-   						, maxl: 500
-   						, dsrm: {use: true, text: 'Remaining'}
-     			   }); 
-					$('.countable250').supertextarea({ 
-	 			  		tabr: {use: true, space: true, num: 3}
-   						, maxl: 250
-   						, dsrm: {use: true, text: 'Remaining'}
-     			   }); 
-				}
-				});
+			// create a tabset called #[id]tabs
+        	$('#'+id+'tabs').tabs({cache: true});
+        	$('#'+id+'tabs').bind('tabsload', function(event, ui){ 
+				// debug
+				//alert("loaded");
+				// Add in a datepicker for things of class="datepicker"
+       		$('.datepicker').datepicker({ dateFormat: 'yy-mm-dd' });
+     			//use DirtyForm to show when the form is dirty
+				//$('#dirtyForm'+id).dirtyFields(dirty); 
+				//$('#dirtyForm'+id+'com').dirtyFields(dirty); 
+				$('.countable50').jqEasyCounter({
+					'maxChars': 50,
+					'maxCharsWarning': 45
+				}); 	
+				$('.countable5').jqEasyCounter({
+					'maxChars': 5,
+					'maxCharsWarning': 4
+				}); 	
+				// add confirmation to delete links
+	   		$('.delete').click(function(){
+      		      var answer = confirm('Delete '+jQuery(this).attr('title'));
+      		      // jQuery(this).attr('title') gets anchor title attribute
+      		      return answer; // answer is a boolean
+      		  }); 
+				// add confirmation to the form submit
+				$('.submit').click(function(){
+					var answer = confirm('Update: '+jQuery("#changes").attr('value'));
+					// hopefully this returns the value of changes.
+					return answer; 
+      		}); 
+				// turn textareas into supertext areas with char limits of 250
+				// and 500 comment out for the moment as it's borked and we're
+				//	getting support from the author.
+				$('.countable500').supertextarea({ 
+	   				tabr: {use: true, space: true, num: 3}
+   					, maxl: 500
+   					, dsrm: {use: true, text: 'Remaining'}
+     		   }); 
+				$('.countable250').supertextarea({ 
+	 		  		tabr: {use: true, space: true, num: 3}
+   					, maxl: 250
+   					, dsrm: {use: true, text: 'Remaining'}
+     		   }); 
+			});
+			});
 			// Add in a datepicker for things of class="datepicker"
        	$('.datepicker').datepicker({ dateFormat: 'yy-mm-dd' });
 			//add in a file uploader 
@@ -106,7 +108,6 @@
 				params: {
 					cust: id
 				}
-    		});
 	     });
 		// The close div should close stuff
 		// commented the next lines out to have functionality like rich wants
@@ -120,25 +121,7 @@
             function() { $(this).addClass('ui-state-hover'); }, 
             function() { $(this).removeClass('ui-state-hover'); }
         );
-     	//use DirtyForm to show when the form is dirty
-		var dirty={
-			denoteDirtyForm: true,
-	        denoteDirtyOptions:true,
-		  	dirtyOptionClass:"dirtyChoice",
-	       	trimText:true,
-			formChangeCallback: function(result,dirtyFieldsArray) {
-            if(result)
-                {
-                    $("#changes").val(dirtyFieldsArray);
-                }
-            else
-                {
-                    $("#changes").val();
-                }
-			}
-		};
-		$('#dirtyForm').dirtyFields(dirty); 
-		$('.countable50').jqEasyCounter({
+     	$('.countable50').jqEasyCounter({
 			'maxChars': 50,
 			'maxCharsWarning': 45
 		}); 	

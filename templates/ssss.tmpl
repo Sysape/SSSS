@@ -72,9 +72,6 @@ jquery.ssss sql and header.end
 	</table>
 	<!-- the end of the limiting form --!>
 	</form>
-		<!-- start the form out side the loop --!>	
-	<form action="/cgi-bin/ssss.pl" method="post"
-			enctype="multipart/form-data" id="dirtyForm">
 	<table border=1 width="100%">
 		[% FOREACH customer = customers %]
 		<tr class="norm">
@@ -134,6 +131,9 @@ jquery.ssss sql and header.end
 			</td>
 		</tr>
 		[% END %]
+		<!-- start the form out side the loop --!>	
+		<form action="/cgi-bin/ssss.pl" method="post"
+			enctype="multipart/form-data" id="dirtyForm">
 		<tr>	
 			<td colspan='4'>
 			NEW <Br>
