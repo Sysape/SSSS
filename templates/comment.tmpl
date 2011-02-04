@@ -9,12 +9,14 @@
 	[%- FOREACH comment = comments -%]
 	[%# this next check is probably redundant -%]
 	[%- NEXT UNLESS comment.custid == custid -%]
+   <span style="white-space: nowrap;">
  	<label for="[% comment.id %]comment">Comment
 	<noscript>(500)</noscript>:</label>  
 	<textarea name="[% comment.id %]comment"
-		id="[% comment.id %]comment" cols=100
-		class="countable500"
-		rows=5>[% comment.comment %]</textarea>
+		id="[% comment.id %]comment"
+		class="countable500">[% comment.comment %]</textarea>
+	</span>
+   <span style="white-space: nowrap;">
  	<label for="[% comment.id %]date">Date
 	<noscript>(YYYY-MM-DD)</noscript>:</label>  
 	<input type="text" size=10
@@ -28,17 +30,21 @@
 	title="Comment: [%comment.id%]: [%comment.comment.substr(0,23)%]...">
 			Delete me!</a>
 	[% END %]
+	</span>
+   <span style="white-space: nowrap;">
 	<label for="new[%custid%]comment">Comment
 	<noscript>(500)</noscript>:</label>
 	<textarea name="new[%custid%]comment"
-			name="new[%custid%]comment" cols=100
-			class="countable500"
-			rows=5></textarea>
+			name="new[%custid%]comment"
+			class="countable500"></textarea>
+	</span>
+   <span style="white-space: nowrap;">
 	<label for="new[%custid%]date">Date
 	<noscript>(YYYY-MM-DD)</noscript>:</label>
 	<input type="text" size=10 name="new[%custid%]date"
 		class="datepicker"
 	  	id="datepicker[% custid %]comment"
 	 	value="[% today %]">
+	</span>
 	<INPUT type="submit" class="submit" value="Do IT!">
 </form>
