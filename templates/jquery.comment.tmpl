@@ -1,0 +1,52 @@
+<script type="text/javascript">
+	// debug
+	//alert("loaded");
+	// Add in a datepicker for things of class="datepicker"
+	$('.datepicker').datepicker({ dateFormat: 'yy-mm-dd' });
+	//use DirtyForm to show when the form is dirty
+	var dirty={
+        denoteDirtyForm: true, denoteDirtyOptions:true,
+        dirtyOptionClass:"dirtyChoice", trimText:true,
+        formChangeCallback: function(result,dirtyFieldsArray) {
+        if(result)
+            {
+                $("#changes").val(dirtyFieldsArray);
+            }
+        else
+            {
+                $("#changes").val();
+            }
+        }
+    };
+	$('#dirtyForm[% customer.id %]com').dirtyFields(dirty); 
+	// make the textareas expandable
+	$('textarea').prettyComments();
+	// add in limits 
+	$('.countable50').jqEasyCounter({
+	    'maxChars': 50,
+	    'maxCharsWarning': 45
+	});     
+	$('.countable5').jqEasyCounter({
+	    'maxChars': 5,
+	    'maxCharsWarning': 4
+	});     
+	$('.countable250').jqEasyCounter({
+	    'maxChars': 250,
+	    'maxCharsWarning': 240
+	});     
+	$('.countable500').jqEasyCounter({
+	    'maxChars': 500,
+	    'maxCharsWarning': 485
+	});     
+    $('.delete').click(function(){
+        var answer = confirm('Delete '+jQuery(this).attr('title'));
+        // jQuery(this).attr('title') gets anchor title attribute
+        return answer; // answer is a boolean
+    }); 
+	// add confirmation to the form submit
+	$('.submit').click(function(){
+	    var answer = confirm('Update: '+jQuery("#changes").attr('value'));
+	    // hopefully this returns the value of changes.
+	    return answer; 
+	}); 
+</script>

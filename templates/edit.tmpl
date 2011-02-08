@@ -1,5 +1,6 @@
 [% INSERT header.start.tmpl %]
 </head> [%# we need to close the head tag opened in header.start.tmpl %]
+<body>
 <form action="/cgi-bin/edit.pl" method="post" enctype="multipart/form-data"
 	id="dirtyForm[% customer.id %]">
 	<!-- show the id and provide a hidden field to pass it thru to the cgi --!>
@@ -20,7 +21,7 @@
 	</span>
 	<span style="white-space: nowrap;">
 	<label for="address"> Address<noscript>(250)</noscript>:</label>
-	<textarea name="address" class="countable250"
+	<textarea name="address" class="countable250" cols=50
 		>[% customer.address %]</textarea>
 	</span>
 	<span style="white-space: nowrap;">
@@ -104,3 +105,5 @@
 		Delete me!</a>
 	</div>
 </form>
+[% INCLUDE jquery.edit.tmpl %]
+</body>

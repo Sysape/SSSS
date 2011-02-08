@@ -1,5 +1,6 @@
 [% INSERT header.start.tmpl %]
 </head> [%# we need to close the head tag opened in header.start.tmpl %]
+<body>
 <form action="/cgi-bin/comment.pl" method="post" enctype="multipart/form-data"
 	id="dirtyForm[% custid %]com">
 	[%# step through the comments handed by the cgi -%]
@@ -10,7 +11,7 @@
  	<label for="[% comment.id %]comment">Comment
 	<noscript>(500)</noscript>:</label>  
 	<textarea name="[% comment.id %]comment"
-		id="[% comment.id %]comment"
+		id="[% comment.id %]comment" cols="75"
 		class="countable500">[% comment.comment %]</textarea>
 	</span>
    <span style="white-space: nowrap;">
@@ -33,6 +34,7 @@
 	<noscript>(500)</noscript>:</label>
 	<textarea name="new[%custid%]comment"
 			name="new[%custid%]comment"
+			cols="75"
 			class="countable500"></textarea>
 	</span>
    <span style="white-space: nowrap;">
@@ -45,3 +47,5 @@
 	</span>
 	<INPUT type="submit" class="submit" value="Do IT!">
 </form>
+[% INCLUDE jquery.comment.tmpl %]
+</body>

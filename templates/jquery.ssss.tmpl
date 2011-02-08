@@ -3,9 +3,9 @@
 <!-- an load the jquery-ui library too --!>
 <script type="text/javascript" src="/js/jquery-ui-1.8.4.custom.min.js">
 </script>
-<!-- load the dirtyfields plugin
+<!-- load the dirtyfields plugin --!>
 <script type="text/javascript" src="/js/jquery.dirtyFields.packed.js">
-</script> --!>
+</script>
 <!-- load the EasyCharCounter plugin --!>
 <script type="text/javascript" src="/js/jquery.jqEasyCharCounter.mod.js">
 </script>
@@ -18,9 +18,6 @@
 <!-- load the expanding textarea plugin
 <script type="text/javascript" src="/js/jquery.exptextarea.js">
 </script> --!>
-<!-- load the supertextarea plugin
-<script type="text/javascript" src="/js/jquery.supertextarea.min.js">
-</script> --!>
 	<!-- when the document is ready hide the edit rows of the table
 	and set up click events to toggle the normal and editable rows
 	when the row is clicked --!>
@@ -30,90 +27,50 @@
 		// this is for functionality like rich wants
 		$(".close").hide();
 		//use DirtyForm to show when the form is dirty
-		//var dirty={
-		//	denoteDirtyForm: true, denoteDirtyOptions:true,
-		//  	dirtyOptionClass:"dirtyChoice", trimText:true,
-		//	formChangeCallback: function(result,dirtyFieldsArray) {
-        //    if(result)
-        //        {
-        //            $("#changes").val(dirtyFieldsArray);
-        //        }
-        //    else
-        //        {
-        //            $("#changes").val();
-        //        }
-		//	}
-		//};
-		//$('#dirtyForm').dirtyFields(dirty); 
+		var dirty={
+			denoteDirtyForm: true, denoteDirtyOptions:true,
+		  	dirtyOptionClass:"dirtyChoice", trimText:true,
+			formChangeCallback: function(result,dirtyFieldsArray) {
+            if(result)
+                {
+                    $("#changes").val(dirtyFieldsArray);
+                }
+            else
+                {
+                    $("#changes").val();
+                }
+			}
+		};
+		$('#dirtyForm').dirtyFields(dirty); 
 		// use exandable text area on text areas
 		$('textarea').prettyComments();
 		$("tr.norm").click(function(event){
 			$(this).next(".edit").toggle();
 		// commented the next line out to have functionality like rich wants
-		//	\$(this).toggle();
+		//	$(this).toggle();
 			// We need to load and trigger the tabs javascript stuff when we
 			// unhide the edit pane.
 			// first grab the user id for the current row
 			var id = $(this).find("td").first().text().trim();
-			//alert(id);
-			//$("#"+id+"tabs").tabs("load", 1);
 			// create a tabset called #[id]tabs
         	$('#'+id+'tabs').tabs({cache: true});
-        	$('#'+id+'tabs').bind('tabsload', function(event, ui){ 
-				// debug
-				//alert("loaded");
-				// Add in a datepicker for things of class="datepicker"
-       		$('.datepicker').datepicker({ dateFormat: 'yy-mm-dd' });
-     			//use DirtyForm to show when the form is dirty
-				//$('#dirtyForm'+id).dirtyFields(dirty); 
-				//$('#dirtyForm'+id+'com').dirtyFields(dirty); 
-				$('.countable50').jqEasyCounter({
-					'maxChars': 50,
-					'maxCharsWarning': 45
-				}); 	
-				$('.countable5').jqEasyCounter({
-					'maxChars': 5,
-					'maxCharsWarning': 4
-				}); 	
-				// add confirmation to delete links
-	   			$('.delete').click(function(){
-      		      var answer = confirm('Delete '+jQuery(this).attr('title'));
-      		      // jQuery(this).attr('title') gets anchor title attribute
-      		      return answer; // answer is a boolean
-      		  	}); 
-				// add confirmation to the form submit
-				$('.submit').click(function(){
-					var answer = confirm('Update: '+jQuery("#changes").attr('value'));
-					// hopefully this returns the value of changes.
-					return answer; 
-				}); 
-      			//add in a file uploader 
-	   			var uploader = new qq.FileUploader({
-        			// pass the dom node (ex. $(selector)[0] for jQuery users)
-        			element: document.getElementById('file-'+id),
-        			// path to server-side upload script
-        			action: '/cgi-bin/upload.pl',
-					// turn debugging on to see wtf is going on
-					//debug: true,
-					// pass the customer.id through.
-					params: {
-					cust: id
-					}
-	    		});
-				// turn textareas into supertext areas with char limits of 250
-				// and 500 comment out for the moment as it's borked and we're
-				//	getting support from the author.
-	//			$('.countable500').supertextarea({ 
-	//   				tabr: {use: true, space: true, num: 3}
-   	//				, maxl: 500
-   	//				, dsrm: {use: true, text: 'Remaining'}
-    // 		   }); 
-	//			$('.countable250').supertextarea({ 
-	// 		  		tabr: {use: true, space: true, num: 3}
-   	//				, maxl: 250
-   	//				, dsrm: {use: true, text: 'Remaining'}
-    // 		   }); 
-			});
+			// next bit commented out as it's been moved to the incoming form
+			// we need to run various js on the tabs when they've loaded.
+        	//$('#'+id+'tabs').bind('tabsload', function(event, ui){ 
+			//});
+      		//add in a file uploader 
+	   		var uploader = new qq.FileUploader({
+        		// pass the dom node (ex. $(selector)[0] for jQuery users)
+        		element: document.getElementById('file-'+id),
+        		// path to server-side upload script
+        		action: '/cgi-bin/upload.pl',
+				// turn debugging on to see wtf is going on
+				//debug: true,
+				// pass the customer.id through.
+				params: {
+				cust: id
+				}
+	    	});
 		});
 		// Add in a datepicker for things of class="datepicker"
        	$('.datepicker').datepicker({ dateFormat: 'yy-mm-dd' });
@@ -149,18 +106,5 @@
 			// hopefully this returns the value of changes.
 			return answer; 
         }); 
-		// turn textareas into supertext areas with char limits of 250 and 500
-		// comment out for the moment as it's borked and we're getting support
-		// from the author.
-	//	$('.countable500').supertextarea({ 
-	//   		tabr: {use: true, space: true, num: 3}
-   	//		, maxl: 500
-   	//		, dsrm: {use: true, text: 'Remaining'}
-    //  	}); 
-	//	$('.countable250').supertextarea({ 
-	//   		tabr: {use: true, space: true, num: 3}
-   	//		, maxl: 250
-   	//		, dsrm: {use: true, text: 'Remaining'}
-    //  	}); 
     });
 </script>
