@@ -17,27 +17,27 @@
 	<span style="white-space: nowrap;">
 	<label for="name"> Name<noscript>(50)</noscript>:</label>
 	<input type="text" size='[% customer.name.length || 1 %]'
-		name="name" class="countable50" value="[% customer.name %]" />	
+		name="name" class="[% customer.id %]countable50" value="[% customer.name %]" />	
 	</span>
 	<span style="white-space: nowrap;">
 	<label for="address"> Address<noscript>(250)</noscript>:</label>
-	<textarea name="address" class="countable250" cols=50
+	<textarea name="address" class="[% customer.id %]countable250" cols=50
 		>[% customer.address %]</textarea>
 	</span>
 	<span style="white-space: nowrap;">
 	<label for="phone">Phone<noscript>(50)</noscript>:</label>
 	<input type="text" size='[% customer.phone.length || 1 %]'
-		name="phone" class="countable50" value="[% customer.phone %]"/>
+		name="phone" class="[% customer.id %]countable50" value="[% customer.phone %]"/>
 	</span>
 	<span style="white-space: nowrap;">
 	<label for="email">Email<noscript>(50)</noscript>:</label>
 	<input type="text" name="email" size='[% customer.email.length || 1 %]'
-		class="countable50" value="[% customer.email %]"/>
+		class="[% customer.id %]countable50" value="[% customer.email %]"/>
 	</span>
 	<span style="white-space: nowrap;">
 	<label for="reff"> Reference<noscript>(5)</noscript>:</label>
 	<input type="text" name="reff" size='[% customer.reff.length || 1 %]'
-		class="countable5" value="[% customer.reff %]"/>
+		class="[% customer.id %]countable5" value="[% customer.reff %]"/>
 	</span>
 	<span style="white-space: nowrap;">
 	<label for="grantype">Grant Type:</label>
@@ -57,7 +57,7 @@
 	<span style="white-space: nowrap;">
 	<label for="lead">Lead<noscript>(5)</noscript>:</label>
 	<input type="text" name="lead" size='[% customer.lead.length || 1 %]'
-		class="countable5" id="lead" value="[% customer.lead %]">
+		class="[% customer.id %]countable5" id="lead" value="[% customer.lead %]">
 	</span>
 	<span style="white-space: nowrap;">
 	<label for="first">First Contact<noscript>(YYYY-MM-DD)</noscript>:</label>

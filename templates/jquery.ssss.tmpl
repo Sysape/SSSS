@@ -10,14 +10,10 @@
 <script type="text/javascript" src="/js/jquery.jqEasyCharCounter.mod.js">
 </script>
 <!-- load the file-uploader plugin --!>
-<script type="text/javascript" src="/js/fileuploader.js">
-</script>
+<script type="text/javascript" src="/js/fileuploader.js"></script>
 <!-- load the prettyComments plugin --!>
-<script type="text/javascript" src="/js/prettyComments.js">
-</script>
-<!-- load the expanding textarea plugin
-<script type="text/javascript" src="/js/jquery.exptextarea.js">
-</script> --!>
+<script type="text/javascript" src="/js/prettyComments.js"></script>
+<script type="text/javascript" src="/js/jquery.form.js"></script>
 	<!-- when the document is ready hide the edit rows of the table
 	and set up click events to toggle the normal and editable rows
 	when the row is clicked --!>
@@ -105,6 +101,11 @@
 			var answer = confirm('Update: '+jQuery("#changes").attr('value'));
 			// hopefully this returns the value of changes.
 			return answer; 
-        }); 
+       }); 
+		// ajaxify the form.
+		$('#dirtyForm').ajaxForm(function() { 
+         	alert("Gashfucking Cuntsticks!"); 
+				$('#dirtyForm').resetForm();	
+     	}); 
     });
 </script>

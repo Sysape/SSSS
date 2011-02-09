@@ -7,11 +7,11 @@ jquery.ssss sql and header.end
 [% INCLUDE jquery.ssss.tmpl %]
 <!-- and the bottom of the header --!>
 [% INSERT header.end.tmpl %]
-	<!-- the start of the form that limits the selection of clients from 
-		the db. --!>
-	<form action="/cgi-bin/ssss.pl" method="get">
 	<table border=1 width="100%">
 		<tr>
+		<!-- the start of the form that limits the selection of clients from 
+		the db. --!>
+		<form action="/cgi-bin/ssss.pl" method="get">
 		[% FOREACH column = columns %]	
 			<th> [% column %] </th> 
     	[% END %]
@@ -68,11 +68,9 @@ jquery.ssss sql and header.end
 			</select>
             </td>
         [% END %]
+		</form>
+		<!-- the end of the limiting form --!>
 		</tr>
-	</table>
-	<!-- the end of the limiting form --!>
-	</form>
-	<table border=1 width="100%">
 		[% FOREACH customer = customers %]
 		<tr class="norm">
 			[% FOREACH column = columns %]
@@ -131,10 +129,10 @@ jquery.ssss sql and header.end
 			</td>
 		</tr>
 		[% END %]
+		<tr>	
 		<!-- start the form out side the loop --!>	
 		<form action="/cgi-bin/ssss.pl" method="post"
 			enctype="multipart/form-data" id="dirtyForm">
-		<tr>	
 			<td colspan='4'>
 			NEW <Br>
 			<label for="datepickernewact">Action Date:<noscript>(YYYY-MM-DD)
@@ -196,7 +194,7 @@ jquery.ssss sql and header.end
 				<label for="newcomment">Comment<noscript>(500)</noscript>:
 				</label>
 				<textarea name="newcomment" id="newcomment"
-				 cols=75></textarea>
+				 cols=50></textarea>
 				<label for="datepickernewcomment">Date<noscript>(YYYY-MM-DD)
 				</noscript>:</label>
 				<input type="text" size=10 name="newdate"

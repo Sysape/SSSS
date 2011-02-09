@@ -18,23 +18,11 @@
             }
         }
     };
-	$('#dirtyForm[% customer.id %]com').dirtyFields(dirty); 
+	$('#dirtyForm[% custid %]com').dirtyFields(dirty); 
 	// make the textareas expandable
-	$('textarea').prettyComments();
+	$('.[% custid %]countable500').prettyComments();
 	// add in limits 
-	$('.countable50').jqEasyCounter({
-	    'maxChars': 50,
-	    'maxCharsWarning': 45
-	});     
-	$('.countable5').jqEasyCounter({
-	    'maxChars': 5,
-	    'maxCharsWarning': 4
-	});     
-	$('.countable250').jqEasyCounter({
-	    'maxChars': 250,
-	    'maxCharsWarning': 240
-	});     
-	$('.countable500').jqEasyCounter({
+	$('.[% custid %]countable500').jqEasyCounter({
 	    'maxChars': 500,
 	    'maxCharsWarning': 485
 	});     
