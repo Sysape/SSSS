@@ -5,7 +5,7 @@ use CGI::Carp;
 use Template;
 use DBI;
 use YAML::XS;
-use Data::Dumper;
+use JSON;
 
 # detaint the path
 $ENV{'PATH'} = '/bin:/usr/bin';
@@ -38,10 +38,10 @@ my $today = "$year-$mon-$mday";
 $ENV{'REQUEST_METHOD'} =~ tr/a-z/A-Z/;
 
 if ($ENV{'REQUEST_METHOD'} eq "POST"){
-	# so we're writing a quick and dirty update routine which will just update
-	# every customer in the db, hopefully the db will be clever enough to not
-	# bother actually updating tose records which haven't changed.
-
+	# Existing clients are updated using the edit.pl form so this only needs
+	# to add in new ones. It's being called via AJAJ so needs to return
+	# a JSON object with the details of the database update to write back
+	# to the ssss page
 	# so the fields are all named in the format table.id.name, we need a
 	# list of which tables need to be updated for which ids so a hash
 	# of arrays is probably the way forward.
