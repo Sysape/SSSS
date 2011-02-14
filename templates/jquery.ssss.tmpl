@@ -37,7 +37,7 @@
                 }
 			}
 		};
-		$('#dirtyForm').dirtyFields(dirty); 
+		//$('#dirtyForm').dirtyFields(dirty); 
 		// use exandable text area on text areas
 		$('textarea').prettyComments();
 		$("tr.norm").click(function(event){
@@ -97,16 +97,71 @@
             return answer; // answer is a boolean
         }); 
 		// add confirmation to the form submit
-		$('.submit').click(function(){
-			var answer = confirm('Update: '+jQuery("#changes").attr('value'));
-			// hopefully this returns the value of changes.
-			return answer; 
-       }); 
-		// ajaxify the form.
-		$('#dirtyForm').ajaxForm(function() { 
-         	alert("Gashfucking Cuntsticks!"); 
-			$("<tr><td> Woot! </td></tr>").insertBefore('.newform');A
-			$('#dirtyForm').resetForm();	
-     	}); 
+		//$('.submit').click(function(){
+		//	var answer = confirm('Update: '+jQuery("#changes").attr('value'));
+		//	// hopefully this returns the value of changes.
+		//	return answer; 
+       	//}); 
+		// ajajify the form.
+		// declare an ajaj var to pass to the ajajifier
+		var ajaj = {
+			// set the callback dataType
+			dataType: 'json',
+			// define a success function
+			success: function(data){
+				// declare an html var containing the two table rows we want
+				// to add to the table for the new client. 
+				// It would be nice if this was a separate templete Included
+				// both here and in ssss.tmpl with varnames chanegd to suit
+				// but for now we'll have to maintain 2 copies of it.
+				[%# use Template markup to remove newlines %]
+				var html = "<tr class='newnorm'>"
+					[%- FOREACH column = columns -%]
+						+"<td>"+data.[% column %]+"</td>"
+					[%- END -%]
+					+"</tr><tr class='newedit'><td colspan='12'>"
+					[%- %]+"<div id='"+data.id+"tabs'><ul>"
+					[%- %]+"<li><a href='/cgi-bin/edit.pl?id="+data.id+"'>"
+					[%- %]+"Edit</a></li>"
+					[%- %]+"<li><a href='/cgi-bin/comment.pl?custid="+data.id
+					[%- %]+"'>Comment</a></li>"
+					[%- %]+"<li><a href='#"+data.id+"tabs-3'>Project"
+					[%- %]+" Manglement</a></li>"
+					[%- %]+"<li><a href='#"+data.id+"tabs-4'>Attachments</a>"
+					[%- %]+"</li></ul>"
+					[%- %]+"<div id='"+data.id+"tabs-3'>Some guff!</div>"
+					[%- %]+"<div id='"+data.id+"tabs-4'>Filez:<br>"
+					[%- %]+"<div id='file-"+data.id+"'></div></div>"
+					[%- %]+"</div></td></tr>";
+				$(html).insertBefore('.newform');
+				$('.newedit').hide();
+				$("tr.newnorm").click(function(event){
+					$(this).next(".newedit").toggle();
+				//	$(this).toggle();
+					// We need to load and trigger the tabs javascript stuff
+					// when we unhide the edit pane.
+					// first grab the user id for the current row
+					var id = $(this).find("td").first().text().trim();
+					// create a tabset called #[id]tabs
+        			$('#'+id+'tabs').tabs({cache: true});
+      				//add in a file uploader 
+	   				var uploader = new qq.FileUploader({
+        				// pass the dom node (ex. $(selector)[0] )
+        				element: document.getElementById('file-'+id),
+        				// path to server-side upload script
+        				action: '/cgi-bin/upload.pl',
+						// turn debugging on to see wtf is going on
+						//debug: true,
+						// pass the customer.id through.
+						params: {
+						cust: id
+						}
+	    			});
+				});
+
+				$('#dirtyForm').resetForm();	
+			}
+		};
+		$('#dirtyForm').ajaxForm(ajaj); 
     });
 </script>

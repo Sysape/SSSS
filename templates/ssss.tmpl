@@ -7,6 +7,8 @@ jquery.ssss sql and header.end
 [% INCLUDE jquery.ssss.tmpl %]
 <!-- and the bottom of the header --!>
 [% INSERT header.end.tmpl %]
+	<form action="/cgi-bin/ssss.pl" method="post"
+			enctype="multipart/form-data" id="dirtyForm">
 	<table border=1 width="100%">
 		<tr>
 		<!-- the start of the form that limits the selection of clients from 
@@ -131,8 +133,6 @@ jquery.ssss sql and header.end
 		[% END %]
 		<tr class="newform">	
 		<!-- start the form out side the loop --!>	
-		<form action="/cgi-bin/ssss.pl" method="post"
-			enctype="multipart/form-data" id="dirtyForm">
 			<td colspan='4'>
 			NEW <Br>
 			<label for="datepickernewact">Action Date:<noscript>(YYYY-MM-DD)
@@ -202,10 +202,11 @@ jquery.ssss sql and header.end
 				 id="datepickernewcomment" value="[% today %]">
 			</td>		
 			<td> <INPUT type="submit" class="submit" value="Do IT!"> </td>
+			<input type="hidden" name="changes" id ="changes">
+			<noscript><input type="hidden" name="noscript" value="23">
+			</noscript> 
 		<tr>
 	</table>
-	<input type="hidden" name="changes" id ="changes">
-	<noscript><input type="hidden" name="noscript" value="23"></noscript> 
 	</form>
 	<div id="footer">
   	<div id="copyright"	>

@@ -42,100 +42,10 @@ if ($ENV{'REQUEST_METHOD'} eq "POST"){
 	# to add in new ones. It's being called via AJAJ so needs to return
 	# a JSON object with the details of the database update to write back
 	# to the ssss page
-	# so the fields are all named in the format table.id.name, we need a
-	# list of which tables need to be updated for which ids so a hash
-	# of arrays is probably the way forward.
-	my $update;
-
-	# we've got a javascript field that contains a list of the feilds that
-	# have changed now so we cna foreach over that and not all the fields
-	# on the form. Of course if the user doesn't have js then this will
-	# break stuff so we check for the hidden field that's in the <noscript>
-	# tags and if we have that we step through parms.	
-	if ($parms->{'noscript'}){
-		warn $parms->{'noscript'};
-		foreach(keys %{$parms}){
-			next unless (/(\D+)(\d+)(\D+)/);
-			push (@{$update->{$1}}, $2);
-		}
-	}else{
-		foreach(split(/,/, $parms->{'changes'})){
-			next unless (/(\D+)(\d+)(\D+)/);
-			push (@{$update->{$1}}, $2);
-		}
-	}
-	# so now we need to see what table we need to update
-	foreach my $table (keys %$update){
-		if ($table eq 'cust'){
-			# Prepare the customer update sql statement here, outside the
-			# loop, so we only do it once, this updates all the fields for
-			# that customer rather than just the ones that have changed, but
-			# that's probably quicker than preparing individual statements
-			# for each customer, and mae my brain hurt less.
-			my $upsql = $dbh->prepare('UPDATE customer SET actdate = ?, name = ?, address = ?, phone = ?,email = ?, reff = ?, grantype = ?, lead = ?, first = ?, stage = ?, assign  = ? WHERE id = ?');
-		 	foreach(@{$update->{'cust'}}){
-				$upsql->execute($parms->{"cust".$_."actdate"},
-						$parms->{'cust'.$_.'name'},
-						$parms->{'cust'.$_.'address'},
-						$parms->{'cust'.$_.'phone'},
-						$parms->{'cust'.$_.'email'},
-						$parms->{'cust'.$_.'reff'},
-						$parms->{'cust'.$_.'grantype'},
-						$parms->{'cust'.$_.'lead'},
-						$parms->{'cust'.$_.'first'},
-						$parms->{'cust'.$_.'stage'},
-						$parms->{'cust'.$_.'assign'},
-						$_) or die "$upsql->errstr : $_";
-			}
-	#	}elsif ($table eq 'comm'){
-	#		# do the same for the comment table
-	#		my $upsql = $dbh->prepare('UPDATE comment SET comment = ?, date = ? WHERE id = ?');
-	#		foreach(@{$update->{'comm'}}){
-	#			$upsql->execute($parms->{'comm'.$_.'comment'},
-	#					$parms->{'comm'.$_.'date'},
-	#					$_) or die "$upsql->errstr : $_";
-	#		}
-		# Ok so this breaks the logic of using $table as a varname as this
-		# 'table' isn't actually a table because I broke the naming convention
-		# and called new comments new.custid.comment 
-	#	}elsif ($table eq 'new'){
-	#		my $commsql = $dbh->prepare(
-	#			'INSERT comment (custid, date, comment) VALUES (?,?,?)');
-	#		foreach(@{$update->{'new'}}){
-	#			# if there's nothing in the comment field we don't want
-	#			# to dubmit it.
-	#			next unless $parms->{'new'.$_.'comment'};
-	#			$commsql->execute($_, $parms->{'new'.$_.'date'},
-	#						$parms->{'new'.$_.'comment'})
-	#						or die "$commsql->errstr : $_";
-	#		}
-# I'm implementing a funky Ajax file uploader so commenting this bit out
-# for now. Not deleting it as it contains some useful code for refs.
-#		}elsif ($table eq 'files'){
-#		# Again not really a DB table, but if we have a newfile parameter
-#		# then we'd best do something with it
-#			foreach(@{$update->{'files'}}){
-#				# if there's nothing to upload BREAK BREAK!
-#				next unless $parms->{'files'.$_.'file'};
-#				my $dir = "../files/$_";
-#				my $file = $parms->{'files'.$_.'file'};
-#				# check for tainted filenames
-#				next unless $file =~ /([\w.]+)/;
-#				$file = $1;
-#				# we need create the dir to stick stuff in, if this exists
-#				# the following command will fail harmlessly I hope.
-#				mkdir "$dir", 0775; 
-#				open(LOCAL, ">$dir/$file") or die $!; 
-#				my $fhp = 'files'.$_.'file';
-#				my $fh = $query->upload("$fhp");
-#			  	# undef may be returned if it's not a valid file handle
-#				while(<$fh>) { print LOCAL $_; } 
-#			}
-		}else{
-			die "invalid table specified in update loop \n";
-		}
-	}
-	# if we have any of these new cgi parameters then we need a new customerr
+	my $reply;
+	# and create json object to do the translations.
+	my $json = JSON->new->allow_nonref;
+	# if we have any of these new cgi parameters then we need a new customer
 	# record.
 	if ( $parms->{'newname'} ||
 		$parms->{'newaddress'} ||
@@ -166,15 +76,30 @@ if ($ENV{'REQUEST_METHOD'} eq "POST"){
 			$newcommsth->execute($ins_id,$parms->{'newdate'},
 									$parms->{'newcomment'});
 		}
-		
+		$reply = {id => $ins_id,
+				  actdate => $parms->{'newactdate'},
+				  name => $parms->{'newname'},
+				  address => $parms->{'newaddress'},
+				  phone => $parms->{'newphone'},
+				  email => $parms->{'newemail'},
+				  reff => $parms->{'newreff'},
+				  grantype => $parms->{'newgrantype'},
+				  lead => $parms->{'newlead'},
+				  first => $parms->{'newfirst'},
+				  stage => $parms->{'newstage'},
+				  assign => $parms->{'newassign'}
+				};
 	}
 	# disconnect from the db
 	$dbh->commit();
 	$dbh->disconnect();
+	# send the JSON object back to the browser
+	print $query->header('text/html');
+	print $json->encode($reply);
 	# isssue a redirect to the browser so the user knows something happened.
 	# eventually this needs to be the referer url or if there isn't the ssss
-	my $redirect = $query->referer() || "/cgi-bin//ssss.pl";
-	print $query->redirect($redirect);
+	#my $redirect = $query->referer() || "/cgi-bin//ssss.pl";
+	#print $query->redirect($redirect);
 }else{
 	# now we do the normal thing to display rows of 
 	#The next 3 mys should probably go in some kind of inheretied conf file.
@@ -264,26 +189,6 @@ if ($ENV{'REQUEST_METHOD'} eq "POST"){
 		$issth->execute() or die $issth->errstr;
 		$islist->{$_} = $issth->fetchall_arrayref();
 	}
-# commented out as we're moving this to it's own script and AJAJing it back in
-	## get the comments for the customer ids we have.
-	## start composing the SQL statemnet we need.
-	#my $commentsql = "SELECT * FROM comment" ;
-	## declare an array to store the bind vars for the SQL
-	#my @commentbind;
-	## Step through the $ref array and push all the customer ids onto
-	## the bindvar array whilst also extending the SQL statment with
-	## additional ? OR ?'s
-	#foreach (@$ref) {
-	#	push (@commentbind, $_->{'id'});
-	#	if ($commentsql =~ /WHERE/){
-	#		$commentsql .= " OR ?";
-	#	}else{
-	#		$commentsql .= " WHERE custid = ?";
-	#	}		
-	#}
-	#my $custsth = $dbh->prepare($commentsql);
-	#$custsth->execute(@commentbind) or die $custsth->errstr;
-	#my $commentref = $custsth->fetchall_arrayref({});
 	
 	# we need to list the contents of the files dirs for each dir that
 	# exists.
