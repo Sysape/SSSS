@@ -23,20 +23,20 @@
 		// this is for functionality like rich wants
 		$(".close").hide();
 		//use DirtyForm to show when the form is dirty
-		var dirty={
-			denoteDirtyForm: true, denoteDirtyOptions:true,
-		  	dirtyOptionClass:"dirtyChoice", trimText:true,
-			formChangeCallback: function(result,dirtyFieldsArray) {
-            if(result)
-                {
-                    $("#changes").val(dirtyFieldsArray);
-                }
-            else
-                {
-                    $("#changes").val();
-                }
-			}
-		};
+		//var dirty={
+		//	denoteDirtyForm: true, denoteDirtyOptions:true,
+		//  	dirtyOptionClass:"dirtyChoice", trimText:true,
+		//	formChangeCallback: function(result,dirtyFieldsArray) {
+        //    if(result)
+        //        {
+        //            $("#changes").val(dirtyFieldsArray);
+        //        }
+        //    else
+        //        {
+        //            $("#changes").val();
+        //        }
+		//	}
+		//};
 		//$('#dirtyForm').dirtyFields(dirty); 
 		// use exandable text area on text areas
 		$('textarea').prettyComments();
@@ -158,7 +158,6 @@
 						}
 	    			});
 				});
-
 				$('#dirtyForm').resetForm();	
 			}
 		};

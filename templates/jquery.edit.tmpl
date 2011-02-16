@@ -4,21 +4,21 @@
 	// Add in a datepicker for things of class="datepicker"
 	$('.datepicker').datepicker({ dateFormat: 'yy-mm-dd' });
 	//use DirtyForm to show when the form is dirty
-	var dirty={
-        denoteDirtyForm: true, denoteDirtyOptions:true,
-        dirtyOptionClass:"dirtyChoice", trimText:true,
-        formChangeCallback: function(result,dirtyFieldsArray) {
-        if(result)
-            {
-                $("#changes").val(dirtyFieldsArray);
-            }
-        else
-            {
-                $("#changes").val();
-            }
-        }
-    };
-	$('#dirtyForm[% customer.id %]').dirtyFields(dirty); 
+	//var dirty={
+    //    denoteDirtyForm: true, denoteDirtyOptions:true,
+    //    dirtyOptionClass:"dirtyChoice", trimText:true,
+    //    formChangeCallback: function(result,dirtyFieldsArray) {
+    //    if(result)
+    //        {
+    //            $("#changes").val(dirtyFieldsArray);
+    //        }
+    //    else
+    //        {
+    //            $("#changes").val();
+    //        }
+    //    }
+    //};
+	//$('#dirtyForm[% customer.id %]').dirtyFields(dirty); 
 	// make the textareas expandable
 	$('textarea.[% customer.id %]countable250').prettyComments();
 	// add in limits 
@@ -38,10 +38,41 @@
 	    'maxChars': 500,
 	    'maxCharsWarning': 485
 	});     
+	// make the form an Ajaj form and get it to reload the pane when a comment
+	// is submitted and update the tr above to reflect changes
+	// declare an ajaj var to pass to the ajajifier
+	var ajaj = {
+            // set the callback dataType
+            dataType: 'json',
+            // define a success function
+            success: function(data){
+				//alert('Gashfucking Cuntsticks!'+data.id);
+                // declare an html var containing the two table rows we want
+                // to add to the table for the new client. 
+                // It would be nice if this was a separate templete Included
+                // both here and in ssss.tmpl with varnames chanegd to suit
+                // but for now we'll have to maintain 2 copies of it.
+                [%# use Template markup to remove newlines %]
+                var html = "<tr class='norm' id='[% customer.id %]'>"
+                    [%- FOREACH column = columns -%]
+                        +"<td>"+data.[% column %]+"</td>"
+                    [%- END -%]
+                    +"</tr>";
+				// replace the line aboves html
+                $('#[% customer.id %]norm').replaceWith(html);
+				// reload the edit pane
+				$('#[% customer.id %]tabs').tabs("load" ,0);
+				// reapply the tr.norm click toggle bit
+				$('#[% customer.id %]norm').click(function(event){
+					$(this).next(".edit").toggle();
+				});
+            }
+    };
+	$('#dirtyForm[% customer.id %]').ajaxForm(ajaj); 
 	// add confirmation to the form submit
-	$('.submit').click(function(){
-	    var answer = confirm('Update: '+jQuery("#changes").attr('value'));
-	    // hopefully this returns the value of changes.
-	    return answer; 
-	}); 
+	//$('.submit').click(function(){
+	//    var answer = confirm('Update: '+jQuery("#changes").attr('value'));
+	//    // hopefully this returns the value of changes.
+	//    return answer; 
+	//}); 
 </script>

@@ -4,21 +4,21 @@
 	// Add in a datepicker for things of class="datepicker"
 	$('.datepicker').datepicker({ dateFormat: 'yy-mm-dd' });
 	//use DirtyForm to show when the form is dirty
-	var dirty={
-        denoteDirtyForm: true, denoteDirtyOptions:true,
-        dirtyOptionClass:"dirtyChoice", trimText:true,
-        formChangeCallback: function(result,dirtyFieldsArray) {
-        if(result)
-            {
-                $("#changes").val(dirtyFieldsArray);
-            }
-        else
-            {
-                $("#changes").val();
-            }
-        }
-    };
-	$('#dirtyForm[% custid %]com').dirtyFields(dirty); 
+	//var dirty={
+    //    denoteDirtyForm: true, denoteDirtyOptions:true,
+    //    dirtyOptionClass:"dirtyChoice", trimText:true,
+    //    formChangeCallback: function(result,dirtyFieldsArray) {
+    //    if(result)
+    //        {
+    //            $("#changes").val(dirtyFieldsArray);
+    //        }
+    //    else
+    //        {
+    //            $("#changes").val();
+    //        }
+    //    }
+    //};
+	//$('#dirtyForm[% custid %]com').dirtyFields(dirty); 
 	// make the textareas expandable
 	$('.[% custid %]countable500').prettyComments();
 	// add in limits 
@@ -31,10 +31,17 @@
         // jQuery(this).attr('title') gets anchor title attribute
         return answer; // answer is a boolean
     }); 
+	// make the form an Ajaj form and get it to reload the pane when a comment
+    // is submitted
+    $('#dirtyForm[% custid %]com').ajaxForm(function() {
+        //alert("Gashfucking Cuntsticks");
+        $('#[% custid %]tabs').tabs("load" ,1);
+    });
+
 	// add confirmation to the form submit
-	$('.submit').click(function(){
-	    var answer = confirm('Update: '+jQuery("#changes").attr('value'));
-	    // hopefully this returns the value of changes.
-	    return answer; 
-	}); 
+	//$('.submit').click(function(){
+	//    var answer = confirm('Update: '+jQuery("#changes").attr('value'));
+	//    // hopefully this returns the value of changes.
+	//    return answer; 
+	//}); 
 </script>

@@ -74,7 +74,7 @@ jquery.ssss sql and header.end
 		<!-- the end of the limiting form --!>
 		</tr>
 		[% FOREACH customer = customers %]
-		<tr class="norm">
+		<tr class="norm" id="[% customer.id %]norm"> 
 			[% FOREACH column = columns %]
 				[% IF column == 'email' ;
 					text = customer.$column.substr(0, 13) %]
@@ -86,7 +86,7 @@ jquery.ssss sql and header.end
 				[% END %]
 			[% END %]
 		</tr>
-		<tr class="edit">
+		<tr class="edit" id="[% customer.id %]edit">
 			<td colspan="12">
 			<!-- add a close div with and X in it, so clicking the X
 			closes the open pane with js --!>
@@ -94,7 +94,7 @@ jquery.ssss sql and header.end
 			<div id ='[%customer.id%]tabs'>
 				<ul>
 					<li><a href="/cgi-bin/edit.pl?id=[%customer.id%]"
-						>Main</a></li>
+						>Edit</a></li>
 					<li><a href="/cgi-bin/comment.pl?custid=[%customer.id%]"
 						>Comments</a></li>
 					<li><a href="#[%customer.id%]tabs-3">Project Manglement</a></li>

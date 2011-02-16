@@ -5,7 +5,7 @@ use CGI::Carp;
 use Template;
 use DBI;
 use YAML::XS;
-use Data::Dumper;
+use JSON;
 
 # detaint the path
 $ENV{'PATH'} = '/bin:/usr/bin';
@@ -56,11 +56,29 @@ if ($ENV{'REQUEST_METHOD'} eq "POST"){
 						$parms->{'assign'},
 						$parms->{'id'}) or die
 								"$upsql->errstr : $parms->{'id'}";
-	# we need to reload the edit pane here, using AJAJ I assume, need to
-	# work out how to do that.
+	# So we need a json object to pass back to the browser
+	my $reply;
+	my $json = JSON->new->allow_nonref;
+	# fill the reply var with salient details.
+	my $reply = {id => $parms->{'id'},
+				 name => $parms->{'name'},
+				 address => $parms->{'address'},
+				 phone => $parms->{'phone'},
+				 email => $parms->{'email'},
+				 reff => $parms->{'reff'},
+				 grantype => $parms->{'grantype'},
+				 lead => $parms->{'lead'},
+				 first => $parms->{'first'},
+				 stage => $parms->{'stage'},
+				 actdate => $parms->{'actdate'},
+				 assign => $parms->{'assign'}
+	};
     # redirect to the referer
-    my $redirect = $query->referer() || "/cgi-bin/ssss.pl";
-    print $query->redirect($redirect);
+    #my $redirect = $query->referer() || "/cgi-bin/ssss.pl";
+    #print $query->redirect($redirect);
+	# Send the json object back to the browser
+    print $query->header('text/html');
+    print $json->encode($reply);
 	# disconnect from the db
 	$dbh->commit() or carp "Commit failed: $DBI::errstr\n";
 	$dbh->disconnect() or carp "Disconnection failed: $DBI::errstr\n";
@@ -71,12 +89,16 @@ if ($ENV{'REQUEST_METHOD'} eq "POST"){
 	$sth->execute($parms->{'id'}) or die $sth->errstr;
 	# there will only be one row returned so we can get it with
 	my $ref = $sth->fetchrow_hashref();
-	
+	# the javascript needs to have a list of columns, this needs an 
+	# inherited conf sometime soon.
+	my @column =
+    qw(id actdate name address phone email reff grantype lead first stage assign);
 	my $vars = {
 		copyright => 'released under the GPL 2008',
 		parms => $parms,
 		customer => $ref,
-		today => $today,
+		columns => \@column,
+		today => $today
 	};
 	$tt->process('edit.tmpl', $vars)
 	    || die $tt->error(), "\n";
