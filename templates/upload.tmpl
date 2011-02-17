@@ -1,0 +1,28 @@
+[% INSERT header.start.tmpl %]
+</head> [%# we need to close the head tag opened in header.start.tmpl %]
+<body>
+
+Filez: <br>
+[% id = custid %]
+[% count = 1 %]
+[% FOREACH file = files %]
+    <a href="/files/[%id%]/[%file%]" target="_blank">[%file%]</a> 
+    <form id='[% id %]del[%count%]' method=post action="/cgi-bin/ssdel.pl"
+		style='display:inline;'>
+        <input type='hidden' name='table' value='file'>
+        <input type='hidden' name='id' value='[% id %]'>
+        <input type='hidden' name='file' value='[%file%]'>
+        <INPUT type="submit" class="submit" value="Delete me!">
+    </form>
+	[% count = count + 1%]
+[% END %]
+<div id="file-[%id%]">
+    <noscript>
+        <input type='file' name='files[%id%]file'/>
+        <INPUT type="submit" value="Do IT!">
+    </noscript>
+</div>
+
+
+[% INCLUDE jquery.upload.tmpl %]
+</body>

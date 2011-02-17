@@ -7,8 +7,6 @@ jquery.ssss sql and header.end
 [% INCLUDE jquery.ssss.tmpl %]
 <!-- and the bottom of the header --!>
 [% INSERT header.end.tmpl %]
-	<form action="/cgi-bin/ssss.pl" method="post"
-			enctype="multipart/form-data" id="dirtyForm">
 	<table border=1 width="100%">
 		<tr>
 		<!-- the start of the form that limits the selection of clients from 
@@ -98,115 +96,87 @@ jquery.ssss sql and header.end
 					<li><a href="/cgi-bin/comment.pl?custid=[%customer.id%]"
 						>Comments</a></li>
 					<li><a href="#[%customer.id%]tabs-3">Project Manglement</a></li>
-					<li><a href="#[%customer.id%]tabs-4">Attachments</a></li>
+					<li><a href="/cgi-bin/upload.pl?custid=[%customer.id%]"
+						>Attachments</a></li>
 				</ul>
 				<div id='[%customer.id%]tabs-3'>
 					Some guff!
 				</div>
-				<div id='[%customer.id%]tabs-4'>
-					Filez: <br>
-                    [% id = customer.id %]
-                        <table>
-                    [% FOREACH file = files.$id %]
-                        <tr>
-                        <td><a href="/files/[%id%]/[%file%]" target="_blank"
-                               >[%file%]</a> </td>
-                        <td>
-                            <a
-                            href="/cgi-bin/ssdel.pl?table=file&id=[%customer.id%]&file=[%file%]"
-                            class="delete" title="[%file%]">
-                            Delete me!</a></td>
-                        <tr>
-                    [% END %]
-                        </table>
-                    <div id="file-[%customer.id%]">
-                        <noscript>
-                            <input type='file' name='files[%customer.id%]file'/>
-                            <INPUT type="submit" value="Do IT!">
-                        </noscript>
-                    </div>
-	
-				</div>
 			</div>
 			</td>
 		</tr>
-		[% END %]
-		<tr class="newform">	
-		<!-- start the form out side the loop --!>	
-			<td colspan='4'>
-			NEW <Br>
-			<label for="datepickernewact">Action Date:<noscript>(YYYY-MM-DD)
-			</noscript>:</label>
-			<input type="text" size=10 id="datepickernewact"
-					class="datepicker"
-				name="newactdate"><BR>
-			<label for="newname">Name<noscript>(50)</noscript>:</label>
-			<input id="newname" type="text" size=50 name="newname"
-				class="countable50"/><BR>
-			<label for="newaddress">Address<noscript>(250)</noscript>:</label>
-			 <textarea name="newaddress" id="newaddress" class="expand"
-				cols=50 rows=1></textarea> <BR>
-			<label for="newphone">Phone<noscript>(50)</noscript>:</label>
-			<input type="text" size=50 name="newphone" id="newphone"
-				class="countable50"/> <BR>
-			<label for="newemail">Email<noscript>(50):</noscript></label>
-			<input type="text" size=50 name="newemail" id="newemail"
-				class="countable50"/> <BR>	
-			</td><td colspan="2">
-			<label for="newreff">Reference<noscript>(5)</noscript>:</label>
-			<input type="text" size=5 name="newreff" id="newreff"
-				class="countable5"/> <BR>
-			<label for="newgrantype">Grant Type:</label>
-			<select name="newgrantype" id="newgrantype">
-				<option></option>
-				<option>st1</option>
-				<option>st2</option>
-				<option >ph2</option>	
-			</select> <BR>
-			<label for="newlead">Lead<noscript>(5)</noscript>:</label>
-			<input type=text" size=5 name="newlead" id="newlead"
-				class="countable5"/> <BR>
-			<label for="datepickernewfirst">First Contact <noscript>(YYYY-MM-DD)
-			</noscript>:</label>
-			<input type="text" size=10
-				class="datepicker"
-				id="datepickernewfirst" name="newfirst"/><BR>
-			<label for="newstage">Stage:</label>
-			<select name="newstage" id="newstage">
-				<option selected="selected">first</option>
-				<option>quote</option>
-				<option>visited</option>
-				<option>happen</option>	
-				<option>lost</option>	
-				<option>completed</option>	
-				<option>closed</option>	
-			</select> <BR>
-			<label for="newassign">Assigned to :</label>
-			<select name="newassign" id="newassign">
-				<option></option>
-				<option>rich</option>
-				<option>mik</option>
-				<option>rob</option>
-				<option>raj</option>
-			</select>
-			</td>
-			<td colspan='5'>
-				<label for="newcomment">Comment<noscript>(500)</noscript>:
-				</label>
-				<textarea name="newcomment" id="newcomment"
-				 cols=50></textarea>
-				<label for="datepickernewcomment">Date<noscript>(YYYY-MM-DD)
-				</noscript>:</label>
-				<input type="text" size=10 name="newdate"
-					class="datepicker"
-				 id="datepickernewcomment" value="[% today %]">
-			</td>		
-			<td> <INPUT type="submit" class="submit" value="Do IT!"> </td>
-			<input type="hidden" name="changes" id ="changes">
-			<noscript><input type="hidden" name="noscript" value="23">
-			</noscript> 
-		<tr>
+	[% END %]
 	</table>
+	<!-- start the form out side the loop --!>	
+	<form action="/cgi-bin/ssss.pl" method="post"
+		enctype="multipart/form-data" id="dirtyForm">
+		NEW <Br>
+		<label for="datepickernewact">Action Date:<noscript>(YYYY-MM-DD)
+		</noscript>:</label>
+		<input type="text" size=10 id="datepickernewact"
+				class="datepicker"
+			name="newactdate">
+		<label for="newname">Name<noscript>(50)</noscript>:</label>
+		<input id="newname" type="text" size=50 name="newname"
+			class="countable50"/>
+		<label for="newaddress">Address<noscript>(250)</noscript>:</label>
+		 <textarea name="newaddress" id="newaddress" class="expand"
+			cols=50 rows=1></textarea>
+		<label for="newphone">Phone<noscript>(50)</noscript>:</label>
+		<input type="text" size=50 name="newphone" id="newphone"
+			class="countable50"/>
+		<label for="newemail">Email<noscript>(50):</noscript></label>
+		<input type="text" size=50 name="newemail" id="newemail"
+			class="countable50"/>
+		<label for="newreff">Reference<noscript>(5)</noscript>:</label>
+		<input type="text" size=5 name="newreff" id="newreff"
+			class="countable5"/>
+		<label for="newgrantype">Grant Type:</label>
+		<select name="newgrantype" id="newgrantype">
+			<option></option>
+			<option>st1</option>
+			<option>st2</option>
+			<option >ph2</option>	
+		</select>
+		<label for="newlead">Lead<noscript>(5)</noscript>:</label>
+		<input type=text" size=5 name="newlead" id="newlead"
+			class="countable5"/>
+		<label for="datepickernewfirst">First Contact <noscript>(YYYY-MM-DD)
+		</noscript>:</label>
+		<input type="text" size=10
+			class="datepicker"
+			id="datepickernewfirst" name="newfirst"/>
+		<label for="newstage">Stage:</label>
+		<select name="newstage" id="newstage">
+			<option selected="selected">first</option>
+			<option>quote</option>
+			<option>visited</option>
+			<option>happen</option>	
+			<option>lost</option>	
+			<option>completed</option>	
+			<option>closed</option>	
+		</select>
+		<label for="newassign">Assigned to :</label>
+		<select name="newassign" id="newassign">
+			<option></option>
+			<option>rich</option>
+			<option>mik</option>
+			<option>rob</option>
+			<option>raj</option>
+		</select><br>
+		<label for="newcomment">Comment<noscript>(500)</noscript>:
+		</label>
+		<textarea name="newcomment" id="newcomment"
+		 cols=50></textarea>
+		<label for="datepickernewcomment">Date<noscript>(YYYY-MM-DD)
+		</noscript>:</label>
+		<input type="text" size=10 name="newdate"
+			class="datepicker"
+			 id="datepickernewcomment" value="[% today %]">
+		<INPUT type="submit" class="submit" value="Do IT!"> 
+		<input type="hidden" name="changes" id ="changes">
+		<noscript><input type="hidden" name="noscript" value="23">
+		</noscript> 
 	</form>
 	<div id="footer">
   	<div id="copyright"	>

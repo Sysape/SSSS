@@ -1,0 +1,32 @@
+<script type="text/javascript">
+	// make the form an Ajaj form and get it to reload the pane when a comment
+	// is submitted and update the tr above to reflect changes
+	// declare an ajaj var to pass to the ajajifier
+	[%# declare an id var for each file #%]
+	[% count = 1 %]
+	[% FOREACH file = files %]
+		var ajaj[% count %] = {
+    	        // set the callback dataType
+    	        dataType: 'json',
+    	        // define a success function
+    	        success: function(data){
+					//alert('Gashfucking Cuntsticks!'+data.id);
+					$('#[% custid %]tabs').tabs("load" ,3);
+				}
+    	};
+	$('#[% custid %]del[% count %]').ajaxForm(ajaj[%count%]); 
+	[% count = count + 1%]
+	[% END %]
+	var uploader = new qq.FileUploader({
+	    // pass the dom node (ex. $(selector)[0] for jQuery users)
+	    element: document.getElementById('file-[% custid %]'),
+	    // path to server-side upload script
+	    action: '/cgi-bin/upload.pl',
+	    // turn debugging on to see wtf is going on
+	    //debug: true,
+	    // pass the customer.id through.
+	    params: {
+	    cust: [% custid %]
+	    }
+	});
+</script>

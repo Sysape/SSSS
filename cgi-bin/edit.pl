@@ -57,7 +57,6 @@ if ($ENV{'REQUEST_METHOD'} eq "POST"){
 						$parms->{'id'}) or die
 								"$upsql->errstr : $parms->{'id'}";
 	# So we need a json object to pass back to the browser
-	my $reply;
 	my $json = JSON->new->allow_nonref;
 	# fill the reply var with salient details.
 	my $reply = {id => $parms->{'id'},

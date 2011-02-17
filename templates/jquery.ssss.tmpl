@@ -55,18 +55,8 @@
         	//$('#'+id+'tabs').bind('tabsload', function(event, ui){ 
 			//});
       		//add in a file uploader 
-	   		var uploader = new qq.FileUploader({
-        		// pass the dom node (ex. $(selector)[0] for jQuery users)
-        		element: document.getElementById('file-'+id),
-        		// path to server-side upload script
-        		action: '/cgi-bin/upload.pl',
-				// turn debugging on to see wtf is going on
-				//debug: true,
-				// pass the customer.id through.
-				params: {
-				cust: id
-				}
-	    	});
+			// create an ajaj file delete form for each file
+			$('#dirtyForm').ajaxForm(ajaj); 
 		});
 		// Add in a datepicker for things of class="datepicker"
        	$('.datepicker').datepicker({ dateFormat: 'yy-mm-dd' });
@@ -127,11 +117,10 @@
 					[%- %]+"'>Comment</a></li>"
 					[%- %]+"<li><a href='#"+data.id+"tabs-3'>Project"
 					[%- %]+" Manglement</a></li>"
-					[%- %]+"<li><a href='#"+data.id+"tabs-4'>Attachments</a>"
+					[%- %]+"<li><a href='/cgi-bin/upload.pl?custid="+data.id
+					[%- %]+"'>Attachments</a>"
 					[%- %]+"</li></ul>"
 					[%- %]+"<div id='"+data.id+"tabs-3'>Some guff!</div>"
-					[%- %]+"<div id='"+data.id+"tabs-4'>Filez:<br>"
-					[%- %]+"<div id='file-"+data.id+"'></div></div>"
 					[%- %]+"</div></td></tr>";
 				$(html).insertBefore('.newform');
 				$('.newedit').hide();
@@ -144,19 +133,6 @@
 					var id = $(this).find("td").first().text().trim();
 					// create a tabset called #[id]tabs
         			$('#'+id+'tabs').tabs({cache: true});
-      				//add in a file uploader 
-	   				var uploader = new qq.FileUploader({
-        				// pass the dom node (ex. $(selector)[0] )
-        				element: document.getElementById('file-'+id),
-        				// path to server-side upload script
-        				action: '/cgi-bin/upload.pl',
-						// turn debugging on to see wtf is going on
-						//debug: true,
-						// pass the customer.id through.
-						params: {
-						cust: id
-						}
-	    			});
 				});
 				$('#dirtyForm').resetForm();	
 			}

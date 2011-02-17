@@ -11,7 +11,7 @@ use JSON;
 $ENV{'PATH'} = '/bin:/usr/bin';
 
 #setup a template directory
-
+# this can probably be moved inside the else.
 my $tt = Template->new({
     INCLUDE_PATH => '../templates',
 }) || die "$Template::ERROR\n";
