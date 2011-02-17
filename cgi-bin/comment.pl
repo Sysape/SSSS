@@ -38,14 +38,22 @@ if ($ENV{'REQUEST_METHOD'} eq "POST"){
 		'UPDATE comment SET comment = ?, date = ? WHERE id = ?');
 	my $comsql = $dbh->prepare(
 		'INSERT comment (custid, date, comment) VALUES (?,?,?)');
+	my $delsql = $dbh->prepare('DELETE FROM comment WHERE id =?');
 	# step thru the parms and updates the updateable comments
 	foreach(keys %{$parms}){
 		if (/^(\d+)comment/){
-			$upsql->execute($parms->{$1.'comment'}, $parms->{$1.'date'}, $1); 
+			if ($parms->{$1.'del'} eq "Delete"){
+				
+				$delsql->execute($1);	
+			}else{
+				$upsql->execute($parms->{$1.'comment'},
+					$parms->{$1.'date'}, $1); 
+			}
 			# we probably want to do some kind of logging here.
 		}elsif (/^new(\d+)comment/){
 			next unless $parms->{'new'.$1.'comment'};
-			$comsql->execute($1,$parms->{'new'.$1.'date'},$parms->{'new'.$1.'comment'});
+			$comsql->execute($1,$parms->{'new'.$1.'date'},
+				$parms->{'new'.$1.'comment'});
 			# logging?
 		} # I feel there should be an else here.
 	}

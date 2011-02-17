@@ -12,6 +12,9 @@
     	        success: function(data){
 					//alert('Gashfucking Cuntsticks!'+data.id);
 					$('#[% custid %]tabs').tabs("load" ,3);
+				},
+				beforeSubmit: function(){
+					return confirm('Delete [%file%]?');
 				}
     	};
 	$('#[% custid %]del[% count %]').ajaxForm(ajaj[%count%]); 

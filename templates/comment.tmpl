@@ -23,13 +23,12 @@
 		value="[% comment.date %]"
 		id="[% comment.id %]date">
 	</span>
-	<a
-	href="/cgi-bin/ssdel.pl?table=comment&id=[% comment.id %]"
-	class="delete"
-	title="Comment: [%comment.id%]: [%comment.comment.substr(0,23)%]...">
-			Delete me!</a>
-	[% END %]
    <span style="white-space: nowrap;">
+ 	<label for="[% comment.id %]del">Delete</label>  
+	<input type="checkbox" name="[% comment.id %]del" value="Delete">
+	</span>
+	[% END %]
+    <span style="white-space: nowrap;">
 	<label for="new[%custid%]comment">Comment
 	<noscript>(500)</noscript>:</label>
 	<textarea name="new[%custid%]comment"
