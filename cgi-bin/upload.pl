@@ -65,7 +65,7 @@ if ($ENV{'REQUEST_METHOD'} eq "POST"){
 		 $reply = {error => "Illegal characters in filename - please only use [A-Z] [a-z] [0-9] . and _"};
 	}
 	
-	mkdir("$uploaddir/$custdir", 0775);
+	mkdir("$uploaddir/$custdir", 0775) or carp "mkdir failed: $!\n";
 	
 	
 	print $in->header('application/json');
