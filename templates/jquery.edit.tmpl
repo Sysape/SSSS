@@ -34,10 +34,6 @@
 	    'maxChars': 250,
 	    'maxCharsWarning': 240
 	});     
-	$('.[% customer.id %]countable500').jqEasyCounter({
-	    'maxChars': 500,
-	    'maxCharsWarning': 485
-	});     
 	// make the form an Ajaj form and get it to reload the pane when a comment
 	// is submitted and update the tr above to reflect changes
 	// declare an ajaj var to pass to the ajajifier
@@ -69,10 +65,4 @@
             }
     };
 	$('#dirtyForm[% customer.id %]').ajaxForm(ajaj); 
-	// add confirmation to the form submit
-	//$('.submit').click(function(){
-	//    var answer = confirm('Update: '+jQuery("#changes").attr('value'));
-	//    // hopefully this returns the value of changes.
-	//    return answer; 
-	//}); 
 </script>

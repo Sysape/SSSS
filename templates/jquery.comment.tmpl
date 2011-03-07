@@ -5,8 +5,8 @@
 	$('.[% custid %]countable500').prettyComments();
 	// add in limits 
 	$('.[% custid %]countable500').jqEasyCounter({
-	    'maxChars': 500,
-	    'maxCharsWarning': 485
+	    'maxChars': 5000,
+	    'maxCharsWarning': 4900
 	});     
     $('.delete').click(function(){
         var answer = confirm('Delete '+jQuery(this).attr('title'));
