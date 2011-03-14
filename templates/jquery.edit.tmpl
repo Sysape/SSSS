@@ -49,7 +49,7 @@
                 // both here and in ssss.tmpl with varnames chanegd to suit
                 // but for now we'll have to maintain 2 copies of it.
                 [%# use Template markup to remove newlines %]
-                var html = "<tr class='norm' id='[% customer.id %]'>"
+                var html = "<tr class='norm' id='[% customer.id %]norm'>"
                     [%- FOREACH column = columns -%]
                         +"<td>"+data.[% column %]+"</td>"
                     [%- END -%]
