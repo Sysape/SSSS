@@ -3,9 +3,6 @@
 <!-- an load the jquery-ui library too --!>
 <script type="text/javascript" src="/js/jquery-ui-1.8.4.custom.min.js">
 </script>
-<!-- load the dirtyfields plugin --!>
-<script type="text/javascript" src="/js/jquery.dirtyFields.packed.js">
-</script>
 <!-- load the EasyCharCounter plugin --!>
 <script type="text/javascript" src="/js/jquery.jqEasyCharCounter.mod.js">
 </script>
@@ -23,22 +20,6 @@
 		$(".edit").hide();
 		// this is for functionality like rich wants
 		$(".close").hide();
-		//use DirtyForm to show when the form is dirty
-		//var dirty={
-		//	denoteDirtyForm: true, denoteDirtyOptions:true,
-		//  	dirtyOptionClass:"dirtyChoice", trimText:true,
-		//	formChangeCallback: function(result,dirtyFieldsArray) {
-        //    if(result)
-        //        {
-        //            $("#changes").val(dirtyFieldsArray);
-        //        }
-        //    else
-        //        {
-        //            $("#changes").val();
-        //        }
-		//	}
-		//};
-		//$('#dirtyForm').dirtyFields(dirty); 
 		// use exandable text area on text areas
 		$('textarea').prettyComments();
 		$("tr.norm").click(function(event){
@@ -51,11 +32,6 @@
 			var id = $(this).find("td").first().text().trim();
 			// create a tabset called #[id]tabs
         	$('#'+id+'tabs').tabs({cache: true});
-			// next bit commented out as it's been moved to the incoming form
-			// we need to run various js on the tabs when they've loaded.
-        	//$('#'+id+'tabs').bind('tabsload', function(event, ui){ 
-			//});
-      		//add in a file uploader 
 			// create an ajaj file delete form for each file
 			$('#dirtyForm').ajaxForm(ajaj); 
 		});
@@ -87,12 +63,6 @@
             // jQuery(this).attr('title') gets anchor title attribute
             return answer; // answer is a boolean
         }); 
-		// add confirmation to the form submit
-		//$('.submit').click(function(){
-		//	var answer = confirm('Update: '+jQuery("#changes").attr('value'));
-		//	// hopefully this returns the value of changes.
-		//	return answer; 
-       	//}); 
 		// ajajify the form.
 		// declare an ajaj var to pass to the ajajifier
 		var ajaj = {
