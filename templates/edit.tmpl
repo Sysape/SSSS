@@ -97,14 +97,20 @@
 			selected="selected"[%- END -%]>tomas</option>	
 		<option [% IF  customer.assign == 'fergal' -%]
 			selected="selected"[%- END -%]>fergal</option>	
-		<option [% IF  customer.assign == 'raj' -%]
-			selected="selected"[%- END -%]>raj</option>	
+        <option [% IF  customer.assign == 'raj' -%]
+            selected="selected"[%- END -%]>raj</option>     
+		<option [% IF  customer.assign == 'gary' -%]
+			selected="selected"[%- END -%]>gary</option>	
 		<option [% IF  customer.assign == 'gwen' -%]
 			selected="selected"[%- END -%]>gwen</option>	
 	</select>
 	</span>
 	<BR>
 	<INPUT type="submit" class="submit" value="Do IT!">
+	<a href="/cgi-bin/edit.pl?&id=[%customer.id%]"
+		class="delete"
+		title="Customer: [%customer.id%] Name: [%customer.name%]">
+		Delete me!</a>
 	</div>
 </form>
 [% INCLUDE jquery.edit.tmpl %]
